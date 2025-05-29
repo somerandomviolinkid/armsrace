@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <chrono>
 #include <map>
-#include <iostream>
 
 v2<float> project(v2<float> p);
 
@@ -13,20 +12,26 @@ v2<float> aproject(v2<float> p);
 class resourceData {
 public:
 	std::string name;
+
+	std::string texturePath;
 	SDL_Texture* texture;
 
 	resourceData(
 		std::string n,
 		std::string p
 	) : name{ n },
-		texture{ loadTexture_s(p) } {
+		texturePath{p} {
+		texture = nullptr;
 	}
 };
 
 class industryData {
 public:
 	std::string name;
+
+	std::string texturePath;
 	SDL_Texture* texture;
+
 	uint32_t maxWorkers;
 	std::map<uint32_t, float> inputs, outputs, storage;
 
@@ -38,12 +43,12 @@ public:
 		std::map<uint32_t, float> o,
 		std::map<uint32_t, float> s
 	) : name{ n },
-		texture{ loadTexture_s(p) },
+		texturePath{ p },
 		maxWorkers{ w },
 		inputs{ i },
 		outputs{ o },
 		storage{ s } {
-		std::cout << p << "\n";
+		texture = nullptr;
 	}
 };
 
@@ -53,6 +58,7 @@ public:
 	std::vector<industryData> industryDatas;
 
 	GameData();
+	void loadTextures();
 	~GameData();
 };
 

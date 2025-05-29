@@ -11,8 +11,12 @@ GameData::GameData() {
 		std::getline(currentResourceFile, line);
 		std::string name = line;
 
+		std::cout << line << "\n";
+
 		std::getline(currentResourceFile, line);
-		std::string texturePath = line;
+		std::string texturePath = "assets/textures/" + line;
+
+		std::cout << line << "\n";
 
 		resourceDatas.push_back(resourceData(name, texturePath));
 		currentResourceFile.close();
@@ -71,4 +75,14 @@ GameData::~GameData() {
 	}
 }
 
-GameData gameData();
+void GameData::loadTextures() {
+	for (resourceData &r : resourceDatas) {
+		r.texture = loadTexture_s(r.texturePath);
+	}
+
+	for (industryData& i : industryDatas) {
+		i.texture = loadTexture_s(i.texturePath);
+	}
+}
+
+GameData gameData;

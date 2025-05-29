@@ -32,10 +32,12 @@ v2<int> calculateAlign(v2<int> pos, v2<int> dim, H_ALIGN hAlign, V_ALIGN vAlign)
 SDL_Texture* loadTexture_s(std::string path) {
 	std::ifstream f(path);
 	if (f.good()) {
+	std::cout << path << " good\n";
 		return IMG_LoadTexture(state.renderer, path.c_str());
 	}
 
-	//return state.baseTextures[0];
+	std::cout << path << " bad\n";
+	return state.baseTextures[0];
 }
 
 void drawTexture(SDL_Texture* texture, v2<int> pos, float scale, H_ALIGN hAlign, V_ALIGN vAlign) {

@@ -61,11 +61,18 @@ void city::drawMenu() {
 
 	int yOffset = 0;
 	for (industry i : industries) {
-		drawTexture(gameData.industryDatas[ i.type ].texture, { ((state.res.x * 3) / 4) + 8, 184 }, 1.0f, LEFT, MIDDLE);
-		int w, h;
-		SDL_QueryTexture(gameData.industryDatas[ i.type ].texture, NULL, NULL, &w, &h);
-		printf("%d %d\n", w, h);
-		drawText({ gameData.industryDatas[ i.type ].name, { ((state.res.x * 3) / 4) + 32, 184}, 1.0f, {255, 255, 255, 255}, LEFT, MIDDLE });
-		yOffset += 24;
+		drawTexture(gameData.industryDatas[ i.type ].texture, { ((state.res.x * 3) / 4) + 8, 184 }, 2.0f, LEFT, MIDDLE);
+		drawText({ gameData.industryDatas[ i.type ].name, { ((state.res.x * 3) / 4) + 48, 184}, 2.0f, {255, 255, 255, 255}, LEFT, MIDDLE });
+		yOffset += 48;
+		for (std::pair<const uint32_t, float> &pair : i.inventory) {
+			drawTexture(gameData.resourceDatas[pair.first].texture, { ((state.res.x * 3) / 4) + 8, 184 + yOffset}, 1.0f, LEFT, MIDDLE);
+
+			r = { ((state.res.x * 3) / 4) + 8, 176 + yOffset, 16, 16 };
+			SDL_SetRenderDrawColor(state.renderer, 255, 255, 255, 255);
+			SDL_RenderDrawRect(state.renderer, &r);
+
+			drawText({ gameData.resourceDatas[ pair.first ].name + ": " + std::to_string(pair.second), { ((state.res.x * 3) / 4) + 32, 184 + yOffset }, 1.0f, {255, 255, 255, 255}, LEFT, MIDDLE });
+			yOffset += 24;
+		}
 	}
 }
