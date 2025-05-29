@@ -1,6 +1,7 @@
 #include "state.hpp"
 
 State::State() {
+	printf("Started loading state\n");
 	SDL_Init(SDL_INIT_EVERYTHING);
 	IMG_Init(IMG_INIT_PNG);
 	TTF_Init();

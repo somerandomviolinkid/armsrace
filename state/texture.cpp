@@ -29,6 +29,15 @@ v2<int> calculateAlign(v2<int> pos, v2<int> dim, H_ALIGN hAlign, V_ALIGN vAlign)
 	return res;
 }
 
+SDL_Texture* loadTexture_s(std::string path) {
+	std::ifstream f(path);
+	if (f.good()) {
+		return IMG_LoadTexture(state.renderer, path.c_str());
+	}
+
+	//return state.baseTextures[0];
+}
+
 void drawTexture(SDL_Texture* texture, v2<int> pos, float scale, H_ALIGN hAlign, V_ALIGN vAlign) {
 	v2<int> dim = {0, 0};
 	SDL_QueryTexture(texture, NULL, NULL, &dim.x, &dim.y);

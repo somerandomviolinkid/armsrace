@@ -1,10 +1,10 @@
 #pragma once
+#include "../state/state.hpp"
+
 #include <algorithm>
 #include <chrono>
 #include <map>
-#include <fstream>
-
-#include "../state/state.hpp"
+#include <iostream>
 
 v2<float> project(v2<float> p);
 
@@ -19,7 +19,7 @@ public:
 		std::string n,
 		std::string p
 	) : name{ n },
-		texture{ IMG_LoadTexture(state.renderer, p.c_str()) } {
+		texture{ loadTexture_s(p) } {
 	}
 };
 
@@ -38,11 +38,12 @@ public:
 		std::map<uint32_t, float> o,
 		std::map<uint32_t, float> s
 	) : name{ n },
-		texture{ IMG_LoadTexture(state.renderer, p.c_str()) },
+		texture{ loadTexture_s(p) },
 		maxWorkers{ w },
 		inputs{ i },
 		outputs{ o },
 		storage{ s } {
+		std::cout << p << "\n";
 	}
 };
 
@@ -81,6 +82,8 @@ public:
 	std::string name;
 	v2<float> pos;
 	float population;
+	std::vector<industry> industries;
+
 	bool menuOpen;
 
 	city(
@@ -90,6 +93,7 @@ public:
 	) : name{ n },
 		pos{ p },
 		population{ pop } {
+		industries = {};
 		menuOpen = false;
 	}
 

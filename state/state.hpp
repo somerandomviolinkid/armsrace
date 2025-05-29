@@ -1,12 +1,13 @@
 #pragma once
+#include "../util/util.hpp"
+
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-
-#include "../util/util.hpp"
 
 class State {
 public:
@@ -49,6 +50,8 @@ enum V_ALIGN {
 
 v2<int> calculateAlign(v2<int> pos, v2<int> dim, H_ALIGN hAlign, V_ALIGN vAlign);
 
+SDL_Texture* loadTexture_s(std::string path);
+
 void drawTexture(SDL_Texture* texture, v2<int> pos, float scale, H_ALIGN hAlign, V_ALIGN vAlign);
 
 struct text {
@@ -62,3 +65,13 @@ struct text {
 };
 
 void drawText(text t);
+
+struct button {
+	text t;
+	v2<int> pos;
+
+	H_ALIGN hAlign;
+	V_ALIGN vAlign;
+};
+
+void drawButton(button b);

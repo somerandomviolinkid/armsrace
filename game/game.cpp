@@ -9,10 +9,8 @@ v2<float> aproject(v2<float> p) {
 }
 
 Game::Game() {
-	cities.push_back(city("Bob", { 1.2f, 3.5f }, 650000));
 	cities.push_back(city("Bobbyville", { 0.0f, 0.0f }, 50000));
-	cities.push_back(city("Bobbygrad", { 0.1f, 0.5f }, 150000));
-	cities.push_back(city("Bobbyburg", { -0.2f, -0.3f }, 2000));
+	cities[0].industries.push_back(industry(0));
 
 	camera = {
 		{0.0f, 0.0f},

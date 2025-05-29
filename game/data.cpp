@@ -1,6 +1,7 @@
 #include "game.hpp"
 
 GameData::GameData() {
+	printf("Started loading game data\n");
 	std::string line;
 
 	std::ifstream resourceFile("assets/data/resource.txt");
@@ -27,7 +28,7 @@ GameData::GameData() {
 		std::string name = line;
 
 		std::getline(currentIndustryFile, line);
-		std::string texturePath = line;
+		std::string texturePath = "assets/textures/" + line;
 
 		std::getline(currentIndustryFile, line);
 		uint32_t workers = std::stoi(line);
@@ -70,4 +71,4 @@ GameData::~GameData() {
 	}
 }
 
-GameData gameData;
+GameData gameData();
