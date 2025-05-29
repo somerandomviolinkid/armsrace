@@ -1,25 +1,16 @@
 #include "game.hpp"
 
 GameData::GameData() {
-	printf("Started loading game data\n");
 	std::string line;
 
 	std::ifstream resourceFile("assets/data/resource.txt");
 	while (std::getline(resourceFile, line)) {
-		std::ifstream currentResourceFile("assets/data/" + line + ".txt");
-
-		std::getline(currentResourceFile, line);
 		std::string name = line;
 
-		std::cout << line << "\n";
-
-		std::getline(currentResourceFile, line);
+		std::getline(resourceFile, line);
 		std::string texturePath = "assets/textures/" + line;
 
-		std::cout << line << "\n";
-
 		resourceDatas.push_back(resourceData(name, texturePath));
-		currentResourceFile.close();
 	}
 
 	resourceFile.close();

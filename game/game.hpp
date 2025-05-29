@@ -1,9 +1,10 @@
 #pragma once
-#include "../state/state.hpp"
-
 #include <algorithm>
 #include <chrono>
 #include <map>
+#include <format>
+
+#include "../state/state.hpp"
 
 v2<float> project(v2<float> p);
 

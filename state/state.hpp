@@ -1,6 +1,4 @@
 #pragma once
-#include "../util/util.hpp"
-
 #include <string>
 #include <vector>
 #include <fstream>
@@ -9,6 +7,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+
+#include "../util/util.hpp"
 
 class State {
 public:
@@ -64,6 +64,16 @@ struct text {
 	H_ALIGN hAlign;
 	V_ALIGN vAlign;
 };
+
+struct textTag {
+	float textScale;
+	SDL_Color color;
+
+	H_ALIGN hAlign;
+	V_ALIGN vAlign;
+};
+
+text makeTaggedText(std::string content, v2<int> pos, textTag tag);
 
 void drawText(text t);
 

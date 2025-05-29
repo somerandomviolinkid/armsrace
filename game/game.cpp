@@ -11,6 +11,13 @@ v2<float> aproject(v2<float> p) {
 Game::Game() {
 	cities.push_back(city("Bobbyville", { 0.0f, 0.0f }, 50000));
 	cities[0].industries.push_back(industry(0));
+	cities[ 0 ].industries.push_back(industry(1));
+
+	cities[0].industries[0].workers = 50;
+	cities[ 0 ].industries[ 1 ].workers = 25;
+
+	cities[ 0 ].industries[ 0 ].inventory[0] = 5.0f;
+	cities[ 0 ].industries[ 1 ].inventory[2] = 5.0f;
 
 	camera = {
 		{0.0f, 0.0f},
