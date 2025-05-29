@@ -1,0 +1,8 @@
+Coal Ore
+coalOre.png
+Coal
+coal.png
+Iron Ore
+ironOre.png
+Iron
+iron.png

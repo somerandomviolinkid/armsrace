@@ -1,0 +1,7 @@
+Iron Plant
+ironPlant.png
+150
+i 2 1.0
+o 3 0.8
+s 2 8.0
+s 3 8.0
