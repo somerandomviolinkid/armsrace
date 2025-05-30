@@ -1,0 +1,4 @@
+coalPlant
+ironPlant
+steelMill
+copperPlant

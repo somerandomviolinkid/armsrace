@@ -29,9 +29,11 @@ v2<int> calculateAlign(v2<int> pos, v2<int> dim, H_ALIGN hAlign, V_ALIGN vAlign)
 	return res;
 }
 
+//loads debug texture if file doesn't exist
 SDL_Texture* loadTexture_s(std::string path) {
 	std::ifstream f(path);
 	if (f.good()) {
+		f.close();
 		return IMG_LoadTexture(state.renderer, path.c_str());
 	}
 

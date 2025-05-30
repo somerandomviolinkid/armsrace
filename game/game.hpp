@@ -8,8 +8,6 @@
 
 v2<float> project(v2<float> p);
 
-v2<float> aproject(v2<float> p);
-
 class resourceData {
 public:
 	std::string name;
@@ -82,6 +80,7 @@ public:
 	}
 
 	void tick();
+	void drawMenu();
 };
 
 class city {
@@ -118,12 +117,18 @@ public:
 		float zoom;
 	} camera;
 
+	int menuOpen;
+
 	std::vector<city> cities;
 
+	void updateCamera(float dt, std::vector<SDL_Rect> &occludeRects);
+	void drawMenu();
 	void frame();
 	void tick();
 
 	std::chrono::high_resolution_clock::time_point tickStart;
+	uint32_t fps;
+	uint32_t lastFps;
 };
 
 extern Game game;

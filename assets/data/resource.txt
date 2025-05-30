@@ -1,0 +1,26 @@
+Coal Ore
+coalOre.png
+
+Coal
+coal.png
+
+Iron Ore
+ironOre.png
+
+Iron
+iron.png
+
+Steel
+steel.png
+
+Aluminium Ore
+aluminiumOre.png
+
+Aluminium
+aluminium.png
+
+Copper Ore
+copperOre.png
+
+Copper
+copper.png

@@ -11,6 +11,9 @@ GameData::GameData() {
 		std::string texturePath = "assets/textures/" + line;
 
 		resourceDatas.push_back(resourceData(name, texturePath));
+
+		//organization, might remove later
+		std::getline(resourceFile, line);
 	}
 
 	resourceFile.close();

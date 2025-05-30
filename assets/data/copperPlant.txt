@@ -1,0 +1,7 @@
+Copper Plant
+copperPlant.png
+135
+i 0 1.0
+o 1 0.8
+s 0 5.0
+s 1 5.0

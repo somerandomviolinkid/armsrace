@@ -8,13 +8,23 @@ State::State() {
 	res = { 1280, 720 };
 	window = SDL_CreateWindow("Arms Race", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, res.x, res.y, 0);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	font = TTF_OpenFont("assets/unifont.ttf", 16);
+
+	TTF_Font* font = TTF_OpenFont("assets/unifont.ttf", 16);
+	for (int i = 0; i < 0xFF; i++) {
+		SDL_Surface* surface = TTF_RenderGlyph_Solid(font, i, { 255, 255, 255, 255 });
+		glyphAtlas[ i ] = SDL_CreateTextureFromSurface(renderer, surface);
+		SDL_FreeSurface(surface);
+	}
+
+	TTF_CloseFont(font);
 
 	baseTextures.push_back(IMG_LoadTexture(renderer, "assets/textures/debug.png"));
 	baseTextures.push_back(IMG_LoadTexture(renderer, "assets/textures/city.png"));
 
 	mouseState = {
 		{0, 0},
+		{0, 0},
+		false,
 		false,
 		0,
 		0
@@ -30,7 +40,10 @@ State::~State() {
 		SDL_DestroyTexture(t);
 	}
 
-	TTF_CloseFont(font);
+	for (SDL_Texture*& t : glyphAtlas) {
+		SDL_DestroyTexture(t);
+	}
+
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 
@@ -41,7 +54,9 @@ State::~State() {
 
 void State::handleEvents() {
 	SDL_PumpEvents();
+	v2<int> tempMousePos = mouseState.pos;
 	SDL_GetMouseState(&mouseState.pos.x, &mouseState.pos.y);
+	mouseState.motion = mouseState.pos - tempMousePos;
 	mouseState.click = false;
 	mouseState.scroll = 0;
 
@@ -53,7 +68,11 @@ void State::handleEvents() {
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				mouseState.click = true;
+				mouseState.down = true;
 				mouseState.button = event.button.button;
+				break;
+			case SDL_MOUSEBUTTONUP:
+				mouseState.down = false;
 				break;
 			case SDL_MOUSEWHEEL:
 				mouseState.scroll = event.wheel.y;

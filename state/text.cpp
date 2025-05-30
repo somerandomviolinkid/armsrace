@@ -12,13 +12,16 @@ text makeTaggedText(std::string content, v2<int> pos, textTag tag) {
 	};
 }
 
-//todo make better
 void drawText(text t) {
-	SDL_Surface* surface = TTF_RenderUTF8_Solid_Wrapped(state.font, t.content.c_str(), t.color, 0);
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(state.renderer, surface);
+	v2<int> dim = {(int)t.content.length() * 8, 18};
+	dim = dim * t.textScale;
+	v2<int> offset = calculateAlign(t.pos, dim, t.hAlign, t.vAlign);
 
-	drawTexture(texture, t.pos, t.textScale, t.hAlign, t.vAlign);
+	for (char& c : t.content) {
+		SDL_SetTextureColorMod(state.glyphAtlas[ c ], t.color.r, t.color.g, t.color.b);
+		SDL_SetTextureAlphaMod(state.glyphAtlas[ c ], t.color.a);
 
-	SDL_DestroyTexture(texture);
-	SDL_FreeSurface(surface);
+		drawTexture(state.glyphAtlas[ c ], offset, t.textScale, LEFT, BOTTOM);
+		offset.x += (int)(8.0f * t.textScale);
+	}
 }

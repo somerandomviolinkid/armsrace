@@ -19,14 +19,17 @@ public:
 	v2<int> res;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	TTF_Font* font;
+
+	SDL_Texture* glyphAtlas[255];
+
 	std::vector<SDL_Texture*> baseTextures;
 
 	struct {
 		v2<int> pos;
+		v2<int> motion;
 		bool click;
+		bool down;
 		int button;
-
 		int scroll;
 	} mouseState;
 
@@ -36,6 +39,10 @@ public:
 };
 
 extern State state;
+
+void drawRectOutline(SDL_Rect r, SDL_Color fill, SDL_Color outline);
+//uint32_t color2int(SDL_Color c);
+//SDL_Color int2color(uint32_t u);
 
 enum H_ALIGN {
 	LEFT,
