@@ -11,15 +11,18 @@ void city::drawMenu() {
 	drawText("Population: ", { ((state.res.x * 3) / 4) + 16, 120 }, 2.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
 	drawText(formatNumber((float)population), { state.res.x - 16, 120 }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
 
-	drawLine({ (state.res.x * 3) / 4, 144 }, { state.res.x, 144 }, {0, 0, 0, 255});
-	drawText("Industries", { (state.res.x * 7) / 8, 176 }, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
+	drawText("Employed: ", { ((state.res.x * 3) / 4) + 16, 160 }, 2.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
+	drawText(formatNumber((float)employed) + " / " + formatNumber((float)population / 2.0f), {state.res.x - 16, 160}, 2.0f, {0, 0, 0, 255}, RIGHT, CENTER);
+
+	drawLine({ (state.res.x * 3) / 4, 184 }, { state.res.x, 184 }, {0, 0, 0, 255});
+	drawText("Industries", { (state.res.x * 7) / 8, 216 }, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
 
 	int hover = -1;
 	int i = 0;
 	for (i = 0; i < industries.size(); i++) {
-		SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 216 }, { 64, 64 });
+		SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 256 }, { 64, 64 });
 		drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 255 });
-		drawTexture(gameData.industryDatas[industries[i].type].texture, { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 216 }, 4.0f, LEFT, BOTTOM);
+		drawTexture(gameData.industryDatas[industries[i].type].texture, { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 256 }, 4.0f, LEFT, BOTTOM);
 		drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 0}, {128, 128, 192, 64});
 
 		if (mouseInRect(r)) {
@@ -32,9 +35,9 @@ void city::drawMenu() {
 		return;
 	}
 
-	SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 216 }, { 64, 64 });
+	SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 256 }, { 64, 64 });
 	drawRect(r, { 0, 0, 0, 255 }, { 64, 64, 64, 255 });
-	drawTexture(state.baseTextures[1], {((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 216}, 4.0f, LEFT, BOTTOM);
+	drawTexture(state.baseTextures[1], {((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 256 }, 4.0f, LEFT, BOTTOM);
 	drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 0 }, { 128, 128, 192, 64 });
 
 	if (mouseInRect(r)) {
@@ -58,7 +61,7 @@ void city::drawMenu() {
 	if (hover != -1) {
 		std::string n = gameData.industryDatas[industries[hover].type].name;
 		std::string w = std::format("{} / {} workers", industries[hover].workers, gameData.industryDatas[industries[hover].type].maxWorkers);
-		std::string e = std::format("{:.1f}% efficiency", (float)industries[hover].workers / (float)gameData.industryDatas[industries[hover].type].maxWorkers);
+		std::string e = std::format("{:.1f}% efficiency", ((float)industries[hover].workers * 100.0f * industries[hover].resourceEfficiency) / (float)gameData.industryDatas[industries[hover].type].maxWorkers);
 
 		std::vector<int> widths = { queryText(n, 1.0f).x, queryText(e, 1.0f).x, queryText(w, 1.0f).x };
 		int max = *std::max_element(widths.begin(), widths.end());

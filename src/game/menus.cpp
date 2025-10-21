@@ -2,7 +2,7 @@
 
 void drawMainMenu() {
 	drawText("Arms Race", { state.res.x / 2 , 144 }, 5.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-	drawText("Alpha 0.0.1", { state.res.x / 2 , 216 }, 3.0f, {255, 255, 255, 255}, MIDDLE, CENTER);
+	drawText("Pre-Alpha 0.0.-1", { state.res.x / 2 , 216 }, 3.0f, {255, 255, 255, 255}, MIDDLE, CENTER);
 
 	drawRect(v2ToRect({ (state.res.x / 2) - 108, (state.res.y / 2) - 28}, {216, (48 * 8) + 8}), {255, 255, 255, 255}, {64, 64, 64, 255});
 

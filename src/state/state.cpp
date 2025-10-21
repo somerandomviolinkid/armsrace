@@ -38,7 +38,7 @@ void State::init() {
 	keyboardState = SDL_GetKeyboardState(NULL);
 
 	std::filesystem::path savesPath = "saves";
-	if (std::filesystem::is_directory(savesPath)) {
+	if (!std::filesystem::is_directory(savesPath)) {
 		std::filesystem::create_directory(savesPath);
 	}
 

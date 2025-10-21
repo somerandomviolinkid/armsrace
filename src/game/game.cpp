@@ -113,10 +113,6 @@ void newGame() {
 		game.cities.push_back(city("Capitol", { randf(game.gen, -10.0f, 10.0f), (randf(game.gen, -10.0f, 10.0f)) }, i));
 	}
 
-	for (int i = 0; i < 3; i++) {
-		game.cities[0].industries.push_back(industry(i));
-	}
-
 	for (city& c : game.cities) {
 		c.population = 1000000;
 	}

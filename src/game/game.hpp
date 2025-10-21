@@ -66,6 +66,7 @@ struct industry {
 	int type;
 	int workers;
 	std::map<int, float> inventory;
+	float resourceEfficiency;
 
 	industry(
 		int t
@@ -76,6 +77,8 @@ struct industry {
 		for (std::pair<const int, float> &pair : inventory) {
 			pair.second = 0.0f;
 		}
+
+		resourceEfficiency = 0.0f;
 	}
 
 	void tick();
@@ -85,6 +88,7 @@ struct industry {
 struct city {
 	std::string name;
 	int population;
+	int employed;
 	v2<float> pos;
 	std::vector<industry> industries;
 	int owner;
@@ -97,6 +101,7 @@ struct city {
 	) {
 		name = n;
 		population = 0;
+		employed = 0;
 		pos = p;
 		industries = {};
 		owner = o;
