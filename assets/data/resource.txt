@@ -1,0 +1,22 @@
+# 0 - 4
+Coal Ore
+Coal
+Iron Ore
+Iron
+Steel
+
+# 5 - 9
+Oil
+Natural Gas
+Propylene
+Ethylene
+Plastic
+
+# 10 - 13
+Copper Ore
+Copper
+Gold Ore
+Gold
+
+#14
+Electronics

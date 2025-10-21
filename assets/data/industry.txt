@@ -1,0 +1,75 @@
+Coal Plant
+120
+i 0 1.0
+o 1 0.8
+s 0 5.0
+s 1 5.0
+
+Iron Plant
+150
+i 2 1.0
+o 3 0.8
+s 2 5.0
+s 3 5.0
+
+Steel Mill
+250
+i 1 2.5
+i 3 2.5
+o 4 2.0
+s 1 5.0
+s 3 5.0
+s 4 8.0
+
+Oil Refinery
+500
+i 5 5.0
+o 7 2.0
+o 8 2.0
+s 5 15.0
+s 7 7.5
+s 8 7.5
+
+Natural Gas Processing Plant
+500
+i 6 5.0
+o 7 2.0
+o 8 2.0
+s 6 15.0
+s 7 7.5
+s 8 7.5
+
+Plastics Plant
+800
+i 7 4.0
+i 8 4.0
+o 9 5.0
+s 7 10.0
+s 8 10.0
+s 9 12.0
+
+Copper Plant
+140
+i 10 1.0
+o 11 0.8
+s 10 5.0
+s 11 5.0
+
+Gold Plant
+180
+i 12 1.0
+o 13 0.8
+s 12 5.0
+s 13 5.0
+
+Electronics Factory
+1500
+i 9 3.0
+i 11 1.5
+i 13 0.5
+o 14 2.0
+s 9 10.0
+s 11 6.0
+s 13 3.0
+s 14 5.0
+END
