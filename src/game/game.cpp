@@ -32,6 +32,10 @@ void Game::tick() {
 		}
 	}
 
+	for (improvement& i : improvements) {
+		i.tick();
+	}
+
 	tickStart = std::chrono::high_resolution_clock::now();
 }
 
@@ -47,7 +51,7 @@ void Game::draw() {
 		SDL_SetRenderDrawColor(state.renderer, 0, 192, 0, 255);
 		SDL_RenderClear(state.renderer);
 
-		if (selectedCity != -1) {
+		if (selectedCity != -1 || selectedResource != -1 || selectedImprovement != -1) {
 			occludeRects.push_back(v2ToRect({ (state.res.x * 3) / 4, 0 }, { state.res.x / 4, state.res.y }));
 		}
 
@@ -68,11 +72,21 @@ void Game::draw() {
 
 				selectedCity = -1;
 				selectedIndustry = -1;
+				selectedResource = -1;
+				selectedImprovement = -1;
 			}
 		}
 
 		for (int i = 0; i < cities.size(); i++) {
 			cities[i].draw(i);
+		}
+
+		for (int i = 0; i < improvements.size(); i++) {
+			improvements[i].draw(i);
+		}
+
+		for (int i = 0; i < naturalResources.size(); i++) {
+			naturalResources[i].draw(i);
 		}
 
 		if (selectedCity != -1) {
@@ -83,6 +97,10 @@ void Game::draw() {
 			} else {
 				cities[selectedCity].industries[selectedIndustry].drawMenu();
 			}
+		} else if (selectedResource != -1) {
+			naturalResources[selectedResource].drawMenu();
+		} else if (selectedImprovement != -1) {
+			improvements[selectedImprovement].drawMenu();
 		}
 
 		drawText(std::format("Camera Position: ({:.3f},{:.3f})", camera.pos.x, camera.pos.y), { state.res.x / 2, state.res.y - 32 }, 1.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
@@ -104,33 +122,66 @@ void Game::draw() {
 Game game;
 
 void newGame() {
-	game.gen = std::mt19937((uint32_t)time(0));
+	std::chrono::high_resolution_clock::time_point loadStart = std::chrono::high_resolution_clock::now();
 
+	game.gen = std::mt19937((uint32_t)time(0));
 	game.mode = NORMAL;
 
+	int cityCounter = 0;
 	for (int i = 0; i < 5; i++) {
-		game.countries.push_back(country("Bobbystan" + std::to_string(i)));
-		game.cities.push_back(city("Capitol", { randf(game.gen, -10.0f, 10.0f), (randf(game.gen, -10.0f, 10.0f)) }, i));
+		game.countries.push_back(country("Country " + std::to_string(i)));
+		game.countries[i].color = { (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), 255 };
+
+		v2<float> capitolPos = { randf(game.gen, -40.0f, 40.0f), (randf(game.gen, -40.0f, 40.0f)) };
+		game.cities.push_back(city("Capitol", capitolPos, i));
+		game.cities[cityCounter].population = 1000000;
+		cityCounter++;
+
+		for (int j = 0; j < 4; j++) {
+			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 1.0f, 5.0f));
+			game.cities.push_back(city("City " + std::to_string(j), pos, i));
+			game.cities[cityCounter].population = (int)randf(game.gen, 100000.0f, 250000.0f);
+			cityCounter++;
+		}
 	}
 
-	for (city& c : game.cities) {
-		c.population = 1000000;
+	for (int i = 0; i < gameData.rawResources.size(); i++) {
+		for (int j = 0; j < 3; j++) {
+			v2<float> startPos = { randf(game.gen, -25.0f, 25.0f), (randf(game.gen, -25.0f, 25.0f)) };
+			int count = (int)randf(game.gen, 1.0f, 6.0f);
+			for (int k = 0; k < count; k++) {
+				v2<float> pos = makeVector(startPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 1.0f, 2.0f));
+				game.naturalResources.push_back(naturalResource(gameData.rawResources[i], pos));
+			}
+		}
 	}
+
+	game.countries[0].color = { 0, 0, 0, 255 };
+	for (int i = 0; i < gameData.improvementDatas.size(); i++) { game.improvements.push_back(improvement(i, 0, makeVector(game.cities[0].pos, randf(game.gen, 0.0f, 1.0f), randf(game.gen, 5.0f, 7.5f)))); }
 
 	game.camera.pos = game.cities[0].pos;
 	game.camera.zoom = 1.0f;
 
 	game.selectedCity = -1;
 	game.selectedIndustry = -1;
+	game.selectedResource = -1;
+	game.selectedImprovement = -1;
 
 	game.occludeRects = {};
 
 	game.tickStart = std::chrono::high_resolution_clock::now();
+
+	printf("Created new game in %lld microseconds.\n", std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - loadStart).count());
+}
+
+bool Game::selectingSomething() {
+	return selectedCity != -1 || selectedIndustry != -1 || selectedResource != -1 || selectedImprovement != -1;
 }
 
 void clearGame() {
 	game.countries.clear();
 	game.cities.clear();
+	game.naturalResources.clear();
 }
 
 void loadGame() {

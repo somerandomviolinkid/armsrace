@@ -3,10 +3,11 @@
 void city::drawMenu() {
 	drawRect(v2ToRect({ (state.res.x * 3) / 4, 0 }, { state.res.x / 4, state.res.y }), { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 
-	drawText(name, { (state.res.x * 7) / 8, 32 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+	float scale = name.length() > 18 ? 2.0f : 3.0f;
+	drawText(name, { (state.res.x * 7) / 8, 32 }, scale, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
 	drawText("Owner: ", {((state.res.x * 3) / 4) + 16, 80}, 2.0f, {0, 0, 0, 255}, LEFT, CENTER);
-	drawText(game.countries[owner].name, { state.res.x - 16, 80 }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
+	drawText(game.countries[owner].name, { state.res.x - 16, 80 }, 2.0f, game.countries[owner].color, RIGHT, CENTER);
 
 	drawText("Population: ", { ((state.res.x * 3) / 4) + 16, 120 }, 2.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
 	drawText(formatNumber((float)population), { state.res.x - 16, 120 }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
@@ -67,7 +68,7 @@ void city::drawMenu() {
 		int max = *std::max_element(widths.begin(), widths.end());
 
 		int xOffset = 16;
-		if (state.mouseState.pos.x + max + 16 > state.res.x) {
+		if (state.mouseState.pos.x + max + xOffset + 16 > state.res.x) {
 			xOffset = -max - 16;
 		}
 
@@ -120,7 +121,7 @@ void city::drawBuildIndustryMenu() {
 		std::string n = "Build " + gameData.industryDatas[hover].name;
 		v2<int> dim = queryText(n, 1.0f);
 		int xOffset = 16;
-		if (state.mouseState.pos.x + dim.x + 16 > state.res.x) {
+		if (state.mouseState.pos.x + dim.x + xOffset + 16 > state.res.x) {
 			xOffset = -dim.x - 16;
 		}
 
@@ -153,10 +154,10 @@ void city::draw(int i) {
 
 	if (popWeight >= 1.0f) {
 		drawTexture(state.baseTextures[0], sp, popWeight, MIDDLE, CENTER);
-		drawText(name, sp + v2<int>{0, (int)(8.0 * popWeight)}, popWeight / 2.0f, { 0, 0, 0, 255 }, MIDDLE, BOTTOM);
+		drawText(name, sp + v2<int>{0, (int)(8.0 * popWeight)}, popWeight / 2.0f, game.countries[owner].color, MIDDLE, BOTTOM);
 	}
 
-	if (state.mouseState.click && !mouseInRect(v2ToRect({ (state.res.x * 3) / 4, 0 }, { state.res.x / 4, state.res.y }))) {
+	if (state.mouseState.click && !game.selectingSomething()) {
 		if (mouseInRect(outline)) {
 			game.selectedCity = i;
 		}

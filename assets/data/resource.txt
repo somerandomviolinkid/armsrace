@@ -1,22 +1,25 @@
+# RESOURCE FILE
+# char tag, string name
+
 # 0 - 4
-Coal Ore
-Coal
-Iron Ore
-Iron
-Steel
+r Coal Ore
+m Coal
+r Iron Ore
+m Iron
+m Steel
 
 # 5 - 9
-Oil
-Natural Gas
-Propylene
-Ethylene
-Plastic
+r Crude Oil
+r Natural Gas
+m Propylene
+m Ethylene
+m Plastic
 
 # 10 - 13
-Copper Ore
-Copper
-Gold Ore
-Gold
+r Copper Ore
+m Copper
+r Gold Ore
+m Gold
 
 #14
-Electronics
+m Electronics

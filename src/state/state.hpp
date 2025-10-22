@@ -34,7 +34,7 @@ public:
 	v2<int> res;
 
 	tex_t fontAtlas[256];
-	tex_t baseTextures[2];
+	tex_t baseTextures[3];
 
 	struct {
 		v2<int> pos;

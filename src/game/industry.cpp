@@ -24,11 +24,11 @@ void industry::tick() {
 	resourceEfficiency = min;
 	float finalEfficiency = min * baseEfficiency;
 
-	for (const std::pair<int, float>& pair : gameData.industryDatas[type].inputs) {
+	for (std::pair<const int, float>& pair : gameData.industryDatas[type].inputs) {
 		inventory[pair.first] -= finalEfficiency * pair.second;
 	}
 
-	for (const std::pair<int, float>& pair : gameData.industryDatas[type].outputs) {
+	for (std::pair<const int, float>& pair : gameData.industryDatas[type].outputs) {
 		inventory[pair.first] += finalEfficiency * pair.second;
 	}
 }
@@ -37,10 +37,11 @@ void industry::drawMenu() {
 	drawRect(v2ToRect({ (state.res.x * 3) / 4, 0 }, { state.res.x / 4, state.res.y }), { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 
 	float scale = gameData.industryDatas[type].name.length() > 18 ? 2.0f : 3.0f;
-
 	drawText(gameData.industryDatas[type].name, { (state.res.x * 7) / 8, 32 }, scale, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
 	drawText("Workers:", { state.res.x * 3 / 4 + 16, 80 }, 2.0f, {0, 0, 0, 255}, LEFT, CENTER);
 	drawText(std::format("{} / {}", workers, gameData.industryDatas[type].maxWorkers), {state.res.x - 16, 80}, 2.0f, {0, 0, 0, 255}, RIGHT, CENTER);
+
 	drawText("Worker Efficiency:", { state.res.x * 3 / 4 + 16, 120 }, 2.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
 	drawText(std::format("{:.1f}%", ((float)workers * 100.0f) / (float)gameData.industryDatas[type].maxWorkers), { state.res.x - 16, 120 }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
 
@@ -61,8 +62,6 @@ void industry::drawMenu() {
 
 	drawText("Resource Efficiency: ", {(state.res.x * 3) / 4 + 8, 208 + (40 * i) + 16}, 2.0f, {0, 0, 0, 255}, LEFT, CENTER);
 	drawText(std::format("{:.1f}%", resourceEfficiency * 100.0f), { state.res.x - 8, 208 + (40 * i) + 16 }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
-
-
 
 	v2<int> dim = queryText("Back to City Menu", 2.0f);
 	SDL_Rect r = v2ToRect({ ((state.res.x * 7) / 8) - (dim.x / 2) - 8, state.res.y - dim.y - 16 }, { dim.x + 16, dim.y + 8 });

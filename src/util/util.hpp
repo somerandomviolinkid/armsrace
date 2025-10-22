@@ -31,6 +31,12 @@ v2<T> operator/(v2<T> v, U s) {
 	return { (T)((float)v.x / (float)s), (T)((float)v.y / (float)s) };
 }
 
+float dist2d(v2<float> a, v2<float> b);
+
+v2<float> makeVector(float direction);
+v2<float> makeVector(float direction, float magnitude);
+v2<float> makeVector(v2<float> pos, float direction, float magnitude);
+
 //string utils
 
 std::string formatNumber(float number);

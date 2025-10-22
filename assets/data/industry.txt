@@ -1,3 +1,5 @@
+# INDUSTRY FILE
+# string name, int workers, char int float resources
 Coal Plant
 120
 i 0 1.0

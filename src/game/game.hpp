@@ -49,10 +49,33 @@ struct industryData {
 	}
 };
 
+struct improvementData {
+	std::string name;
+	tex_t texture;
+	int maxWorkers;
+	std::map<int, float> outputs, storage;
+
+	improvementData(
+		std::string improvementName,
+		int w,
+		std::map<int, float> o,
+		std::map<int, float> s
+	) {
+		name = improvementName;
+		loadTexture(texture, makePNGFilePath(improvementName));
+		maxWorkers = w;
+		outputs = o;
+		storage = s;
+	}
+};
+
 class GameData {
 public:
 	std::vector<resourceData> resourceDatas;
 	std::vector<industryData> industryDatas;
+	std::vector<improvementData> improvementDatas;
+
+	std::vector<int> rawResources;
 
 	void init();
 	void quit();
@@ -82,6 +105,36 @@ struct industry {
 	}
 
 	void tick();
+	void drawMenu();
+};
+
+struct improvement {
+	int type;
+	int workers;
+	int workerCity;
+	std::map<int, float> inventory;
+	int owner;
+	v2<float> pos;
+
+	improvement(
+		int t,
+		int o,
+		v2<float> p
+	) {
+		type = t;
+		workers = 0;
+		workerCity = -1;
+		inventory = gameData.improvementDatas[t].storage;
+		for (std::pair<const int, float>& pair : inventory) {
+			pair.second = 0.0f;
+		}
+
+		owner = o;
+		pos = p;
+	}
+
+	void tick();
+	void draw(int i);
 	void drawMenu();
 };
 
@@ -116,11 +169,13 @@ struct city {
 
 struct country {
 	std::string name;
+	SDL_Color color;
 
 	country(
 		std::string n
 	) {
 		name = n;
+		color = { 0, 0, 0, 255 };
 	}
 };
 
@@ -140,12 +195,31 @@ void saveGameMenuTick();
 
 void drawCreditsMenu();
 
+//natural resource portion
+struct naturalResource {
+	int type;
+	v2<float> pos;
+
+	naturalResource(
+		int i,
+		v2<float> p
+	) {
+		type = i;
+		pos = p;
+	}
+
+	void draw(int i);
+	void drawMenu();
+};
+
 //game portion
 
 class Game {
 public:
 	std::vector<country> countries;
 	std::vector<city> cities;
+	std::vector<improvement> improvements;
+	std::vector<naturalResource> naturalResources;
 
 	int ticks;
 	
@@ -163,6 +237,9 @@ public:
 
 	int selectedCity;
 	int selectedIndustry;
+	int selectedResource;
+	int selectedImprovement;
+	bool selectingSomething();
 
 	std::vector<SDL_Rect> occludeRects;
 

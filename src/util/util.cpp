@@ -1,5 +1,21 @@
 #include "util.hpp"
 
+v2<float> makeVector(float direction) {
+	return { sinf(direction), cosf(direction) };
+}
+
+v2<float> makeVector(float direction, float magnitude) {
+	return makeVector(direction) * magnitude;
+}
+
+v2<float> makeVector(v2<float> pos, float direction, float magnitude) {
+	return makeVector(direction, magnitude) + pos;
+}
+
+float dist2d(v2<float> a, v2<float> b) {
+	return std::sqrtf(std::powf(b.x - a.x, 2.0f) + std::powf(b.y - a.y, 2.0f));
+}
+
 std::string formatNumber(float number) {
 	std::string suffixes[4] = { "", "K", "M", "B" };
 	int digits = (int)log10f(number);

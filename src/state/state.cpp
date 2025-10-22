@@ -25,6 +25,7 @@ void State::init() {
 
 	loadTexture(baseTextures[0], "assets/textures/city.png");
 	loadTexture(baseTextures[1], "assets/textures/build.png");
+	loadTexture(baseTextures[2], "assets/textures/check.png");
 
 	mouseState = {
 		{0, 0},
@@ -47,7 +48,7 @@ void State::init() {
 }
 
 void State::quit() {
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 3; i++) {
 		SDL_DestroyTexture(baseTextures[i].texture);
 	}
 
