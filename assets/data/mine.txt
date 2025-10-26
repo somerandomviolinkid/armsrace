@@ -1,0 +1,30 @@
+Coal Mine
+150
+o 0 2.5
+s 0 25.0
+
+Iron Mine
+200
+o 2 2.0
+s 2 24.0
+
+Oil Rig
+200
+o 5 8.0
+s 5 12.0
+
+Natural Gas Rig
+200
+o 6 8.0
+s 6 12.0
+
+Copper Mine
+180
+o 10 1.2
+s 10 15.0
+
+Gold Mine
+250
+o 12 0.2
+s 12 1.5
+END

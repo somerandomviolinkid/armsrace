@@ -18,8 +18,7 @@ void GameData::init() {
 			continue;
 		}
 
-		switch (line[0]) {
-		case 'r':
+		if (line[0] == 'r') {
 			rawResources.push_back(rCounter);
 		}
 
@@ -78,21 +77,53 @@ void GameData::init() {
 		}
 	}
 
-	//load improvement data
-	std::ifstream improvementFile("assets/data/improvement.txt");
-	if (!improvementFile.good()) {
+	//load storage data
+	std::ifstream storageFile("assets/data/storage.txt");
+	if (!storageFile.good()) {
 		state.running = false;
 		return;
 	}
 
-	while (std::getline(improvementFile, line)) {
+	while (std::getline(storageFile, line)) {
 		std::string name = line;
 
-		std::getline(improvementFile, line);
+		std::getline(storageFile, line);
+		float maximumCapacity = std::stof(line);
+
+		std::vector<int> resourcesToStore = {};
+		while (std::getline(storageFile, line)) {
+			int i;
+			if (sscanf(line.c_str(), "%d", &i) == 1) {
+				resourcesToStore.push_back(i);
+			}
+
+			if (line.empty() || line == "END") {
+				storageDatas.push_back(storageData(name, maximumCapacity, resourcesToStore));
+				if (line == "END") {
+					storageFile.close();
+					break;
+				}
+
+				break;
+			}
+		}
+	}
+
+	//load mine data
+	std::ifstream mineFile("assets/data/mine.txt");
+	if (!mineFile.good()) {
+		state.running = false;
+		return;
+	}
+
+	while (std::getline(mineFile, line)) {
+		std::string name = line;
+
+		std::getline(mineFile, line);
 		int workers = std::stoi(line);
 
 		std::map<int, float> o, s;
-		while (std::getline(improvementFile, line)) {
+		while (std::getline(mineFile, line)) {
 			char c;
 			int a;
 			float f;
@@ -101,19 +132,17 @@ void GameData::init() {
 				switch (c) {
 				case 'o':
 					o.insert({ a, f });
-					printf("output %d %.2f\n", a, f);
 					break;
 				case 's':
 					s.insert({ a, f });
-					printf("storage %d %.2f\n", a, f);
 					break;
 				}
 			}
 
 			if (line.empty() || line == "END") {
-				improvementDatas.push_back(improvementData(name, workers, o, s));
+				mineDatas.push_back(mineData(name, workers, o, s));
 				if (line == "END") {
-					improvementFile.close();
+					mineFile.close();
 					break;
 				}
 
@@ -134,8 +163,12 @@ void GameData::quit() {
 		SDL_DestroyTexture(i.texture.texture);
 	}
 
-	for (improvementData& i : improvementDatas) {
-		SDL_DestroyTexture(i.texture.texture);
+	for (storageData& s : storageDatas) {
+		SDL_DestroyTexture(s.texture.texture);
+	}
+
+	for (mineData& m : mineDatas) {
+		SDL_DestroyTexture(m.texture.texture);
 	}
 }
 

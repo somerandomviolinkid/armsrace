@@ -27,6 +27,15 @@ enum STATE_MODES {
 
 //state portion
 
+enum BASE_TEXTURES {
+	CITY,
+	BUILD,
+	CHECK,
+	MENU_CLOSED,
+	MENU_OPEN,
+	BASE_TEXTURE_MAX
+};
+
 class State {
 public:
 	SDL_Window* window;
@@ -34,7 +43,7 @@ public:
 	v2<int> res;
 
 	tex_t fontAtlas[256];
-	tex_t baseTextures[3];
+	tex_t baseTextures[BASE_TEXTURE_MAX];
 
 	struct {
 		v2<int> pos;

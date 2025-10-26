@@ -23,9 +23,11 @@ void State::init() {
 
 	TTF_CloseFont(font);
 
-	loadTexture(baseTextures[0], "assets/textures/city.png");
-	loadTexture(baseTextures[1], "assets/textures/build.png");
-	loadTexture(baseTextures[2], "assets/textures/check.png");
+	loadTexture(baseTextures[CITY], "assets/textures/city.png");
+	loadTexture(baseTextures[BUILD], "assets/textures/build.png");
+	loadTexture(baseTextures[CHECK], "assets/textures/check.png");
+	loadTexture(baseTextures[MENU_CLOSED], "assets/textures/closed.png");
+	loadTexture(baseTextures[MENU_OPEN], "assets/textures/open.png");
 
 	mouseState = {
 		{0, 0},
@@ -48,7 +50,7 @@ void State::init() {
 }
 
 void State::quit() {
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < BASE_TEXTURE_MAX; i++) {
 		SDL_DestroyTexture(baseTextures[i].texture);
 	}
 

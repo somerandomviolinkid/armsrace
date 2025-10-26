@@ -25,6 +25,7 @@ void naturalResource::drawMenu() {
 
 	drawText(gameData.resourceDatas[type].name, {(state.res.x * 7) / 8, 32}, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
 
-	v2<int> dim = queryText("Build " + gameData.improvementDatas[type].name, 2.0f);
+	//printf("%d %d\n", type, gameData.rawResources[type]);
+	//v2<int> dim = queryText("Build " + gameData.mineDatas[gameData.mineIndex[gameData.rawResources[type]]].name, 2.0f);
 	//SDL_Rect r = v2ToRect({});
 }

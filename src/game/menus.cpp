@@ -33,7 +33,7 @@ void mainMenuTick() {
 	}
 
 	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 3)}, {200, 48})) && state.mouseState.click) {
-		SDL_OpenURL("https://www.google.com");
+		SDL_OpenURL("https://github.com/somerandomviolinkid/armsrace/wiki");
 		return;
 	}
 

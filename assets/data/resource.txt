@@ -15,11 +15,9 @@ m Propylene
 m Ethylene
 m Plastic
 
-# 10 - 13
+# 10 - 14
 r Copper Ore
 m Copper
 r Gold Ore
 m Gold
-
-#14
 m Electronics

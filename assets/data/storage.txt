@@ -1,0 +1,29 @@
+Aggregate Storage
+120.0
+0
+1
+2
+10
+12
+
+Open Storage
+100.0
+3
+4
+9
+
+Warehouse
+80.0
+13
+14
+
+Liquid Storage
+150.0
+5
+
+Gas Storage
+135.0
+6
+7
+8
+END

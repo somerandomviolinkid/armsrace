@@ -49,20 +49,38 @@ struct industryData {
 	}
 };
 
-struct improvementData {
+struct storageData {
+	std::string name;
+	tex_t texture;
+	float maxCapacity;
+	std::vector<int> resourcesToStore;
+
+	storageData(
+		std::string storageName,
+		float f,
+		std::vector<int> i
+	) {
+		name = storageName;
+		loadTexture(texture, makePNGFilePath(storageName));
+		maxCapacity = f;
+		resourcesToStore = i;
+	}
+};
+
+struct mineData {
 	std::string name;
 	tex_t texture;
 	int maxWorkers;
 	std::map<int, float> outputs, storage;
 
-	improvementData(
-		std::string improvementName,
+	mineData(
+		std::string mineName,
 		int w,
 		std::map<int, float> o,
 		std::map<int, float> s
 	) {
-		name = improvementName;
-		loadTexture(texture, makePNGFilePath(improvementName));
+		name = mineName;
+		loadTexture(texture, makePNGFilePath(mineName));
 		maxWorkers = w;
 		outputs = o;
 		storage = s;
@@ -73,7 +91,8 @@ class GameData {
 public:
 	std::vector<resourceData> resourceDatas;
 	std::vector<industryData> industryDatas;
-	std::vector<improvementData> improvementDatas;
+	std::vector<storageData> storageDatas;
+	std::vector<mineData> mineDatas;
 
 	std::vector<int> rawResources;
 
@@ -108,15 +127,43 @@ struct industry {
 	void drawMenu();
 };
 
-struct improvement {
+struct storage {
+	int type;
+	std::map<int, float> inventory;
+
+	storage(
+		int t
+	) {
+		type = t;
+		for (int &i : gameData.storageDatas[t].resourcesToStore) {
+			inventory.insert({ i, 0.0f });
+		}
+	}
+
+	void tick();
+	void drawMenu();
+
+	float totalStored();
+	float ratioStored();
+};
+
+struct exportData {
+	int index;
+	int targetCity;
+	int targetType;
+	int targetIndex;
+};
+
+struct mine {
 	int type;
 	int workers;
 	int workerCity;
 	std::map<int, float> inventory;
 	int owner;
 	v2<float> pos;
+	std::vector<exportData> exportDatas;
 
-	improvement(
+	mine(
 		int t,
 		int o,
 		v2<float> p
@@ -124,28 +171,37 @@ struct improvement {
 		type = t;
 		workers = 0;
 		workerCity = -1;
-		inventory = gameData.improvementDatas[t].storage;
+		inventory = gameData.mineDatas[t].storage;
 		for (std::pair<const int, float>& pair : inventory) {
 			pair.second = 0.0f;
 		}
 
 		owner = o;
 		pos = p;
+
+		exportDatas = {};
 	}
 
 	void tick();
 	void draw(int i);
 	void drawMenu();
+
+	void drawExportMenu(int i);
 };
 
 struct city {
 	std::string name;
 	int population;
 	int employed;
+
 	v2<float> pos;
-	std::vector<industry> industries;
 	int owner;
+
+	std::vector<industry> industries;
+	std::vector<storage> storages;
+
 	bool buildIndustryMenuOpen;
+	bool buildStorageMenuOpen;
 
 	city(
 		std::string n,
@@ -157,12 +213,16 @@ struct city {
 		employed = 0;
 		pos = p;
 		industries = {};
+		storages = {};
 		owner = o;
 		buildIndustryMenuOpen = false;
+		buildStorageMenuOpen = false;
 	}
 
 	void drawMenu();
 	void drawBuildIndustryMenu();
+	void drawBuildStorageMenu();
+
 	void draw(int i);
 	void tick();
 };
@@ -218,7 +278,7 @@ class Game {
 public:
 	std::vector<country> countries;
 	std::vector<city> cities;
-	std::vector<improvement> improvements;
+	std::vector<mine> mines;
 	std::vector<naturalResource> naturalResources;
 
 	int ticks;
@@ -238,8 +298,22 @@ public:
 	int selectedCity;
 	int selectedIndustry;
 	int selectedResource;
-	int selectedImprovement;
+	int selectedStorage;
+	int selectedMine;
 	bool selectingSomething();
+
+	bool cityIndustryMenuOpen;
+	bool cityStorageMenuOpen;
+
+	bool industryInventoryMenuOpen;
+	bool storageInventoryMenuOpen;
+	bool mineInventoryMenuOpen;
+	
+	bool mineAllocateWorkersMenuOpen;
+	bool mineExportsMenuOpen;
+	int mineExportResourceSelected;
+
+	void drawTopMenu();
 
 	std::vector<SDL_Rect> occludeRects;
 
