@@ -21,9 +21,10 @@ void naturalResource::draw(int i) {
 }
 
 void naturalResource::drawMenu() {
-	drawRect(v2ToRect({ (state.res.x * 3) / 4, 0 }, { state.res.x / 4, state.res.y }), { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
+	drawRect(v2ToRect({ (state.res.x * 3) / 4, 64 }, { state.res.x / 4, state.res.y -64 }), { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 
-	drawText(gameData.resourceDatas[type].name, {(state.res.x * 7) / 8, 32}, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
+	int yOffset = 96;
+	drawText(gameData.resourceDatas[type].name, {(state.res.x * 7) / 8, yOffset }, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
 
 	//printf("%d %d\n", type, gameData.rawResources[type]);
 	//v2<int> dim = queryText("Build " + gameData.mineDatas[gameData.mineIndex[gameData.rawResources[type]]].name, 2.0f);

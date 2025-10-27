@@ -161,46 +161,46 @@ void drawTutorialMenu() {
 	drawText("Tutorial", { state.res.x / 2 , 100 }, 3.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 
 	int yOffset = 200;
-	drawText("Welcome to Arms Race! Here you can find everything you need to know about starting the game.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Welcome to Arms Race! Here you can find everything you need to know about starting the game. If you want", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 	
 	yOffset += 40;
-	drawText("If you want to learn more about the inner machinations of the game, head to the wiki.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("to learn more about the inner machinations of the game, head to the wiki. You can build industries by", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("clicking on a city, and clicking on the Industry drop-down menu. This will list the currently built", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("industries, and a hammer icon that you can click to build new industries. The same applies to storages.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("Workers will automatically fill up in industries. However, in order to get your industries up and running,", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("you need raw resources. Currently, you can't build mines, but one of each type of mine in the game is near", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("your capital. To give a mine workers, click on the Allocate Workers drop-down menu and select which city to", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("import workers from. This will make the mine start running, and its inventory will begin to fill up. To", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("export resources to storages, select the Export Resources drop-down menu and select which resource you want", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("to export. Then, select which storages you want to export to. Exports work from left to right, so the mine", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText(" will export all of its resources to the left-most storage until it fills up, then it will start filling", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("up the next storage on its list. Lastly, if you get lost, you can press C to focus the camera back on your", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("capitol. Press the pause button to pause/resume, and press - or = to decrease/increase the game speed.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 
 	yOffset += 64;
-	drawText("You can build industries by clicking on a city, and clicking on the Industry drop-down menu.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 40;
-	drawText("This will list the currently built industries, and a hammer icon that you can click to build new industries.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 40;
-	drawText("The same applies to storages. Workers will automatically fill up in industries.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 64;
-	drawText("In order to get your industries up and running, you need raw resources.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 40;
-	drawText("Currently, you can't build mines, but one of each type of mine in the game is near your capital.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 40;
-	drawText("To give a mine workers, click on the Allocate Workers drop-down menu and select which city to import workers from.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 40;
-	drawText("This will make the mine start running, and its inventory will begin to fill up. To export resources", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 40;
-	drawText("to storages, select the Export Resources drop-down menu and select which resource you want to export.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 40;
-	drawText("Then, select which storages you want to export to. Exports work from left to right, so the mine will", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 40;
-	drawText("export all of its resources to the left-most storage until it fills up, then it will start filling", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 40;
-	drawText("up the next storage on its list.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-
-	yOffset += 64;
-	drawText("Lastly, if you get lost, you can press C to focus the camera back on your capital. Happy industrializing!", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Happy industrializing!", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 
 	SDL_Rect back = v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 });
 	drawRect(back, { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });

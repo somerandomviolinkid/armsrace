@@ -297,6 +297,9 @@ public:
 	int mode;
 	int selectedSpeed;
 
+	bool running;
+	int speedChangeTimer;
+
 	int selectedCity;
 	int selectedIndustry;
 	int selectedResource;

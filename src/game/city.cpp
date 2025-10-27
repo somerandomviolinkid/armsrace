@@ -204,9 +204,10 @@ void city::drawMenu() {
 }
 
 void city::drawBuildIndustryMenu() {
-	drawRect(v2ToRect({ (state.res.x * 3) / 4, 0 }, { state.res.x / 4, state.res.y }), { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
+	drawRect(v2ToRect({ (state.res.x * 3) / 4, 64 }, { state.res.x / 4, state.res.y - 64}), { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 
-	drawText("Build Industry", {(state.res.x * 7) / 8, 32}, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
+	int yOffset = 96;
+	drawText("Build Industry", {(state.res.x * 7) / 8, yOffset }, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
 
 	std::vector<bool> builtIndustries = {};
 	for (int i = 0; i < gameData.industryDatas.size(); i++) {
@@ -224,17 +225,20 @@ void city::drawBuildIndustryMenu() {
 		}
 	}
 
+	yOffset += 32;
 	int hover = -1;
 	for (int i = 0; i < unbuiltIndustries.size(); i++) {
-		SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 216 }, { 64, 64 });
+		SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, { 64, 64 });
 		drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 255 });
-		drawTexture(gameData.industryDatas[unbuiltIndustries[i]].texture, { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 216 }, 4.0f, LEFT, BOTTOM);
+		drawTexture(gameData.industryDatas[unbuiltIndustries[i]].texture, { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, 4.0f, LEFT, BOTTOM);
 		drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 0 }, { 128, 128, 192, 64 });
 
 		if (mouseInRect(r)) {
 			hover = unbuiltIndustries[i];
 		}
 	}
+
+	yOffset += ((unbuiltIndustries.size() / 5) + 1) * 80;
 
 	if (hover != -1) {
 		std::string n = "Build " + gameData.industryDatas[hover].name;
@@ -265,9 +269,10 @@ void city::drawBuildIndustryMenu() {
 }
 
 void city::drawBuildStorageMenu() {
-	drawRect(v2ToRect({ (state.res.x * 3) / 4, 0 }, { state.res.x / 4, state.res.y }), { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
+	drawRect(v2ToRect({ (state.res.x * 3) / 4, 64 }, { state.res.x / 4, state.res.y - 64 }), { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 
-	drawText("Build Storage", { (state.res.x * 7) / 8, 32 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+	int yOffset = 96;
+	drawText("Build Storage", { (state.res.x * 7) / 8, yOffset }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
 	std::vector<bool> builtStorages = {};
 	for (int i = 0; i < gameData.storageDatas.size(); i++) {
@@ -285,17 +290,20 @@ void city::drawBuildStorageMenu() {
 		}
 	}
 
+	yOffset += 32;
 	int hover = -1;
 	for (int i = 0; i < unbuiltStorages.size(); i++) {
-		SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 216 }, { 64, 64 });
+		SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, { 64, 64 });
 		drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 255 });
-		drawTexture(gameData.storageDatas[unbuiltStorages[i]].texture, { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + 216 }, 4.0f, LEFT, BOTTOM);
+		drawTexture(gameData.storageDatas[unbuiltStorages[i]].texture, { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, 4.0f, LEFT, BOTTOM);
 		drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 0 }, { 128, 128, 192, 64 });
 
 		if (mouseInRect(r)) {
 			hover = unbuiltStorages[i];
 		}
 	}
+
+	yOffset += ((unbuiltStorages.size() / 5) + 1) * 80;
 
 	if (hover != -1) {
 		std::string n = "Build " + gameData.storageDatas[hover].name;

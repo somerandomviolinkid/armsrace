@@ -35,7 +35,8 @@ int main(int argc, char** argv) {
 			drawCreditsMenu();
 			break;
 		case IN_GAME:
-			if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - game.tickStart).count() > 1000) {
+			float speeds[6] = { 2.0, 1.0, 0.5, 0.25, 0.1, 0.0 };
+			if (game.running && std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - game.tickStart).count() > (long long)(1000.0f * speeds[game.selectedSpeed])) {
 				game.tick();
 			}
 

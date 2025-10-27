@@ -48,6 +48,23 @@ void Game::tick() {
 }
 
 void Game::draw() {
+	if (state.keyboardState[SDL_SCANCODE_SPACE] && speedChangeTimer >= 30) {
+		running = !running;
+		speedChangeTimer = 0;
+	}
+
+	if (state.keyboardState[SDL_SCANCODE_MINUS] && speedChangeTimer >= 30 && selectedSpeed > 0) {
+		selectedSpeed--;
+		speedChangeTimer = 0;
+	}
+
+	if (state.keyboardState[SDL_SCANCODE_EQUALS] && speedChangeTimer >= 30 && selectedSpeed < 6) {
+		selectedSpeed++;
+		speedChangeTimer = 0;
+	}
+
+	speedChangeTimer++;
+
 	if (frames % 100 == 0) {
 		frameTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - frameStart).count();
 		frameStart = std::chrono::high_resolution_clock::now();
@@ -168,6 +185,9 @@ void Game::drawTopMenu() {
 
 	drawRect(r, { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 	drawText(d, { 16, 32 }, 3.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
+
+
+	
 }
 
 bool Game::selectingSomething() {
@@ -241,6 +261,10 @@ void newGame() {
 
 	game.frames = 0;
 	game.frameStart = std::chrono::high_resolution_clock::now();
+
+	game.selectedSpeed = 1;
+	game.running = false;
+	game.speedChangeTimer = 0;
 
 	printf("Created new game in %lld microseconds.\n", std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - loadStart).count());
 }
