@@ -1,11 +1,11 @@
 Coal Mine
 150
-o 0 2.5
+o 0 4.5
 s 0 25.0
 
 Iron Mine
 200
-o 2 2.0
+o 2 4.0
 s 2 24.0
 
 Oil Rig
@@ -27,4 +27,19 @@ Gold Mine
 250
 o 12 0.2
 s 12 1.5
+
+Chromium Mine
+450
+o 15 0.4
+s 15 5.0
+
+Aluminium Mine
+240
+o 17 3.0
+s 17 32.0
+
+Uranium Mine
+600
+o 19 0.5
+s 19 3.0
 END

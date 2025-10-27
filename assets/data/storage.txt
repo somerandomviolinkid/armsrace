@@ -5,17 +5,24 @@ Aggregate Storage
 2
 10
 12
+15
+17
+19
 
 Open Storage
 100.0
 3
 4
 9
+18
 
 Warehouse
 80.0
+11
 13
 14
+16
+20
 
 Liquid Storage
 150.0
@@ -26,4 +33,8 @@ Gas Storage
 6
 7
 8
+
+Nuclear Fuel Storage
+5.0
+21
 END

@@ -21,3 +21,14 @@ m Copper
 r Gold Ore
 m Gold
 m Electronics
+
+# 15 - 18
+r Chromium Ore
+m Chromium
+r Aluminium Ore
+m Aluminium
+
+# 19 - 21
+r Uranium Ore
+m Uranium
+m Enriched Uranium

@@ -78,7 +78,7 @@ void industry::drawMenu() {
 
 			yOffset += 16;
 			drawText(gameData.resourceDatas[pair.first].name, { (state.res.x * 3) / 4 + 48, yOffset }, 2.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
-			drawText(std::format("{:.2f} / {:.2f}", pair.second, gameData.industryDatas[type].storage[pair.first]), { state.res.x - 8, yOffset }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
+			drawText(std::format("{:.1f} / {:.1f}", pair.second, gameData.industryDatas[type].storage[pair.first]), { state.res.x - 8, yOffset }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
 
 			yOffset += 24;
 		}
@@ -96,4 +96,8 @@ void industry::drawMenu() {
 	if (mouseInRect(r) && state.mouseState.click) {
 		game.selectedIndustry = -1;
 	}
+}
+
+float industry::ratioStored(int resourceIndex) {
+	return inventory[resourceIndex] / gameData.industryDatas[type].storage[resourceIndex];
 }

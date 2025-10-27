@@ -15,13 +15,34 @@ void mine::tick() {
 
 	for (std::pair<const int, float>& pair : gameData.mineDatas[type].outputs) {
 		for (const exportData& e : exportDatas) {
-			float amountToExport = std::clamp(
-				inventory[pair.first], 
-				0.0f, 
-				gameData.storageDatas[game.cities[e.targetCity].storages[e.targetIndex].type].maxCapacity - game.cities[e.targetCity].storages[e.targetIndex].totalStored()
-			);
-			game.cities[e.targetCity].storages[e.targetIndex].inventory[pair.first] += amountToExport;
-			inventory[pair.first] -= amountToExport;
+			switch (e.targetType) {
+			case 0:
+			{
+				//industry
+				float amountToExport = std::clamp(
+					inventory[pair.first],
+					0.0f,
+					gameData.storageDatas[game.cities[e.targetCity].storages[e.targetIndex].type].maxCapacity - game.cities[e.targetCity].storages[e.targetIndex].totalStored()
+				);
+
+				game.cities[e.targetCity].storages[e.targetIndex].inventory[pair.first] += amountToExport;
+				inventory[pair.first] -= amountToExport;
+				break;
+			}
+			case 1:
+			{
+				//industry
+				float amountToExport = std::clamp(
+					inventory[pair.first],
+					0.0f,
+					gameData.industryDatas[game.cities[e.targetCity].industries[e.targetIndex].type].storage[pair.first] - game.cities[e.targetCity].industries[e.targetIndex].inventory[pair.first]
+				);
+
+				game.cities[e.targetCity].industries[e.targetIndex].inventory[pair.first] += amountToExport;
+				inventory[pair.first] -= amountToExport;
+				break;
+			}
+			}
 		}
 	}
 }
@@ -162,7 +183,7 @@ void mine::drawMenu() {
 			drawRect(outline, { 0, 0, 0, 255 }, { 255, 255, 255, 0 });
 
 			drawText(gameData.resourceDatas[pair.first].name, { (state.res.x * 3) / 4 + 48, yOffset + 16 }, 2.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
-			drawText(std::format("{:.2f} / {:.2f}", pair.second, gameData.mineDatas[type].storage[pair.first]), { state.res.x - 8, yOffset + 16 }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
+			drawText(std::format("{:.1f} / {:.1f}", pair.second, gameData.mineDatas[type].storage[pair.first]), { state.res.x - 8, yOffset + 16 }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
 			yOffset += 40;
 		}
 	} else {
@@ -299,7 +320,7 @@ void mine::drawExportMenu(int i) {
 
 			SDL_Color fill = { 255, 255, 255, 255 };
 			for (exportData& e : exportDatas) {
-				if (e.index == storageCounter) {
+				if (e.index == storageCounter && e.targetType == 0) {
 					fill = { 64, 64, 192, 255 };
 					break;
 				}
@@ -314,6 +335,65 @@ void mine::drawExportMenu(int i) {
 				targetStorageHover[0] = cityCounter;
 				targetStorageHover[1] = cityStorageCounter;
 				targetStorageHoverIndex = storageCounter;
+			}
+
+			squareCount++;
+		}
+	}
+
+	yOffset += (((squareCount / 5) + 1) * 80);
+
+	yOffset += 48;
+	drawText("Industries", { (state.res.x * 7) / 8, yOffset }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
+	int targetIndustryHover[2] = { -1, -1 };
+	int targetIndustryHoverIndex = -1;
+	int industryCounter = -1;
+	cityCounter = -1;
+	squareCount = 0;
+
+	yOffset += 40;
+	for (city& c : game.cities) {
+		cityCounter++;
+
+		if (c.owner != 0) {
+			//don't export to foreigners (yet)
+			continue;
+		}
+
+		int cityIndustryCounter = -1;
+		for (industry& s : c.industries) {
+			industryCounter++;
+			cityIndustryCounter++;
+			bool canExport = false;
+			for (const std::pair<int, float> p : s.inventory) {
+				if (p.first == i) {
+					canExport = true;
+					break;
+				}
+			}
+
+			if (!canExport) {
+				continue;
+			}
+
+			SDL_Color fill = { 255, 255, 255, 255 };
+			for (exportData& e : exportDatas) {
+				if (e.index == industryCounter && e.targetType == 1) {
+					fill = { 64, 64, 192, 255 };
+					break;
+				}
+			}
+
+			SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((squareCount % 5) * 80) + 16, ((squareCount / 5) * 80) + yOffset }, { 64, 64 });
+			drawRect(r, { 0, 0, 0, 255 }, fill);
+			drawTexture(gameData.industryDatas[s.type].texture, { ((state.res.x * 3) / 4) + ((squareCount % 5) * 80) + 16, ((squareCount / 5) * 80) + yOffset }, 4.0f, LEFT, BOTTOM);
+			drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 0 }, { 64, 64, 192, 128 });
+
+			if (mouseInRect(r)) {
+				targetIndustryHover[0] = cityCounter;
+				targetIndustryHover[1] = cityIndustryCounter;
+				targetIndustryHoverIndex = industryCounter;
 			}
 
 			squareCount++;
@@ -345,7 +425,7 @@ void mine::drawExportMenu(int i) {
 			int eCount = -1;
 			for (exportData& e : exportDatas) {
 				eCount++;
-				if (e.index == targetStorageHoverIndex) {
+				if (e.index == targetStorageHoverIndex && e.targetType == 0) {
 					isAlreadySelected = eCount;
 					break;
 				}
@@ -353,6 +433,45 @@ void mine::drawExportMenu(int i) {
 
 			if (isAlreadySelected == -1) {
 				exportDatas.push_back({ targetStorageHoverIndex, targetStorageHover[0], 0, targetStorageHover[1] });
+			} else {
+				exportDatas.erase(exportDatas.begin() + isAlreadySelected);
+			}
+		}
+	}
+
+	if (targetIndustryHover[0] != -1 && targetIndustryHover[1] != -1) {
+		std::string n = game.cities[targetIndustryHover[0]].name;
+		std::string s = gameData.industryDatas[game.cities[targetIndustryHover[0]].industries[targetIndustryHover[1]].type].name;
+		std::string c = std::format("{:.1f}% Filled", game.cities[targetIndustryHover[0]].industries[targetIndustryHover[1]].ratioStored(i) * 100.0f);
+
+		std::vector<int> widths = { queryText(n, 1.0f).x, queryText(s, 1.0f).x, queryText(c, 1.0f).x };
+		int max = *std::max_element(widths.begin(), widths.end());
+
+		int xOffset = 16;
+		if (state.mouseState.pos.x + max + xOffset + 16 > state.res.x) {
+			xOffset = -max - 16;
+		}
+
+		SDL_Rect textOutline = v2ToRect(state.mouseState.pos + v2<int>{xOffset, 16}, v2<int>{max, 18} + v2<int>{8, 60});
+		drawRect(textOutline, { 0, 0, 0, 255 }, { 32, 32, 32, 192 });
+		drawText(n, state.mouseState.pos + v2<int>{xOffset + 4, 20}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
+		drawText(s, state.mouseState.pos + v2<int>{xOffset + 4, 44}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
+		drawText(c, state.mouseState.pos + v2<int>{xOffset + 4, 68}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
+
+		if (state.mouseState.click) {
+			int isAlreadySelected = -1;
+
+			int eCount = -1;
+			for (exportData& e : exportDatas) {
+				eCount++;
+				if (e.index == targetIndustryHoverIndex && e.targetType == 1) {
+					isAlreadySelected = eCount;
+					break;
+				}
+			}
+
+			if (isAlreadySelected == -1) {
+				exportDatas.push_back({ targetIndustryHoverIndex, targetIndustryHover[0], 1, targetIndustryHover[1] });
 			} else {
 				exportDatas.erase(exportDatas.begin() + isAlreadySelected);
 			}

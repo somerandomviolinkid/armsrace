@@ -45,7 +45,7 @@ void storage::drawMenu() {
 
 			yOffset += 16;
 			drawText(gameData.resourceDatas[pair.first].name, { (state.res.x * 3) / 4 + 48, yOffset }, 2.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
-			drawText(std::format("{:.2f} / {:.2f}", pair.second, gameData.storageDatas[type].maxCapacity), { state.res.x - 8, yOffset }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
+			drawText(std::format("{:.1f} / {:.1f}", pair.second, gameData.storageDatas[type].maxCapacity), { state.res.x - 8, yOffset }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
 
 			yOffset += 24;
 		}

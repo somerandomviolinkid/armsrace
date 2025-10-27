@@ -125,6 +125,7 @@ struct industry {
 
 	void tick();
 	void drawMenu();
+	float ratioStored(int resourceIndex);
 };
 
 struct storage {
