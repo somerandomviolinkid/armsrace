@@ -89,13 +89,15 @@ void loadGameMenuTick() {
 void drawCreditsMenu() {
 	drawText("Credits", { state.res.x / 2 , 100 }, 3.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 
-	drawText("Lead Developer", { state.res.x / 2 - 32, 200 }, 2.0f, { 255, 255, 255, 255 }, RIGHT, CENTER);
-	drawText("-", { state.res.x / 2, 200 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-	drawText("bob", { state.res.x / 2 + 32, 200 }, 2.0f, { 255, 255, 255, 255 }, LEFT, CENTER);
+	int yOffset = 200;
+	drawText("Lead Developer", { state.res.x / 2 - 32, yOffset }, 2.0f, { 255, 255, 255, 255 }, RIGHT, CENTER);
+	drawText("-", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Bob", { state.res.x / 2 + 32, yOffset }, 2.0f, { 255, 255, 255, 255 }, LEFT, CENTER);
 
-	drawText("Lead Artist", { state.res.x / 2 - 32, 232 }, 2.0f, { 255, 255, 255, 255 }, RIGHT, CENTER);
-	drawText("-", { state.res.x / 2, 232 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-	drawText("bob", { state.res.x / 2 + 32, 232 }, 2.0f, { 255, 255, 255, 255 }, LEFT, CENTER);
+	yOffset += 32;
+	drawText("Lead Artist", { state.res.x / 2 - 32, yOffset }, 2.0f, { 255, 255, 255, 255 }, RIGHT, CENTER);
+	drawText("-", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Bob", { state.res.x / 2 + 32, yOffset }, 2.0f, { 255, 255, 255, 255 }, LEFT, CENTER);
 
 	SDL_Rect back = v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 });
 	drawRect(back, { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });

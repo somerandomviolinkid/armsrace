@@ -221,6 +221,19 @@ void mine::drawMenu() {
 		drawText(w, state.mouseState.pos + v2<int>{xOffset + 4, 20}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
 	}
 
+	if (exportHover != -1) {
+		std::string n = gameData.resourceDatas[exportHover].name;
+		v2<int> dim = queryText(n, 1.0f);
+		int xOffset = 16;
+		if (state.mouseState.pos.x + +xOffset + 16 > state.res.x) {
+			xOffset = -dim.x - 16;
+		}
+
+		SDL_Rect textOutline = v2ToRect(state.mouseState.pos + v2<int>{xOffset, 16}, v2<int>{dim.x, 18} + v2<int>{8, 8});
+		drawRect(textOutline, { 0, 0, 0, 255 }, { 32, 32, 32, 192 });
+		drawText(n, state.mouseState.pos + v2<int>{xOffset + 4, 20}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
+	}
+
 	if (state.mouseState.click) {
 		bool reset = false;
 		if ((cityCheckHover == workerCity)) {
@@ -255,9 +268,10 @@ void mine::drawExportMenu(int i) {
 
 	int targetStorageHover[2] = { -1, -1 };
 	int targetStorageHoverIndex = -1;
-	int storageCounter = 0;
+	int storageCounter = -1;
 	int cityCounter = -1;
 
+	int squareCount = 0;
 	yOffset += 40;
 	for (city& c : game.cities) {
 		cityCounter++;
@@ -267,8 +281,10 @@ void mine::drawExportMenu(int i) {
 			continue;
 		}
 
-		int cityStorageCounter = 0;
+		int cityStorageCounter = -1;
 		for (storage& s : c.storages) {
+			storageCounter++;
+			cityStorageCounter++;
 			bool canExport = false;
 			for (const std::pair<int, float> p : s.inventory) {
 				if (p.first == i) {
@@ -289,9 +305,9 @@ void mine::drawExportMenu(int i) {
 				}
 			}
 
-			SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((storageCounter % 5) * 80) + 16, ((storageCounter / 5) * 80) + yOffset }, { 64, 64 });
+			SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((squareCount % 5) * 80) + 16, ((squareCount / 5) * 80) + yOffset }, { 64, 64 });
 			drawRect(r, { 0, 0, 0, 255 }, fill);
-			drawTexture(gameData.storageDatas[s.type].texture, { ((state.res.x * 3) / 4) + ((storageCounter % 5) * 80) + 16, ((storageCounter / 5) * 80) + yOffset }, 4.0f, LEFT, BOTTOM);
+			drawTexture(gameData.storageDatas[s.type].texture, { ((state.res.x * 3) / 4) + ((squareCount % 5) * 80) + 16, ((squareCount / 5) * 80) + yOffset }, 4.0f, LEFT, BOTTOM);
 			drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 0 }, { 64, 64, 192, 128 });
 
 			if (mouseInRect(r)) {
@@ -300,8 +316,7 @@ void mine::drawExportMenu(int i) {
 				targetStorageHoverIndex = storageCounter;
 			}
 
-			storageCounter++;
-			cityStorageCounter++;
+			squareCount++;
 		}
 	}
 
@@ -326,9 +341,12 @@ void mine::drawExportMenu(int i) {
 
 		if (state.mouseState.click) {
 			int isAlreadySelected = -1;
+
+			int eCount = -1;
 			for (exportData& e : exportDatas) {
+				eCount++;
 				if (e.index == targetStorageHoverIndex) {
-					isAlreadySelected = e.index;
+					isAlreadySelected = eCount;
 					break;
 				}
 			}
