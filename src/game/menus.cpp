@@ -99,6 +99,19 @@ void drawCreditsMenu() {
 	drawText("-", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 	drawText("Bob", { state.res.x / 2 + 32, yOffset }, 2.0f, { 255, 255, 255, 255 }, LEFT, CENTER);
 
+	yOffset += 64;
+	drawText("Alpha Playtesters", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 32;
+	drawText("Wayalon", { state.res.x / 2 - 32, yOffset }, 1.0f, { 255, 255, 255, 255 }, RIGHT, CENTER);
+	drawText("ExpertBowen", { state.res.x / 2 + 32, yOffset }, 1.0f, { 255, 255, 255, 255 }, LEFT, CENTER);
+
+	yOffset += 64;
+	drawText("Special Thanks", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 32;
+	drawText("Digdogg", { state.res.x / 2 - 32, yOffset }, 1.0f, { 255, 255, 255, 255 }, RIGHT, CENTER);
+
 	SDL_Rect back = v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 });
 	drawRect(back, { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
 	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
