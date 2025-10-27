@@ -255,6 +255,8 @@ void saveGameMenuTick();
 
 void drawCreditsMenu();
 
+void drawTutorialMenu();
+
 //natural resource portion
 struct naturalResource {
 	int type;

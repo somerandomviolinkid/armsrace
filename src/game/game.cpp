@@ -22,6 +22,11 @@ void Game::updateCamera() {
 	}
 
 	camera.zoom *= powf(1.05f, (float)state.mouseState.scroll);
+
+	if (state.keyboardState[SDL_SCANCODE_C]) {
+		game.camera.pos = game.cities[0].pos;
+		game.camera.zoom = 0.2f;
+	}
 }
 
 void Game::tick() {

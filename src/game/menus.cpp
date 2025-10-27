@@ -4,9 +4,9 @@ void drawMainMenu() {
 	drawText("Arms Race", { state.res.x / 2 , 144 }, 5.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 	drawText("Pre-Alpha 0.0.-1", { state.res.x / 2 , 216 }, 3.0f, {255, 255, 255, 255}, MIDDLE, CENTER);
 
-	drawRect(v2ToRect({ (state.res.x / 2) - 108, (state.res.y / 2) - 28}, {216, (48 * 8) + 8}), {255, 255, 255, 255}, {64, 64, 64, 255});
+	drawRect(v2ToRect({ (state.res.x / 2) - 108, (state.res.y / 2) - 28}, {216, (48 * 9) + 8}), {255, 255, 255, 255}, {64, 64, 64, 255});
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 9; i++) {
 		drawRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * i)}, {200, 40}), {255, 255, 255, 255}, {128, 128, 128, 255}, {64, 64, 96, 255});
 	}
 
@@ -14,20 +14,21 @@ void drawMainMenu() {
 	drawText("Load Game", { state.res.x / 2,  (state.res.y / 2) + 48 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 	drawText("Settings", { state.res.x / 2,  (state.res.y / 2) + 96 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 	drawText("Wiki", { state.res.x / 2,  (state.res.y / 2) + 144 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-	drawText("Credits", { state.res.x / 2,  (state.res.y / 2) + 192 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-	drawText("Discord", { state.res.x / 2,  (state.res.y / 2) + 240 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-	drawText("Github", { state.res.x / 2,  (state.res.y / 2) + 288 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-	drawText("Quit", { state.res.x / 2,  (state.res.y / 2) + 336 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Tutorial", { state.res.x / 2,  (state.res.y / 2) + 192 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Credits", { state.res.x / 2,  (state.res.y / 2) + 240 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Discord", { state.res.x / 2,  (state.res.y / 2) + 288 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Github", { state.res.x / 2,  (state.res.y / 2) + 336 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Quit", { state.res.x / 2,  (state.res.y / 2) + 384 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 }
 
 void mainMenuTick() {
-	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20}, { 200, 48 })) && state.mouseState.click) {
+	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 0)}, {200, 48})) && state.mouseState.click) {
 		state.mode = IN_GAME;
 		newGame();
 		return;
 	}
 
-	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + 48 }, { 200, 48 })) && state.mouseState.click) {
+	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 1) }, { 200, 48 })) && state.mouseState.click) {
 		state.mode = LOAD_GAME;
 		return;
 	}
@@ -38,21 +39,26 @@ void mainMenuTick() {
 	}
 
 	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 4) }, { 200, 48 })) && state.mouseState.click) {
-		state.mode = CREDITS;
+		state.mode = TUTORIAL;
 		return;
 	}
 
 	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 5) }, { 200, 48 })) && state.mouseState.click) {
-		SDL_OpenURL("https://discord.gg/NTmdbAKqEt");
+		state.mode = CREDITS;
 		return;
 	}
 
 	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 6) }, { 200, 48 })) && state.mouseState.click) {
+		SDL_OpenURL("https://discord.gg/NTmdbAKqEt");
+		return;
+	}
+
+	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 7) }, { 200, 48 })) && state.mouseState.click) {
 		SDL_OpenURL("https://github.com/somerandomviolinkid/armsrace");
 		return;
 	}
 
-	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 7)}, {200, 48})) && state.mouseState.click) {
+	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 8)}, {200, 48})) && state.mouseState.click) {
 		state.running = false;
 		return;
 	}
@@ -149,4 +155,59 @@ void drawSaveGameMenu() {
 
 void saveGameMenuTick() {
 
+}
+
+void drawTutorialMenu() {
+	drawText("Tutorial", { state.res.x / 2 , 100 }, 3.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	int yOffset = 200;
+	drawText("Welcome to Arms Race! Here you can find everything you need to know about starting the game.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	
+	yOffset += 40;
+	drawText("If you want to learn more about the inner machinations of the game, head to the wiki.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 64;
+	drawText("You can build industries by clicking on a city, and clicking on the Industry drop-down menu.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("This will list the currently built industries, and a hammer icon that you can click to build new industries.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("The same applies to storages. Workers will automatically fill up in industries.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 64;
+	drawText("In order to get your industries up and running, you need raw resources.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("Currently, you can't build mines, but one of each type of mine in the game is near your capital.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("To give a mine workers, click on the Allocate Workers drop-down menu and select which city to import workers from.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("This will make the mine start running, and its inventory will begin to fill up. To export resources", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("to storages, select the Export Resources drop-down menu and select which resource you want to export.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("Then, select which storages you want to export to. Exports work from left to right, so the mine will", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("export all of its resources to the left-most storage until it fills up, then it will start filling", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 40;
+	drawText("up the next storage on its list.", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	yOffset += 64;
+	drawText("Lastly, if you get lost, you can press C to focus the camera back on your capital. Happy industrializing!", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	SDL_Rect back = v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 });
+	drawRect(back, { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	if (mouseInRect(back) && state.mouseState.click) {
+		state.mode = MAIN_MENU;
+		return;
+	}
 }

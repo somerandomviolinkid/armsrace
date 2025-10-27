@@ -28,6 +28,9 @@ int main(int argc, char** argv) {
 			drawLoadGameMenu();
 			loadGameMenuTick();
 			break;
+		case TUTORIAL:
+			drawTutorialMenu();
+			break;
 		case CREDITS:
 			drawCreditsMenu();
 			break;

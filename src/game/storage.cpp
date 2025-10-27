@@ -49,15 +49,15 @@ void storage::drawMenu() {
 
 			yOffset += 24;
 		}
+	}
 
-		v2<int> dim = queryText("Back to City Menu", 2.0f);
-		SDL_Rect r = v2ToRect({ ((state.res.x * 7) / 8) - (dim.x / 2) - 8, state.res.y - dim.y - 16 }, { dim.x + 16, dim.y + 8 });
-		drawRect(r, { 0, 0, 0, 255 }, { 192, 192, 192, 255 }, { 128, 128, 192, 255 });
-		drawText("Back to City Menu", { (state.res.x * 7) / 8, state.res.y - 12 - (dim.y / 2) }, 2.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+	v2<int> dim = queryText("Back to City Menu", 2.0f);
+	SDL_Rect r = v2ToRect({ ((state.res.x * 7) / 8) - (dim.x / 2) - 8, state.res.y - dim.y - 16 }, { dim.x + 16, dim.y + 8 });
+	drawRect(r, { 0, 0, 0, 255 }, { 192, 192, 192, 255 }, { 128, 128, 192, 255 });
+	drawText("Back to City Menu", { (state.res.x * 7) / 8, state.res.y - 12 - (dim.y / 2) }, 2.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
-		if (mouseInRect(r) && state.mouseState.click) {
-			game.selectedStorage = -1;
-		}
+	if (mouseInRect(r) && state.mouseState.click) {
+		game.selectedStorage = -1;
 	}
 }
 
