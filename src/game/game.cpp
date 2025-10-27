@@ -30,6 +30,7 @@ void Game::updateCamera() {
 }
 
 void Game::tick() {
+	std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 	for (city& c : cities) {
 		c.tick();
 		for (industry& i : c.industries) {
@@ -43,9 +44,16 @@ void Game::tick() {
 
 	ticks++;
 	tickStart = std::chrono::high_resolution_clock::now();
+	tickTime = std::chrono::duration_cast<std::chrono::microseconds>(game.tickStart - t0).count();
 }
 
 void Game::draw() {
+	if (frames % 100 == 0) {
+		frameTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - frameStart).count();
+		frameStart = std::chrono::high_resolution_clock::now();
+		frames = 0;
+	}
+
 	switch (mode) {
 	case NORMAL:
 	{
@@ -128,8 +136,10 @@ void Game::draw() {
 			}
 		}
 
-		drawText(std::format("Camera Position: ({:.3f},{:.3f})", camera.pos.x, camera.pos.y), { state.res.x / 2, state.res.y - 32 }, 1.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
-		drawText(std::format("Camera Zoom: {:.3f}", camera.zoom), { state.res.x / 2, state.res.y - 16 }, 1.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+		drawText(std::format("Camera Position: ({:.3f},{:.3f})", camera.pos.x, camera.pos.y), { state.res.x / 2, state.res.y - 44 }, 1.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+		drawText(std::format("Camera Zoom: {:.3f}", camera.zoom), { state.res.x / 2, state.res.y - 28 }, 1.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+		drawText(std::format("Tick time: {} us", tickTime), { state.res.x / 2 - 16, state.res.y - 12 }, 1.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
+		drawText(std::format("Frame time: {} us", frameTime / 100), { state.res.x / 2 + 16, state.res.y - 12 }, 1.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
 		occludeRects.clear();
 
 		break;
@@ -142,11 +152,20 @@ void Game::draw() {
 		break;
 	}
 
+	game.frames++;
 }
 
 void Game::drawTopMenu() {
 	SDL_Rect r = { 0, 0, state.res.x, 64 };
-	std::string d = std::format("Day {}, {:02}:00", ticks / 24, ticks % 24);
+
+	std::string suffix = ticks % 24 >= 12 ? "PM" : "AM";
+	int normalizedTime = ticks % 24 >= 12 ? ticks % 24 - 12 : ticks % 24;
+	if (normalizedTime == 0) {
+		normalizedTime = 12;
+	}
+
+	std::string d = std::format("Day {}, {:02}:00 ", ticks / 24, normalizedTime) + suffix;
+
 	drawRect(r, { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 	drawText(d, { 16, 32 }, 3.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
 }
@@ -219,6 +238,9 @@ void newGame() {
 
 	game.ticks = 0;
 	game.tickStart = std::chrono::high_resolution_clock::now();
+
+	game.frames = 0;
+	game.frameStart = std::chrono::high_resolution_clock::now();
 
 	printf("Created new game in %lld microseconds.\n", std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - loadStart).count());
 }

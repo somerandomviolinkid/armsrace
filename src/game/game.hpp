@@ -282,8 +282,6 @@ public:
 	std::vector<city> cities;
 	std::vector<mine> mines;
 	std::vector<naturalResource> naturalResources;
-
-	int ticks;
 	
 	void draw();
 	void tick();
@@ -296,6 +294,7 @@ public:
 	void updateCamera();
 
 	int mode;
+	int selectedSpeed;
 
 	int selectedCity;
 	int selectedIndustry;
@@ -319,7 +318,14 @@ public:
 
 	std::vector<SDL_Rect> occludeRects;
 
+	int ticks;
+	int frames;
+
 	std::chrono::high_resolution_clock::time_point tickStart;
+	std::chrono::high_resolution_clock::time_point frameStart;
+
+	long long tickTime;
+	long long frameTime;
 	std::mt19937 gen;
 };
 
