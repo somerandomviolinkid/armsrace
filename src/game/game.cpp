@@ -48,35 +48,35 @@ void Game::tick() {
 }
 
 void Game::draw() {
-	if (state.keyboardState[SDL_SCANCODE_SPACE] && speedChangeTimer >= 30) {
-		running = !running;
-		speedChangeTimer = 0;
-	}
-
-	if (state.keyboardState[SDL_SCANCODE_MINUS] && speedChangeTimer >= 30 && selectedSpeed > 0) {
-		selectedSpeed--;
-		speedChangeTimer = 0;
-	}
-
-	if (state.keyboardState[SDL_SCANCODE_EQUALS] && speedChangeTimer >= 30 && selectedSpeed < 6) {
-		selectedSpeed++;
-		speedChangeTimer = 0;
-	}
-
-	speedChangeTimer++;
-
-	if (frames % 100 == 0) {
-		frameTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - frameStart).count();
-		frameStart = std::chrono::high_resolution_clock::now();
-		frames = 0;
-	}
-
 	switch (mode) {
 	case NORMAL:
 	{
 		if (state.keyboardState[SDL_SCANCODE_ESCAPE]) {
 			mode = PAUSE_MENU;
 			break;
+		}
+
+		if (state.keyboardState[SDL_SCANCODE_SPACE] && speedChangeTimer >= 6) {
+			running = !running;
+			speedChangeTimer = 0;
+		}
+
+		if (state.keyboardState[SDL_SCANCODE_MINUS] && speedChangeTimer >= 6 && selectedSpeed > 0) {
+			selectedSpeed--;
+			speedChangeTimer = 0;
+		}
+
+		if (state.keyboardState[SDL_SCANCODE_EQUALS] && speedChangeTimer >= 6 && selectedSpeed < 5) {
+			selectedSpeed++;
+			speedChangeTimer = 0;
+		}
+
+		speedChangeTimer++;
+
+		if (frames % 100 == 0) {
+			frameTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - frameStart).count();
+			frameStart = std::chrono::high_resolution_clock::now();
+			frames = 0;
 		}
 
 		SDL_SetRenderDrawColor(state.renderer, 0, 192, 0, 255);
@@ -186,8 +186,27 @@ void Game::drawTopMenu() {
 	drawRect(r, { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 	drawText(d, { 16, 32 }, 3.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
 
+	if (!running) {
+		drawTexture(state.baseTextures[PAUSED], { state.res.x - (56 * 7), 8 }, 3.0f, LEFT, BOTTOM);
+	}
 
-	
+	int speedHover = -1;
+	for (int i = 0; i < 6; i++) {
+		SDL_Rect rect = v2ToRect({ state.res.x - (56 * 6) + (56 * i), 8 }, { 48, 48 });
+		SDL_Color fill = { 128, 128, 128, 255 };
+		if (selectedSpeed == i) {
+			fill = { 64, 64, 192, 255 };
+		}
+
+		drawRect(rect, { 0, 0, 0, 255 }, fill, { 128, 128, 192, 128 });
+		if (mouseInRect(rect)) {
+			speedHover = i;
+		}
+	}
+
+	if (speedHover != -1 && state.mouseState.click) {
+		selectedSpeed = speedHover;
+	}
 }
 
 bool Game::selectingSomething() {

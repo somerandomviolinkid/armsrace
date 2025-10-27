@@ -28,6 +28,7 @@ void State::init() {
 	loadTexture(baseTextures[CHECK], "assets/textures/check.png");
 	loadTexture(baseTextures[MENU_CLOSED], "assets/textures/closed.png");
 	loadTexture(baseTextures[MENU_OPEN], "assets/textures/open.png");
+	loadTexture(baseTextures[PAUSED], "assets/textures/paused.png");
 
 	mouseState = {
 		{0, 0},
