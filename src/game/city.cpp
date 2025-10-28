@@ -338,13 +338,13 @@ void city::draw(int i) {
 	v2<int> sp = { int(np.x * (float)state.res.y), int(np.y * (float)state.res.y) };
 
 	SDL_Point p = v2ToPoint(sp);
-	SDL_Rect r = v2ToRect({ 0,0 }, state.res);
+	SDL_Rect r = v2ToRect({ 0, 0 }, state.res);
 
 	if (!SDL_PointInRect(&p, &r)) {
 		return;
 	}
 
-	float popWeight = std::clamp(log2f((float)population) * game.camera.zoom, 0.0f, 10.0f);
+	float popWeight = std::clamp(std::powf(2.0f, std::log10f(population) - 0.5f) * game.camera.zoom, 0.0f, 10.0f);
 	SDL_Rect outline = v2ToRect(sp - v2<int>{(int)(popWeight * 8.0f), (int)(popWeight * 8.0f)}, { (int)(popWeight * 16.0f), (int)(popWeight * 16.0f) });
 
 	if (popWeight >= 1.0f) {

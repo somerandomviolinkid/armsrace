@@ -88,6 +88,50 @@ void industry::drawMenu() {
 		drawText(std::format("{:.1f}%", resourceEfficiency * 100.0f), { state.res.x - 8, yOffset }, 2.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
 	}
 
+	//imports section
+
+	yOffset += 24;
+	SDL_Rect importsHeaderRect = v2ToRect({ (state.res.x * 3) / 4 , yOffset }, { state.res.x / 4, 64 });
+	drawRect(importsHeaderRect, { 0, 0, 0, 255 }, { 192, 192, 192, 255 }, { 128, 128, 192, 255 });
+	if (mouseInRect(importsHeaderRect) && state.mouseState.click) {
+		if (game.industryImportsMenuOpen) {
+			game.industryImportsMenuOpen = false;
+		} else {
+			game.industryImportsMenuOpen = true;
+		}
+	}
+
+	yOffset += 32;
+	drawText("Imports", { (state.res.x * 7) / 8, yOffset }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
+	if (game.industryImportsMenuOpen) {
+		drawTexture(state.baseTextures[MENU_OPEN], { ((state.res.x * 3) / 4) + 8, yOffset }, 2.0f, LEFT, CENTER);
+	} else {
+		drawTexture(state.baseTextures[MENU_CLOSED], { ((state.res.x * 3) / 4) + 8, yOffset }, 2.0f, LEFT, CENTER);
+	}
+
+	//exports section
+
+	yOffset += 24;
+	SDL_Rect exportsHeaderRect = v2ToRect({ (state.res.x * 3) / 4 , yOffset }, { state.res.x / 4, 64 });
+	drawRect(exportsHeaderRect, { 0, 0, 0, 255 }, { 192, 192, 192, 255 }, { 128, 128, 192, 255 });
+	if (mouseInRect(exportsHeaderRect) && state.mouseState.click) {
+		if (game.industryExportsMenuOpen) {
+			game.industryExportsMenuOpen = false;
+		} else {
+			game.industryExportsMenuOpen = true;
+		}
+	}
+
+	yOffset += 32;
+	drawText("Exports", { (state.res.x * 7) / 8, yOffset }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
+	if (game.industryExportsMenuOpen) {
+		drawTexture(state.baseTextures[MENU_OPEN], { ((state.res.x * 3) / 4) + 8, yOffset }, 2.0f, LEFT, CENTER);
+	} else {
+		drawTexture(state.baseTextures[MENU_CLOSED], { ((state.res.x * 3) / 4) + 8, yOffset }, 2.0f, LEFT, CENTER);
+	}
+
 	v2<int> dim = queryText("Back to City Menu", 2.0f);
 	SDL_Rect r = v2ToRect({ ((state.res.x * 7) / 8) - (dim.x / 2) - 8, state.res.y - dim.y - 16 }, { dim.x + 16, dim.y + 8 });
 	drawRect(r, { 0, 0, 0, 255 }, { 192, 192, 192, 255 }, { 128, 128, 192, 255 });
@@ -96,6 +140,14 @@ void industry::drawMenu() {
 	if (mouseInRect(r) && state.mouseState.click) {
 		game.selectedIndustry = -1;
 	}
+}
+
+void industry::drawImportMenu(int i) {
+
+}
+
+void industry::drawExportMenu(int i) {
+
 }
 
 float industry::ratioStored(int resourceIndex) {

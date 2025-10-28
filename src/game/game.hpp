@@ -125,6 +125,8 @@ struct industry {
 
 	void tick();
 	void drawMenu();
+	void drawImportMenu(int i);
+	void drawExportMenu(int i);
 	float ratioStored(int resourceIndex);
 };
 
@@ -197,6 +199,7 @@ struct city {
 
 	v2<float> pos;
 	int owner;
+	bool capital;
 
 	std::vector<industry> industries;
 	std::vector<storage> storages;
@@ -207,7 +210,8 @@ struct city {
 	city(
 		std::string n,
 		v2<float> p,
-		int o
+		int o,
+		bool b
 	) {
 		name = n;
 		population = 0;
@@ -216,6 +220,7 @@ struct city {
 		industries = {};
 		storages = {};
 		owner = o;
+		capital = b;
 		buildIndustryMenuOpen = false;
 		buildStorageMenuOpen = false;
 	}
@@ -311,6 +316,11 @@ public:
 	bool cityStorageMenuOpen;
 
 	bool industryInventoryMenuOpen;
+	bool industryImportsMenuOpen;
+	bool industryExportsMenuOpen;
+	int industryImportResourceSelected;
+	int industryExportResourceSelected;
+
 	bool storageInventoryMenuOpen;
 	bool mineInventoryMenuOpen;
 	
@@ -319,6 +329,7 @@ public:
 	int mineExportResourceSelected;
 
 	void drawTopMenu();
+	void drawMinimap();
 
 	std::vector<SDL_Rect> occludeRects;
 
@@ -342,3 +353,6 @@ void saveGame();
 
 //render portion
 v2<float> project(v2<float> p);
+v2<float> aproject(v2<float> p);
+v2<float> project(v2<float> p, v2<float> c, v2<int> res, float z);
+v2<float> aproject(v2<float> p, v2<float> c, v2<int> res, float z);
