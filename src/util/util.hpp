@@ -31,6 +31,9 @@ v2<T> operator/(v2<T> v, U s) {
 	return { (T)((float)v.x / (float)s), (T)((float)v.y / (float)s) };
 }
 
+v2<int> v2fTov2i(v2<float> v);
+v2<float> v2iTov2f(v2<int> v);
+
 float dist2d(v2<float> a, v2<float> b);
 
 v2<float> makeVector(float direction);
@@ -46,3 +49,25 @@ std::string makePNGFilePath(std::string name);
 //random
 
 float randf(std::mt19937& gen, float min, float max);
+
+// number stuff
+
+// automatically flips m0 and m1 if they are mismatched
+template <typename T>
+bool isInRange(T n, T m0, T m1) {
+	float min = (float)m0;
+	float max = (float)m1;
+
+	if (m0 > m1) {
+		min = (float)m1;
+		max = (float)m0;
+	}
+
+	//true if n is equal to both
+	float errorMargin = 0.0001f;
+	if (fabsf(n - min) < errorMargin && fabsf(n - max)) {
+		return true;
+	}
+
+	return (n >= min) && (n <= max);
+}

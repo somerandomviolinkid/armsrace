@@ -12,6 +12,14 @@ v2<float> makeVector(v2<float> pos, float direction, float magnitude) {
 	return makeVector(direction, magnitude) + pos;
 }
 
+v2<int> v2fTov2i(v2<float> v) {
+	return { (int)v.x, (int)v.y };
+}
+
+v2<float> v2iTov2f(v2<int> v) {
+	return { (float)v.x, (float)v.y };
+}
+
 float dist2d(v2<float> a, v2<float> b) {
 	return std::sqrtf(std::powf(b.x - a.x, 2.0f) + std::powf(b.y - a.y, 2.0f));
 }

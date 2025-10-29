@@ -13,16 +13,23 @@ void mine::tick() {
 		inventory[pair.first] = std::clamp(inventory[pair.first] + (baseEfficiency * pair.second), inventory[pair.first], gameData.mineDatas[type].storage[pair.first]);
 	}
 
+	//handle exports
+	float exportDivide = 1.0f;
+	if (exportMode) {
+		exportDivide = (float)exportDatas.size();
+	}
+
 	for (std::pair<const int, float>& pair : gameData.mineDatas[type].outputs) {
 		for (const exportData& e : exportDatas) {
 			switch (e.targetType) {
 			case 0:
 			{
-				//industry
+				//storage
 				float amountToExport = std::clamp(
 					inventory[pair.first],
 					0.0f,
-					gameData.storageDatas[game.cities[e.targetCity].storages[e.targetIndex].type].maxCapacity - game.cities[e.targetCity].storages[e.targetIndex].totalStored()
+					(gameData.storageDatas[game.cities[e.targetCity].storages[e.targetIndex].type].maxCapacity - 
+						game.cities[e.targetCity].storages[e.targetIndex].totalStored()) / exportDivide
 				);
 
 				game.cities[e.targetCity].storages[e.targetIndex].inventory[pair.first] += amountToExport;
@@ -35,7 +42,8 @@ void mine::tick() {
 				float amountToExport = std::clamp(
 					inventory[pair.first],
 					0.0f,
-					gameData.industryDatas[game.cities[e.targetCity].industries[e.targetIndex].type].storage[pair.first] - game.cities[e.targetCity].industries[e.targetIndex].inventory[pair.first]
+					(gameData.industryDatas[game.cities[e.targetCity].industries[e.targetIndex].type].storage[pair.first]
+						- game.cities[e.targetCity].industries[e.targetIndex].inventory[pair.first]) / exportDivide
 				);
 
 				game.cities[e.targetCity].industries[e.targetIndex].inventory[pair.first] += amountToExport;
@@ -214,7 +222,7 @@ void mine::drawMenu() {
 		int i = 0;
 
 		yOffset += 40;
-		for (const std::pair<int, float> p : inventory) {
+		for (const std::pair<int, float> p : gameData.mineDatas[type].outputs) {
 			SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, { 64, 64 });
 			drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 255 });
 			drawTexture(gameData.resourceDatas[p.first].texture, { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, 4.0f, LEFT, BOTTOM);
@@ -320,7 +328,7 @@ void mine::drawExportMenu(int i) {
 
 			SDL_Color fill = { 255, 255, 255, 255 };
 			for (exportData& e : exportDatas) {
-				if (e.index == storageCounter && e.targetType == 0) {
+				if (e.targetCity == cityCounter && e.targetIndex == cityStorageCounter && e.targetType == 0) {
 					fill = { 64, 64, 192, 255 };
 					break;
 				}
@@ -485,5 +493,6 @@ void mine::drawExportMenu(int i) {
 
 	if (mouseInRect(r) && state.mouseState.click) {
 		game.mineExportResourceSelected = -1;
+		game.mineExportsMenuOpen = false;
 	}
 }

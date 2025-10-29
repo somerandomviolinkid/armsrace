@@ -104,11 +104,21 @@ extern GameData gameData;
 
 //structs portion
 
+struct exportData {
+	int index;
+	int targetCity;
+	int targetType;
+	int targetIndex;
+};
+
 struct industry {
 	int type;
 	int workers;
 	std::map<int, float> inventory;
 	float resourceEfficiency;
+
+	std::vector<exportData> exportDatas;
+	bool exportMode; //false = concentrate, true = disperse
 
 	industry(
 		int t
@@ -121,6 +131,7 @@ struct industry {
 		}
 
 		resourceEfficiency = 0.0f;
+		exportMode = false;
 	}
 
 	void tick();
@@ -150,13 +161,6 @@ struct storage {
 	float ratioStored();
 };
 
-struct exportData {
-	int index;
-	int targetCity;
-	int targetType;
-	int targetIndex;
-};
-
 struct mine {
 	int type;
 	int workers;
@@ -165,6 +169,7 @@ struct mine {
 	int owner;
 	v2<float> pos;
 	std::vector<exportData> exportDatas;
+	bool exportMode; //false = concentrate, true = disperse
 
 	mine(
 		int t,
@@ -183,6 +188,7 @@ struct mine {
 		pos = p;
 
 		exportDatas = {};
+		exportMode = false;
 	}
 
 	void tick();

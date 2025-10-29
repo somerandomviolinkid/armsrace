@@ -108,6 +108,8 @@ void Game::draw() {
 				selectedCity = -1;
 
 				selectedIndustry = -1;
+				industryImportResourceSelected = -1;
+				industryExportResourceSelected = -1;
 
 				selectedStorage = -1;
 
@@ -120,10 +122,59 @@ void Game::draw() {
 
 		for (int i = 0; i < cities.size(); i++) {
 			cities[i].draw(i);
+
+			v2<float> np = project(cities[i].pos);
+			v2<int> sp = { int(np.x * (float)state.res.y), int(np.y * (float)state.res.y) };
+
+			SDL_Point cp = v2ToPoint(sp);
+			SDL_Rect cr = v2ToRect({ 0, 0 }, state.res);
+
+			if (!SDL_PointInRect(&cp, &cr)) {
+				continue;
+			}
+
+			for (industry& ind : cities[i].industries) {
+				for (exportData& e : ind.exportDatas) {
+					v2<float> cnp = project(cities[e.targetCity].pos);
+					v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
+
+					SDL_Point ep = v2ToPoint(csp);
+					SDL_Rect er = v2ToRect({ 0, 0 }, state.res);
+
+					if (!SDL_PointInRect(&ep, &er)) {
+						continue;
+					}
+
+					drawLine(sp, csp, { 0, 0, 0, 255 });
+				}
+			}
 		}
 
 		for (int i = 0; i < mines.size(); i++) {
 			mines[i].draw(i);
+			v2<float> mnp = project(mines[i].pos);
+			v2<int> msp = { int(mnp.x * (float)state.res.y), int(mnp.y * (float)state.res.y) };
+
+			SDL_Point mp = v2ToPoint(msp);
+			SDL_Rect mr = v2ToRect({ 0, 0 }, state.res);
+
+			if (!SDL_PointInRect(&mp, &mr)) {
+				continue;
+			}
+
+			for (exportData& e : mines[i].exportDatas) {
+				v2<float> cnp = project(cities[e.targetCity].pos);
+				v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
+
+				SDL_Point ep = v2ToPoint(csp);
+				SDL_Rect er = v2ToRect({ 0, 0 }, state.res);
+
+				if (!SDL_PointInRect(&ep, &er)) {
+					continue;
+				}
+
+				drawLine(msp, csp, {0, 0, 0, 255});
+			}
 		}
 
 		for (int i = 0; i < naturalResources.size(); i++) {
@@ -133,13 +184,20 @@ void Game::draw() {
 		drawTopMenu();
 		drawMinimap();
 
+		//what the fuck, fix
 		if (selectedCity != -1) {
 			if (cities[selectedCity].buildIndustryMenuOpen) {
 				cities[selectedCity].drawBuildIndustryMenu();
 			} else if (cities[selectedCity].buildStorageMenuOpen) {
 				cities[selectedCity].drawBuildStorageMenu();
 			} else if (selectedIndustry != -1) {
-				cities[selectedCity].industries[selectedIndustry].drawMenu();
+				if (industryImportResourceSelected != -1) {
+					cities[selectedCity].industries[selectedIndustry].drawImportMenu(industryImportResourceSelected);
+				} else if (industryExportResourceSelected != -1) {
+					cities[selectedCity].industries[selectedIndustry].drawExportMenu(industryExportResourceSelected);
+				} else {
+					cities[selectedCity].industries[selectedIndustry].drawMenu();
+				}
 			} else if (selectedStorage != -1) {
 				cities[selectedCity].storages[selectedStorage].drawMenu();
 			} else {
@@ -217,10 +275,6 @@ void Game::drawMinimap() {
 
 	bool cameraChanged = false;
 	for (city& c : cities) {
-		if (!c.capital) {
-			continue;
-		}
-
 		v2<float> np = project(c.pos, v2<float>{ 0.0f, 0.0f }, state.res / 4, 0.01f);
 		v2<int> sp = { 16 + int(np.x * (float)state.res.y / 4.0f), ((state.res.y * 3) / 4) + int(np.y * (float)state.res.y / 4.0f) - 16 };
 		SDL_Point p = v2ToPoint(sp);
@@ -229,13 +283,17 @@ void Game::drawMinimap() {
 			continue;
 		}
 
-		SDL_Rect r = v2ToRect(sp - v2<int>{ 6, 6 }, { 12, 12 });
-		drawRect(r, { 0, 0, 0, 255 }, game.countries[c.owner].color);
+		if (c.capital) {
+			SDL_Rect r = v2ToRect(sp - v2<int>{ 5, 5 }, { 10, 10 });
+			drawRect(r, { 0, 0, 0, 255 }, game.countries[c.owner].color);
 
-		if (mouseInRect(r) && state.mouseState.click) {
-			camera.pos = c.pos;
-			camera.zoom = 0.2f;
-			cameraChanged = true;
+			if (mouseInRect(r) && state.mouseState.click) {
+				camera.pos = c.pos;
+				camera.zoom = 0.2f;
+				cameraChanged = true;
+			}
+		} else {
+			drawPoint(sp, { 0, 0, 0, 255 });
 		}
 	}
 
@@ -251,8 +309,14 @@ void Game::drawMinimap() {
 	drawLine(csp - v2<int>{0, 4}, csp + v2<int>{0, 4}, { 32, 32, 32, 192 });
 
 	if (mouseInRect(outline) && state.mouseState.click && !cameraChanged) {
-		camera.pos = aproject({ (((float)state.mouseState.pos.x - 16.0f) * 4.0f) / (float)state.res.y, (((float)state.mouseState.pos.y + 16.0f) / ((float)state.res.y / 4.0f)) - 3.0f }, { 0.0f, 0.0f }, state.res / 4, 0.01f);
+		camera.pos = aproject({ (((float)state.mouseState.pos.x - 16.0f) * 4.0f) / (float)state.res.y, (((float)state.mouseState.pos.y + 16.0f) / ((float)state.res.y / 4.0f)) - 3.0f}, { 0.0f, 0.0f }, state.res / 4, 0.01f);
 	}
+
+	SDL_Rect viewport = v2ToRect(
+		csp - ((v2fTov2i({ (float)state.res.x / (float)state.res.y, 1.0f }) * (int)(1.0f / camera.zoom))),
+		v2fTov2i({ (float)state.res.x / (float)state.res.y, 1.0f }) * (int)(2.0f / camera.zoom)
+	);
+	drawRect(viewport, {64, 64, 64, 128}, {128, 128, 128, 64});
 }
 
 bool Game::selectingSomething() {
@@ -268,11 +332,11 @@ void newGame() {
 	game.mode = NORMAL;
 
 	int cityCounter = 0;
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 12; i++) {
 		game.countries.push_back(country("Country " + std::to_string(i)));
 		game.countries[i].color = { (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), 255 };
 
-		v2<float> capitolPos = { randf(game.gen, -40.0f, 40.0f), (randf(game.gen, -40.0f, 40.0f)) };
+		v2<float> capitolPos = { randf(game.gen, -95.0f, 95.0f), randf(game.gen, -50.0f, 50.0f) };
 		game.cities.push_back(city("Capitol", capitolPos, i, true));
 		game.cities[cityCounter].population = 1000000;
 		cityCounter++;

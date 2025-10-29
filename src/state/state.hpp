@@ -78,11 +78,17 @@ v2<int> pointToV2(SDL_Point point);
 
 bool mouseInRect(SDL_Rect r);
 
+void drawPoint(v2<int> p, SDL_Color c);
+
 void drawLine(v2<int> a, v2<int> b, SDL_Color c);
 
 void drawRect(SDL_Rect r, SDL_Color border, SDL_Color fill);
 
 void drawRect(SDL_Rect r, SDL_Color border, SDL_Color fill, SDL_Color hover);
+
+v2<float> lineSegIntersection(v2<float> a0, v2<float> a1, v2<float> b0, v2<float> b1);
+
+void drawPolygon(std::vector<v2<int>>& lines, SDL_Color border, SDL_Color fill);
 
 //texture portion
 

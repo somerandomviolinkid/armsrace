@@ -238,7 +238,7 @@ void city::drawBuildIndustryMenu() {
 		}
 	}
 
-	yOffset += ((unbuiltIndustries.size() / 5) + 1) * 80;
+	yOffset += (((int)unbuiltIndustries.size() / 5) + 1) * 80;
 
 	if (hover != -1) {
 		std::string n = "Build " + gameData.industryDatas[hover].name;
@@ -303,7 +303,7 @@ void city::drawBuildStorageMenu() {
 		}
 	}
 
-	yOffset += ((unbuiltStorages.size() / 5) + 1) * 80;
+	yOffset += (((int)unbuiltStorages.size() / 5) + 1) * 80;
 
 	if (hover != -1) {
 		std::string n = "Build " + gameData.storageDatas[hover].name;
@@ -344,7 +344,7 @@ void city::draw(int i) {
 		return;
 	}
 
-	float popWeight = std::clamp(std::powf(2.0f, std::log10f(population) - 0.5f) * game.camera.zoom, 0.0f, 10.0f);
+	float popWeight = std::clamp(std::powf(2.0f, std::log10f((float)population) - 0.5f) * game.camera.zoom, 0.0f, 10.0f);
 	SDL_Rect outline = v2ToRect(sp - v2<int>{(int)(popWeight * 8.0f), (int)(popWeight * 8.0f)}, { (int)(popWeight * 16.0f), (int)(popWeight * 16.0f) });
 
 	if (popWeight >= 1.0f) {
