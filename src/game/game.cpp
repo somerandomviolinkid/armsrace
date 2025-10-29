@@ -199,7 +199,11 @@ void Game::draw() {
 					cities[selectedCity].industries[selectedIndustry].drawMenu();
 				}
 			} else if (selectedStorage != -1) {
-				cities[selectedCity].storages[selectedStorage].drawMenu();
+				if (storageExportResourceSelected) {
+					cities[selectedCity].storages[selectedStorage].drawExportMenu(storageExportResourceSelected);
+				} else {
+					cities[selectedCity].storages[selectedStorage].drawMenu();
+				}
 			} else {
 				cities[selectedCity].drawMenu();
 			}
@@ -375,15 +379,17 @@ void newGame() {
 	game.cityIndustryMenuOpen = false;
 	game.cityStorageMenuOpen = false;
 
-	game.industryInventoryMenuOpen = false;
 	game.storageInventoryMenuOpen = false;
-	game.mineInventoryMenuOpen = false;
+	game.storageExportsMenuOpen = false;
+	game.storageExportResourceSelected = -1;
 
+	game.industryInventoryMenuOpen = false;
 	game.industryImportsMenuOpen = false;
 	game.industryExportsMenuOpen = false;
 	game.industryImportResourceSelected = -1;
 	game.industryExportResourceSelected = -1;
 
+	game.mineInventoryMenuOpen = false;
 	game.mineAllocateWorkersMenuOpen = false;
 	game.mineExportsMenuOpen = false;
 	game.mineExportResourceSelected = -1;
