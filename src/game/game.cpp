@@ -199,7 +199,7 @@ void Game::draw() {
 					cities[selectedCity].industries[selectedIndustry].drawMenu();
 				}
 			} else if (selectedStorage != -1) {
-				if (storageExportResourceSelected) {
+				if (storageExportResourceSelected != -1) {
 					cities[selectedCity].storages[selectedStorage].drawExportMenu(storageExportResourceSelected);
 				} else {
 					cities[selectedCity].storages[selectedStorage].drawMenu();
