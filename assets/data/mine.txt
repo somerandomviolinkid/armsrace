@@ -42,4 +42,14 @@ Uranium Mine
 600
 o 19 0.5
 s 19 3.0
+
+Tungsten Mine
+450
+o 22 0.8
+s 22 5.0
+
+Titanium Mine
+400
+o 24 3.0
+s 24 20.0
 END

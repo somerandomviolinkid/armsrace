@@ -155,6 +155,9 @@ struct storage {
 		for (int &i : gameData.storageDatas[t].resourcesToStore) {
 			inventory.insert({ i, 0.0f });
 		}
+
+		exportDatas = {};
+		exportMode = false;
 	}
 
 	void tick();
@@ -216,6 +219,9 @@ struct city {
 
 	bool buildIndustryMenuOpen;
 	bool buildStorageMenuOpen;
+
+	float food;
+	float water;
 
 	city(
 		std::string n,

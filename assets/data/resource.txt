@@ -32,3 +32,15 @@ m Aluminium
 r Uranium Ore
 m Uranium
 m Enriched Uranium
+
+# 22 - 26
+r Tungsten Ore
+m Tungsten
+r Titanium Ore
+m Titanium
+m Mechanical Components
+
+# 27 - 29
+m Crops
+m Livestock
+m Food

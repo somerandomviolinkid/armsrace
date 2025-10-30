@@ -18,7 +18,7 @@ Steel Mill
 250
 i 1 2.5
 i 3 2.5
-o 4 2.0
+o 4 2.4
 s 1 5.0
 s 3 5.0
 s 4 10.0
@@ -102,4 +102,43 @@ i 20 0.3
 o 21 0.01
 s 20 3.5
 s 21 1.0
+
+Tungsten Plant
+400
+i 22 0.6
+o 23 0.5
+s 22 3.0
+s 23 2.5
+
+Titanium Plant
+450
+i 24 2.8
+o 25 2.4
+s 24 9.0
+s 25 8.5
+
+Mechanical Components Factory
+2300
+i 4 4.0
+i 23 2.0
+i 25 0.5
+o 26 6.0
+s 4 10.0
+s 23 8.0
+s 25 3.0
+s 26 15.0
+
+Food Factory
+280
+i 27 5.0
+o 29 2.0
+s 27 13.0
+s 29 8.0
+
+Slaughterhouse
+300
+i 28 6.0
+o 29 4.0
+s 28 15.0
+s 29 13.0
 END
