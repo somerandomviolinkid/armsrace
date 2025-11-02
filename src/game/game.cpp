@@ -246,9 +246,26 @@ void Game::drawTopMenu() {
 	}
 
 	std::string d = std::format("Day {}, {:02}:00 ", ticks / 24, normalizedTime) + suffix;
-
+	int dw = queryText(d, 3.0f).x;
+	
+	int xOffset = 8;
 	drawRect(r, { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
-	drawText(d, { 16, 32 }, 3.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
+	drawText(d, { xOffset, 32 }, 3.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
+
+	xOffset += dw + 32;
+	drawTexture(state.baseTextures[POPULATION], { xOffset, 32 }, 3.0f, LEFT, CENTER);
+
+	xOffset += 56;
+	std::string p = formatNumber((float)countryPopulation(0));
+	int pw = queryText(p, 3.0f).x;
+	drawText(p, { xOffset, 32 }, 3.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
+
+	xOffset += pw + 32;
+	drawTexture(state.baseTextures[MONEY], { xOffset, 32 }, 3.0f, LEFT, CENTER);
+
+	xOffset += 56;
+	std::string m = formatNumber(game.countries[0].money);
+	drawText(m, { xOffset, 32 }, 3.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
 
 	if (!running) {
 		drawTexture(state.baseTextures[PAUSED], { state.res.x - (56 * 7), 8 }, 3.0f, LEFT, BOTTOM);
@@ -349,6 +366,13 @@ void newGame() {
 			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 3.0f, 4.0f));
 			game.cities.push_back(city("City " + std::to_string(j), pos, i, false));
 			game.cities[cityCounter].population = (int)randf(game.gen, 100000.0f, 250000.0f);
+			cityCounter++;
+		}
+
+		for (int j = 0; j < 15; j++) {
+			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 4.0f, 6.0f));
+			game.cities.push_back(city("Village " + std::to_string(j), pos, i, false));
+			game.cities[cityCounter].population = (int)randf(game.gen, 10000.0f, 100000.0f);
 			cityCounter++;
 		}
 	}

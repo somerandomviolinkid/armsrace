@@ -15,6 +15,11 @@ void loadGameMenuTick();
 
 //data portion
 
+struct constructionData {
+	int manHours;
+	std::map<int, float> resourcesNeeded;
+};
+
 struct resourceData {
 	std::string name;
 	tex_t texture;
@@ -253,15 +258,19 @@ struct city {
 
 struct country {
 	std::string name;
+	float money;
 	SDL_Color color;
 
 	country(
 		std::string n
 	) {
 		name = n;
+		money = 1000000.0f;
 		color = { 0, 0, 0, 255 };
 	}
 };
+
+int countryPopulation(int i);
 
 //game menu portion
 

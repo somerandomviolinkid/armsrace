@@ -30,6 +30,8 @@ void State::init() {
 	loadTexture(baseTextures[MENU_CLOSED], "assets/textures/closed.png");
 	loadTexture(baseTextures[MENU_OPEN], "assets/textures/open.png");
 	loadTexture(baseTextures[PAUSED], "assets/textures/paused.png");
+	loadTexture(baseTextures[POPULATION], "assets/textures/population.png");
+	loadTexture(baseTextures[MONEY], "assets/textures/money.png");
 
 	mouseState = {
 		{0, 0},

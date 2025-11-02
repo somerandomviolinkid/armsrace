@@ -165,7 +165,6 @@ void GameData::init() {
 
 	for (int i = 0; i < 10; i++) {
 		int j = (int)randf(game.gen, 0.0f, (float)splashes.size() - 0.1f);
-		printf("%d\n", j);
 	}
 
 	splashText = splashes[0];
