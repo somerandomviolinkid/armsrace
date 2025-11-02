@@ -340,11 +340,49 @@ void Game::drawMinimap() {
 	drawRect(viewport, {64, 64, 64, 128}, {128, 128, 128, 64});
 }
 
+void Game::generateAlerts() {
+
+}
+
 bool Game::selectingSomething() {
 	return selectedCity != -1 || selectedIndustry != -1 || selectedResource != -1 || selectedMine != -1;
 }
 
 Game game;
+
+void resetGameSettings() {
+	game.camera.pos = game.cities[0].pos;
+	game.camera.zoom = 0.2f;
+
+	game.selectedCity = -1;
+	game.selectedIndustry = -1;
+	game.selectedResource = -1;
+	game.selectedStorage = -1;
+	game.selectedMine = -1;
+
+	game.cityIndustryMenuOpen = false;
+	game.cityStorageMenuOpen = false;
+
+	game.storageInventoryMenuOpen = false;
+	game.storageExportsMenuOpen = false;
+	game.storageExportResourceSelected = -1;
+
+	game.industryInventoryMenuOpen = false;
+	game.industryImportsMenuOpen = false;
+	game.industryExportsMenuOpen = false;
+	game.industryImportResourceSelected = -1;
+	game.industryExportResourceSelected = -1;
+
+	game.mineInventoryMenuOpen = false;
+	game.mineAllocateWorkersMenuOpen = false;
+	game.mineExportsMenuOpen = false;
+	game.mineExportResourceSelected = -1;
+
+	game.occludeRects = {};
+
+	game.tickStart = std::chrono::high_resolution_clock::now();
+	game.frameStart = std::chrono::high_resolution_clock::now();
+}
 
 void newGame() {
 	std::chrono::high_resolution_clock::time_point loadStart = std::chrono::high_resolution_clock::now();
@@ -354,8 +392,7 @@ void newGame() {
 
 	int cityCounter = 0;
 	for (int i = 0; i < 12; i++) {
-		game.countries.push_back(country("Country " + std::to_string(i)));
-		game.countries[i].color = { (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), 255 };
+		game.countries.push_back(country("Country " + std::to_string(i), 1000000.0f, { (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), 255 }));
 
 		v2<float> capitolPos = { randf(game.gen, -95.0f, 95.0f), randf(game.gen, -50.0f, 50.0f) };
 		game.cities.push_back(city("Capitol", capitolPos, i, true));
@@ -391,44 +428,14 @@ void newGame() {
 	game.countries[0].color = { 0, 0, 0, 255 };
 	for (int i = 0; i < gameData.mineDatas.size(); i++) { game.mines.push_back(mine(i, 0, makeVector(game.cities[0].pos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 1.0f, 2.0f)))); }
 
-	game.camera.pos = game.cities[0].pos;
-	game.camera.zoom = 0.2f;
-
-	game.selectedCity = -1;
-	game.selectedIndustry = -1;
-	game.selectedResource = -1;
-	game.selectedStorage = -1;
-	game.selectedMine = -1;
-
-	game.cityIndustryMenuOpen = false;
-	game.cityStorageMenuOpen = false;
-
-	game.storageInventoryMenuOpen = false;
-	game.storageExportsMenuOpen = false;
-	game.storageExportResourceSelected = -1;
-
-	game.industryInventoryMenuOpen = false;
-	game.industryImportsMenuOpen = false;
-	game.industryExportsMenuOpen = false;
-	game.industryImportResourceSelected = -1;
-	game.industryExportResourceSelected = -1;
-
-	game.mineInventoryMenuOpen = false;
-	game.mineAllocateWorkersMenuOpen = false;
-	game.mineExportsMenuOpen = false;
-	game.mineExportResourceSelected = -1;
-
-	game.occludeRects = {};
-
 	game.ticks = 0;
-	game.tickStart = std::chrono::high_resolution_clock::now();
-
 	game.frames = 0;
-	game.frameStart = std::chrono::high_resolution_clock::now();
 
 	game.selectedSpeed = 1;
 	game.running = false;
 	game.speedChangeTimer = 0;
+
+	resetGameSettings();
 
 	printf("Created new game in %lld microseconds.\n", std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - loadStart).count());
 }
@@ -438,12 +445,4 @@ void clearGame() {
 	game.cities.clear();
 	game.mines.clear();
 	game.naturalResources.clear();
-}
-
-void loadGame() {
-
-}
-
-void saveGame() {
-
 }

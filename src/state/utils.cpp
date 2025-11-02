@@ -1,5 +1,13 @@
 #include "state.hpp"
 
+SDL_Color int2Color(int i) {
+	return { (uint8_t)((i & 0xFF000000) >> 24), (uint8_t)((i & 0x00FF0000) >> 16), (uint8_t)((i & 0x0000FF00) >> 8), (uint8_t)((i & 0x000000FF) >> 0)};
+}
+
+int color2Int(SDL_Color c) {
+	return (c.r << 24) + (c.g << 16) + (c.b << 8) + (c.a << 0);
+}
+
 SDL_Point v2ToPoint(v2<int> point) {
 	return { point.x, point.y };
 }

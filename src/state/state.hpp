@@ -7,7 +7,6 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 
-#include <fstream>
 #include <vector>
 #include <map>
 #include <filesystem>
@@ -74,6 +73,9 @@ public:
 extern State state;
 
 //utils portion
+
+SDL_Color int2Color(int i);
+int color2Int(SDL_Color c);
 
 SDL_Point v2ToPoint(v2<int> point);
 

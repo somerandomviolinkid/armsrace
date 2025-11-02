@@ -3,6 +3,8 @@
 #include <format>
 #include <algorithm>
 #include <random>
+#include <fstream>
+#include <sstream>
 
 //vec2
 
@@ -45,6 +47,10 @@ v2<float> makeVector(v2<float> pos, float direction, float magnitude);
 std::string formatNumber(float number);
 
 std::string makePNGFilePath(std::string name);
+
+//file utils
+//removes last byte of text file
+void removeLastByte(std::string path, int count);
 
 //random
 

@@ -38,6 +38,23 @@ std::string makePNGFilePath(std::string name) {
 	return name;
 }
 
+void removeLastByte(std::string path, int count) {
+	std::ifstream fileIn(path);
+
+	std::stringstream buffer;
+	buffer << fileIn.rdbuf();
+	std::string contents = buffer.str();
+
+	fileIn.close();
+	for (int i = 0; i < count; i++) {
+		contents.pop_back();
+	}
+
+	std::ofstream fileOut(path, std::ios::trunc);
+	fileOut << contents;
+	fileOut.close();
+}
+
 float randf(std::mt19937& gen, float min, float max) {
 	std::uniform_real_distribution<float> dis(min, max);
 	return dis(gen);

@@ -262,11 +262,13 @@ struct country {
 	SDL_Color color;
 
 	country(
-		std::string n
+		std::string n,
+		float f,
+		SDL_Color c
 	) {
 		name = n;
-		money = 1000000.0f;
-		color = { 0, 0, 0, 255 };
+		money = f;
+		color = c;
 	}
 };
 
@@ -359,6 +361,7 @@ public:
 
 	void drawTopMenu();
 	void drawMinimap();
+	void generateAlerts();
 
 	std::vector<SDL_Rect> occludeRects;
 
@@ -377,8 +380,9 @@ extern Game game;
 
 void newGame();
 void clearGame();
-void loadGame();
+int loadGame(std::string path);
 void saveGame();
+void resetGameSettings();
 
 //render portion
 v2<float> project(v2<float> p);

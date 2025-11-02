@@ -76,16 +76,45 @@ void drawLoadGameMenu() {
 
 	const std::filesystem::path saves = "saves";
 	int count = 0;
+	std::vector<int> widths = {};
 	for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(saves)) {
+		widths.push_back(queryText(entry.path().string().substr(6), 2.0f).x);
 		count++;
 	}
 
+	int max = *std::max_element(widths.begin(), widths.end());
+	max += 16;
+
+	drawRect(v2ToRect({ (state.res.x / 2) - (max / 2) - 8, state.res.y / 4 - 28 }, { max + 16, 8 + (48 * count) }), { 255, 255, 255, 255 }, { 64, 64, 64, 255 });
+
 	int i = 0;
-	drawRect(v2ToRect({ (state.res.x / 2) - 108, state.res.y / 4 - 28 }, { 216, 8 + (48 * count) }), { 255, 255, 255, 255 }, { 64, 64, 64, 255 });
+	std::string hoverPath = "";
 	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(saves)) {
-		drawRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 4) - 20 + (48 * i) }, { 200, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+		int w = queryText(entry.path().string().substr(6), 2.0f).x;
+		SDL_Rect r = v2ToRect({ (state.res.x / 2) - (w / 2) - 8, (state.res.y / 4) - 20 + (48 * i) }, { w + 16, 40 });
+		drawRect(r, { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
 		drawText(entry.path().string().substr(6), {state.res.x / 2 , (state.res.y / 4) + (48 * i)}, 2.0f, {255, 255, 255, 255}, MIDDLE, CENTER);
 		i++;
+
+		if (mouseInRect(r)) {
+			hoverPath = entry.path().string();
+		}
+	}
+
+	if (state.mouseState.click && !hoverPath.empty()) {
+		int loadStatus = loadGame(hoverPath);
+		if (loadStatus == 0) {
+			state.mode = IN_GAME;
+		} else {
+			switch (loadStatus) {
+			case -1:
+				printf("Loading error: files missing\n");
+				break;
+			case -2:
+				printf("Loading error: bad savedata\n");
+				break;
+			}
+		}
 	}
 
 	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
@@ -136,6 +165,9 @@ void drawCreditsMenu() {
 }
 
 void drawPauseMenu() {
+	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 68 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Save Game", { state.res.x / 2 , (state.res.y * 7) / 8 - 48}, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
 	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
 	drawText("Back to Game", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 
@@ -144,6 +176,11 @@ void drawPauseMenu() {
 }
 
 void pauseMenuTick() {
+	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 68 }, { 300, 40 })) && state.mouseState.click) {
+		saveGame();
+		return;
+	}
+
 	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 })) && state.mouseState.click) {
 		game.mode = NORMAL;
 		return;
