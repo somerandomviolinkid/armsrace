@@ -96,6 +96,8 @@ public:
 
 	std::vector<int> rawResources;
 
+	std::string splashText;
+
 	void init();
 	void quit();
 };

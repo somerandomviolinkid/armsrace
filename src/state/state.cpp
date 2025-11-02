@@ -23,6 +23,7 @@ void State::init() {
 
 	TTF_CloseFont(font);
 
+	loadTexture(baseTextures[SPLASH], "assets/textures/splash.png");
 	loadTexture(baseTextures[CITY], "assets/textures/city.png");
 	loadTexture(baseTextures[BUILD], "assets/textures/build.png");
 	loadTexture(baseTextures[CHECK], "assets/textures/check.png");

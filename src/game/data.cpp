@@ -151,6 +151,24 @@ void GameData::init() {
 		}
 	}
 
+	std::vector<std::string> splashes = {};
+	//load splash data
+	std::ifstream splashFile("assets/data/splash.txt");
+	if (!splashFile.good()) {
+		state.running = false;
+		return;
+	}
+
+	while (std::getline(splashFile, line)) {
+		splashes.push_back(line);
+	}
+
+	for (int i = 0; i < 10; i++) {
+		int j = (int)randf(game.gen, 0.0f, (float)splashes.size() - 0.1f);
+		printf("%d\n", j);
+	}
+
+	splashText = splashes[0];
 	printf("Loaded game data in %lld microseconds.\n", std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - loadStart).count());
 }
 

@@ -29,6 +29,7 @@ enum STATE_MODES {
 //state portion
 
 enum BASE_TEXTURES {
+	SPLASH,
 	CITY,
 	BUILD,
 	CHECK,

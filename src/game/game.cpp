@@ -21,7 +21,7 @@ void Game::updateCamera() {
 		game.camera.pos.x += camera.zoom;
 	}
 
-	camera.zoom *= powf(1.05f, (float)state.mouseState.scroll);
+	camera.zoom = std::clamp(camera.zoom * powf(1.05f, (float)state.mouseState.scroll), 0.01f, 2.0f);
 
 	if (state.keyboardState[SDL_SCANCODE_C]) {
 		game.camera.pos = game.cities[0].pos;
@@ -218,7 +218,7 @@ void Game::draw() {
 		}
 
 		drawText(std::format("Camera Position: ({:.3f},{:.3f})", camera.pos.x, camera.pos.y), { state.res.x / 2, state.res.y - 44 }, 1.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
-		drawText(std::format("Camera Zoom: {:.3f}", camera.zoom), { state.res.x / 2, state.res.y - 28 }, 1.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+		drawText(std::format("Camera Zoom: {:.3f}x", camera.zoom), { state.res.x / 2, state.res.y - 28 }, 1.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 		drawText(std::format("Tick time: {} us", tickTime), { state.res.x / 2 - 16, state.res.y - 12 }, 1.0f, { 0, 0, 0, 255 }, RIGHT, CENTER);
 		drawText(std::format("Frame time: {} us", frameTime / 100), { state.res.x / 2 + 16, state.res.y - 12 }, 1.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
 		occludeRects.clear();

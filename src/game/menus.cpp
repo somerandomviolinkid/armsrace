@@ -1,13 +1,20 @@
 #include "game.hpp"
 
 void drawMainMenu() {
-	drawText("Arms Race", { state.res.x / 2 , 144 }, 5.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-	drawText("Pre-Alpha 0.0.-1", { state.res.x / 2 , 216 }, 3.0f, {255, 255, 255, 255}, MIDDLE, CENTER);
+	//splash texture
+	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
 
-	drawRect(v2ToRect({ (state.res.x / 2) - 108, (state.res.y / 2) - 28}, {216, (48 * 9) + 8}), {255, 255, 255, 255}, {64, 64, 64, 255});
+	drawText("Arms Race", { state.res.x / 2 , 144 }, 5.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+	drawText("Pre-Alpha 0.0.-1", { state.res.x / 2 , 216 }, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
+
+	int width = queryText(gameData.splashText, 1.0f).x;
+	float scale = ((float)state.res.x / 2.0f) / (float)width;
+	//drawText(gameData.splashText, { (state.res.x * 3) / 4 , state.res.y / 3 }, scale, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
+	drawRect(v2ToRect({ (state.res.x / 2) - 108, (state.res.y / 2) - 28}, {216, (48 * 9) + 8}), {0, 0, 0, 255}, {64, 64, 64, 255});
 
 	for (int i = 0; i < 9; i++) {
-		drawRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * i)}, {200, 40}), {255, 255, 255, 255}, {128, 128, 128, 255}, {64, 64, 96, 255});
+		drawRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * i)}, {200, 40}), {0, 0, 0, 255}, {128, 128, 128, 255}, {64, 64, 96, 255});
 	}
 
 	drawText("Create Game", { state.res.x / 2 , state.res.y / 2 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
