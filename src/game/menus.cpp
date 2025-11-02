@@ -5,16 +5,16 @@ void drawMainMenu() {
 	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
 
 	drawText("Arms Race", { state.res.x / 2 , 144 }, 5.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
-	drawText("Pre-Alpha 0.0.-1", { state.res.x / 2 , 216 }, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
+	drawText("Pre-Alpha 0.0.-1", { state.res.x / 2 , 216 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
 	int width = queryText(gameData.splashText, 1.0f).x;
 	float scale = ((float)state.res.x / 2.0f) / (float)width;
 	//drawText(gameData.splashText, { (state.res.x * 3) / 4 , state.res.y / 3 }, scale, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
-	drawRect(v2ToRect({ (state.res.x / 2) - 108, (state.res.y / 2) - 28}, {216, (48 * 9) + 8}), {0, 0, 0, 255}, {64, 64, 64, 255});
+	drawRect(v2ToRect({ (state.res.x / 2) - 108, (state.res.y / 2) - 28 }, { 216, (48 * 9) + 8 }), { 0, 0, 0, 255 }, { 64, 64, 64, 255 });
 
 	for (int i = 0; i < 9; i++) {
-		drawRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * i)}, {200, 40}), {0, 0, 0, 255}, {128, 128, 128, 255}, {64, 64, 96, 255});
+		drawRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * i) }, { 200, 40 }), { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
 	}
 
 	drawText("Create Game", { state.res.x / 2 , state.res.y / 2 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
@@ -29,7 +29,7 @@ void drawMainMenu() {
 }
 
 void mainMenuTick() {
-	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 0)}, {200, 48})) && state.mouseState.click) {
+	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 0) }, { 200, 48 })) && state.mouseState.click) {
 		state.mode = IN_GAME;
 		newGame();
 		return;
@@ -40,7 +40,7 @@ void mainMenuTick() {
 		return;
 	}
 
-	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 3)}, {200, 48})) && state.mouseState.click) {
+	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 3) }, { 200, 48 })) && state.mouseState.click) {
 		SDL_OpenURL("https://github.com/somerandomviolinkid/armsrace/wiki");
 		return;
 	}
@@ -65,19 +65,20 @@ void mainMenuTick() {
 		return;
 	}
 
-	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 8)}, {200, 48})) && state.mouseState.click) {
+	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 8) }, { 200, 48 })) && state.mouseState.click) {
 		state.running = false;
 		return;
 	}
 }
 
 void drawLoadGameMenu() {
-	drawText("Load Game", { state.res.x / 2 , 100 }, 3.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
+	drawText("Load Game", { state.res.x / 2 , 100 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
 	const std::filesystem::path saves = "saves";
 	int count = 0;
 	std::vector<int> widths = {};
-	for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(saves)) {
+	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(saves)) {
 		widths.push_back(queryText(entry.path().string().substr(6), 2.0f).x);
 		count++;
 	}
@@ -85,15 +86,15 @@ void drawLoadGameMenu() {
 	int max = *std::max_element(widths.begin(), widths.end());
 	max += 16;
 
-	drawRect(v2ToRect({ (state.res.x / 2) - (max / 2) - 8, state.res.y / 4 - 28 }, { max + 16, 8 + (48 * count) }), { 255, 255, 255, 255 }, { 64, 64, 64, 255 });
+	drawRect(v2ToRect({ (state.res.x / 2) - (max / 2) - 8, state.res.y / 4 - 28 }, { max + 16, 8 + (48 * count) }), { 0, 0, 0, 255 }, { 64, 64, 64, 255 });
 
 	int i = 0;
 	std::string hoverPath = "";
 	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(saves)) {
 		int w = queryText(entry.path().string().substr(6), 2.0f).x;
 		SDL_Rect r = v2ToRect({ (state.res.x / 2) - (w / 2) - 8, (state.res.y / 4) - 20 + (48 * i) }, { w + 16, 40 });
-		drawRect(r, { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
-		drawText(entry.path().string().substr(6), {state.res.x / 2 , (state.res.y / 4) + (48 * i)}, 2.0f, {255, 255, 255, 255}, MIDDLE, CENTER);
+		drawRect(r, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+		drawText(entry.path().string().substr(6), { state.res.x / 2 , (state.res.y / 4) + (48 * i) }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 		i++;
 
 		if (mouseInRect(r)) {
@@ -101,24 +102,71 @@ void drawLoadGameMenu() {
 		}
 	}
 
+	if (!hoverPath.empty()) {
+		std::ifstream metaFile(hoverPath + "/meta.txt");
+		if (metaFile.good()) {
+			std::string line = "";
+
+			std::getline(metaFile, line);
+			std::string version = line;
+			version = "Version: " + version;
+
+			std::getline(metaFile, line);
+			int ticks = 0;
+			if (sscanf(line.c_str(), "%d", &ticks) != 1) {
+				std::string errorText = "Incompatible meta file";
+				int w = queryText(errorText, 1.0f).x;
+				SDL_Rect textOutline = v2ToRect(state.mouseState.pos + v2<int>{16, 16}, v2<int>{w, 18} + v2<int>{8, 8});
+				drawRect(textOutline, { 0, 0, 0, 255 }, { 32, 32, 32, 192 });
+				return;
+			}
+
+			std::string suffix = ticks % 24 >= 12 ? "PM" : "AM";
+			int normalizedTime = ticks % 24 >= 12 ? ticks % 24 - 12 : ticks % 24;
+			if (normalizedTime == 0) {
+				normalizedTime = 12;
+			}
+
+			std::string day = std::format("Day {}, {:02}:00 ", ticks / 24, normalizedTime) + suffix;
+			std::vector<int> widths = { queryText(version, 1.0f).x , queryText(day, 1.0f).x };
+			int maxWidth = *std::max_element(widths.begin(), widths.end());
+
+			SDL_Rect textOutline = v2ToRect(state.mouseState.pos + v2<int>{16, 16}, v2<int>{maxWidth, 18} + v2<int>{8, 36});
+			drawRect(textOutline, { 0, 0, 0, 255 }, { 32, 32, 32, 192 });
+			drawText(version, state.mouseState.pos + v2<int>{20, 20}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
+			drawText(day, state.mouseState.pos + v2<int>{20, 44}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
+		} else {
+			std::string errorText = "Bad meta file";
+			int w = queryText(errorText, 1.0f).x;
+			SDL_Rect textOutline = v2ToRect(state.mouseState.pos + v2<int>{16, 16}, v2<int>{w, 18} + v2<int>{8, 8});
+			drawRect(textOutline, { 0, 0, 0, 255 }, { 32, 32, 32, 192 });
+			return;
+		}
+
+
+		metaFile.close();
+	}
+
 	if (state.mouseState.click && !hoverPath.empty()) {
 		int loadStatus = loadGame(hoverPath);
-		if (loadStatus == 0) {
+		switch (loadStatus) {
+		case 0:
 			state.mode = IN_GAME;
-		} else {
-			switch (loadStatus) {
-			case -1:
-				printf("Loading error: files missing\n");
-				break;
-			case -2:
-				printf("Loading error: bad savedata\n");
-				break;
-			}
+			break;
+		case -1:
+			printf("Loading error: wrong version\n");
+			break;
+		case -2:
+			printf("Loading error: files missing\n");
+			break;
+		case -3:
+			printf("Loading error: bad savedata\n");
+			break;
 		}
 	}
 
-	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
-	drawText("Back to Main Menu", {state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, {255, 255, 255, 255}, MIDDLE, CENTER);
+	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 }), { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 }
 
 void loadGameMenuTick() {
@@ -166,13 +214,13 @@ void drawCreditsMenu() {
 
 void drawPauseMenu() {
 	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 68 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
-	drawText("Save Game", { state.res.x / 2 , (state.res.y * 7) / 8 - 48}, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Save Game", { state.res.x / 2 , (state.res.y * 7) / 8 - 48 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 
 	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
 	drawText("Back to Game", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 
 	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 + 28 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
-	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 + 48}, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 + 48 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 }
 
 void pauseMenuTick() {
@@ -206,7 +254,7 @@ void drawTutorialMenu() {
 
 	int yOffset = 200;
 	drawText("Welcome to Arms Race! Here you can find everything you need to know about starting the game. If you want", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
-	
+
 	yOffset += 40;
 	drawText("to learn more about the inner machinations of the game, head to the wiki. You can build industries by", { state.res.x / 2, yOffset }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 

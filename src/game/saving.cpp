@@ -9,6 +9,12 @@ int loadGame(std::string path) {
 	//load meta data
 	std::ifstream metaFile(path + "/meta.txt");
 	if (!metaFile.good()) {
+		return -2;
+	}
+
+	std::getline(metaFile, line);
+	std::string version = line;
+	if (line != "Nov 2 Patch 2") {
 		return -1;
 	}
 
@@ -18,7 +24,7 @@ int loadGame(std::string path) {
 
 	std::getline(metaFile, line);
 	if (sscanf(line.c_str(), "%d %d %d", &ticks, &running, &selectedSpeed) != 3) {
-		return -2;
+		return -3;
 	}
 
 	metaFile.close();
@@ -26,17 +32,22 @@ int loadGame(std::string path) {
 	//load country data
 	std::ifstream countryFile(path + "/country.txt");
 	if (!countryFile.good()) {
-		return -1;
+		return -2;
 	}
 
 	while (std::getline(countryFile, line)) {
+		if (line == "END") {
+			countryFile.close();
+			break;
+		}
+
 		std::string name = line;
 
 		float money = 0.0f;
 		int color = 0;
 		std::getline(countryFile, line);
 		if (sscanf(line.c_str(), "%f %d", &money, &color) != 2) {
-			return -2;
+			return -3;
 		}
 
 		game.countries.push_back(country(name, money, int2Color(color)));
@@ -53,10 +64,15 @@ int loadGame(std::string path) {
 	//load city data
 	std::ifstream cityFile(path + "/city.txt");
 	if (!cityFile.good()) {
-		return -1;
+		return -2;
 	}
 
 	while (std::getline(cityFile, line)) {
+		if (line == "END") {
+			cityFile.close();
+			break;
+		}
+
 		std::string name = line;
 
 		int owner = 0;
@@ -65,7 +81,7 @@ int loadGame(std::string path) {
 		v2<float> pos = { 0.0f, 0.0f };
 		std::getline(cityFile, line);
 		if (sscanf(line.c_str(), "%d %d %d %f %f", &owner, &population, &capitol, &pos.x, &pos.y) != 5) {
-			return -2;
+			return -3;
 		}
 
 		game.cities.push_back(city(name, pos, owner, capitol));
@@ -73,7 +89,7 @@ int loadGame(std::string path) {
 
 		std::getline(cityFile, line);
 		if (line == "END") {
-			countryFile.close();
+			cityFile.close();
 			break;
 		}
 	}
@@ -83,15 +99,20 @@ int loadGame(std::string path) {
 	//load industry data
 	std::ifstream industryFile(path + "/industry.txt");
 	if (!industryFile.good()) {
-		return -1;
+		return -2;
 	}
 
 	while (std::getline(industryFile, line)) {
+		if (line == "END") {
+			industryFile.close();
+			break;
+		}
+
 		int ownerCity = 0;
 		int type = 0;
 		int workers = 0;
 		if (sscanf(line.c_str(), "%d %d %d", &ownerCity, &type, &workers) != 3) {
-			return -2;
+			return -3;
 		}
 
 		game.cities[ownerCity].industries.push_back(industry(type));
@@ -99,7 +120,7 @@ int loadGame(std::string path) {
 
 		std::getline(industryFile, line);
 		if (line == "END") {
-			countryFile.close();
+			industryFile.close();
 			break;
 		}
 	}
@@ -129,7 +150,7 @@ void saveGame() {
 	std::ofstream cityFile(savePath.string() + "/city.txt");
 	std::ofstream industryFile(savePath.string() + "/industry.txt");
 
-	metaFile << game.ticks << " " << game.running << " " << game.selectedSpeed;
+	metaFile << "Nov 2 Patch 2\n" << game.ticks << " " << game.running << " " << game.selectedSpeed;
 
 	for (int c = 0; c < game.countries.size(); c++) {
 		countryFile << game.countries[c].name << "\n";
