@@ -364,5 +364,15 @@ void city::draw(int i) {
 }
 
 void city::tick() {
-
+	//rest in peace 32 bit machines
+	double popGrowth = (double)population * 0.000005;
+	if (popGrowth < 1.0) {
+		float chance = (float)(1.0 / popGrowth);
+		float roll = randf(game.gen, 0.0f, chance);
+		if (fabsf(1.0f - roll) < 0.001) {
+			population++;
+		}
+	} else {
+		population += (int)(popGrowth + randf(game.gen, -1.0f, 1.0f));
+	}
 }

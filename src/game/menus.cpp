@@ -5,7 +5,7 @@ void drawMainMenu() {
 	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
 
 	drawText("Arms Race", { state.res.x / 2 , 144 }, 5.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
-	drawText("Pre-Alpha 0.0.-1", { state.res.x / 2 , 216 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+	drawText("Pre-Alpha v11/2.3", { state.res.x / 2 , 216 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
 	int width = queryText(gameData.splashText, 1.0f).x + 32;
 	float scale = std::clamp(((float)state.res.x / 2.0f) / (float)width, 1.0f, 4.0f);
@@ -81,6 +81,13 @@ void drawLoadGameMenu() {
 	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(saves)) {
 		widths.push_back(queryText(entry.path().string().substr(6), 2.0f).x);
 		count++;
+	}
+
+	if (widths.size() == 0) {
+		drawText("No savegames yet!", { state.res.x / 2 , state.res.y / 4 }, 2.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+		drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 }), { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+		drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+		return;
 	}
 
 	int max = *std::max_element(widths.begin(), widths.end());
