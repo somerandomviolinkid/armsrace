@@ -163,11 +163,8 @@ void GameData::init() {
 		splashes.push_back(line);
 	}
 
-	for (int i = 0; i < 10; i++) {
-		int j = (int)randf(game.gen, 0.0f, (float)splashes.size() - 0.1f);
-	}
-
-	splashText = splashes[0];
+	int s = (int)randf(game.gen, 0.0f, (float)splashes.size() - 0.1f);
+	splashText = splashes[s];
 	printf("Loaded game data in %lld microseconds.\n", std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - loadStart).count());
 }
 

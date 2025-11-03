@@ -7,9 +7,9 @@ void drawMainMenu() {
 	drawText("Arms Race", { state.res.x / 2 , 144 }, 5.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 	drawText("Pre-Alpha 0.0.-1", { state.res.x / 2 , 216 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
-	int width = queryText(gameData.splashText, 1.0f).x;
-	float scale = ((float)state.res.x / 2.0f) / (float)width;
-	//drawText(gameData.splashText, { (state.res.x * 3) / 4 , state.res.y / 3 }, scale, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+	int width = queryText(gameData.splashText, 1.0f).x + 32;
+	float scale = std::clamp(((float)state.res.x / 2.0f) / (float)width, 1.0f, 4.0f);
+	drawText(gameData.splashText, { (state.res.x * 3) / 4 , state.res.y / 3 }, scale, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
 	drawRect(v2ToRect({ (state.res.x / 2) - 108, (state.res.y / 2) - 28 }, { 216, (48 * 9) + 8 }), { 0, 0, 0, 255 }, { 64, 64, 64, 255 });
 

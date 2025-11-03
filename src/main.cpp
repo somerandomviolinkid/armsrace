@@ -2,6 +2,7 @@
 
 void init() {
 	state.init();
+	game.gen = std::mt19937((uint32_t)time(0));
 	gameData.init();
 }
 

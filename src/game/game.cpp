@@ -386,8 +386,6 @@ void resetGameSettings() {
 
 void newGame() {
 	std::chrono::high_resolution_clock::time_point loadStart = std::chrono::high_resolution_clock::now();
-
-	game.gen = std::mt19937((uint32_t)time(0));
 	game.mode = NORMAL;
 
 	int cityCounter = 0;
