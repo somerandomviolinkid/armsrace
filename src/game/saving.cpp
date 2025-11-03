@@ -14,7 +14,7 @@ int loadGame(std::string path) {
 
 	std::getline(metaFile, line);
 	std::string version = line;
-	if (line != "Nov 2 Patch 2") {
+	if (line != "Nov 2 Patch 3") {
 		return -1;
 	}
 
@@ -127,8 +127,101 @@ int loadGame(std::string path) {
 
 	industryFile.close();
 
+	//load storage data
+	std::ifstream storageFile(path + "/storage.txt");
+	if (!storageFile.good()) {
+		return -2;
+	}
+
+	while (std::getline(storageFile, line)) {
+		if (line == "END") {
+			storageFile.close();
+			break;
+		}
+
+		int ownerCity = 0;
+		int type = 0;
+		if (sscanf(line.c_str(), "%d %d", &ownerCity, &type) != 2) {
+			return -3;
+		}
+
+		game.cities[ownerCity].storages.push_back(storage(type));
+
+		std::getline(storageFile, line);
+		if (line == "END") {
+			storageFile.close();
+			break;
+		}
+	}
+
+	storageFile.close();
+
+	//load mine data
+	std::ifstream mineFile(path + "/mine.txt");
+	if (!mineFile.good()) {
+		return -2;
+	}
+
+	while (std::getline(mineFile, line)) {
+		if (line == "END") {
+			mineFile.close();
+			break;
+		}
+
+		int owner = 0;
+		int type = 0;
+		int workerCity = 0;
+		int workers = 0;
+		v2<float> pos = { 0.0f, 0.0f };
+		if (sscanf(line.c_str(), "%d %d %d %d %f %f", &owner, &type, &workerCity, &workers, &pos.x, &pos.y) != 6) {
+			return -3;
+		}
+
+		game.mines.push_back(mine(type, owner, pos));
+		game.mines[game.mines.size() - 1].workerCity = workerCity;
+		game.mines[game.mines.size() - 1].workers = workers;
+
+		std::getline(mineFile, line);
+		if (line == "END") {
+			mineFile.close();
+			break;
+		}
+	}
+
+	storageFile.close();
+
+	//load natural resource data
+	std::ifstream resourceFile(path + "/resource.txt");
+	if (!resourceFile.good()) {
+		return -2;
+	}
+
+	while (std::getline(resourceFile, line)) {
+		if (line == "END") {
+			resourceFile.close();
+			break;
+		}
+
+		int type = 0;
+		v2<float> pos = { 0.0f, 0.0f };
+		if (sscanf(line.c_str(), "%d %f %f", &type, &pos.x, &pos.y) != 3) {
+			return -3;
+		}
+
+		game.naturalResources.push_back(naturalResource(type, pos));
+
+		std::getline(resourceFile, line);
+		if (line == "END") {
+			resourceFile.close();
+			break;
+		}
+	}
+
+	resourceFile.close();
+
 	resetGameSettings();
 	game.mode = NORMAL;
+	printf("Loaded game in %lld microseconds.\n", std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - loadStart).count());
 	return 0;
 }
 
@@ -149,8 +242,11 @@ void saveGame() {
 	std::ofstream countryFile(savePath.string() + "/country.txt");
 	std::ofstream cityFile(savePath.string() + "/city.txt");
 	std::ofstream industryFile(savePath.string() + "/industry.txt");
+	std::ofstream storageFile(savePath.string() + "/storage.txt");
+	std::ofstream mineFile(savePath.string() + "/mine.txt");
+	std::ofstream resourceFile(savePath.string() + "/resource.txt");
 
-	metaFile << "Nov 2 Patch 2\n" << game.ticks << " " << game.running << " " << game.selectedSpeed;
+	metaFile << "Nov 2 Patch 3\n" << game.ticks << " " << game.running << " " << game.selectedSpeed;
 
 	for (int c = 0; c < game.countries.size(); c++) {
 		countryFile << game.countries[c].name << "\n";
@@ -164,31 +260,61 @@ void saveGame() {
 		for (industry& i : game.cities[c].industries) {
 			industryFile << c << " " << i.type << " " << i.workers << "\n\n";
 		}
+
+		for (storage& s : game.cities[c].storages) {
+			storageFile << c << " " << s.type << "\n\n";
+		}
+	}
+
+	for (int m = 0; m < game.mines.size(); m++) {
+		mineFile << game.mines[m].owner << " " << game.mines[m].type << " " << game.mines[m].workerCity << " " << game.mines[m].workers << " " << game.mines[m].pos.x << " " << game.mines[m].pos.y << "\n\n";
+	}
+
+	for (int r = 0; r < game.naturalResources.size(); r++) {
+		resourceFile << game.naturalResources[r].type << " " << game.naturalResources[r].pos.x << " " << game.naturalResources[r].pos.y << "\n\n";
 	}
 
 	countryFile.close();
 	removeLastByte(savePath.string() + "/country.txt", 1);
-
 	std::fstream countryEnd(savePath.string() + "/country.txt");
 	countryEnd.seekp(0, std::ios::end);
 	countryEnd << "END";
 
 	cityFile.close();
 	removeLastByte(savePath.string() + "/city.txt", 1);
-
 	std::fstream cityEnd(savePath.string() + "/city.txt");
 	cityEnd.seekp(0, std::ios::end);
 	cityEnd << "END";
 
 	industryFile.close();
 	removeLastByte(savePath.string() + "/industry.txt", 1);
-
 	std::fstream industryEnd(savePath.string() + "/industry.txt");
 	industryEnd.seekp(0, std::ios::end);
 	industryEnd << "END";
+
+	storageFile.close();
+	removeLastByte(savePath.string() + "/storage.txt", 1);
+	std::fstream storageEnd(savePath.string() + "/storage.txt");
+	storageEnd.seekp(0, std::ios::end);
+	storageEnd << "END";
+
+	mineFile.close();
+	removeLastByte(savePath.string() + "/mine.txt", 1);
+	std::fstream mineEnd(savePath.string() + "/mine.txt");
+	mineEnd.seekp(0, std::ios::end);
+	mineEnd << "END";
+
+	resourceFile.close();
+	removeLastByte(savePath.string() + "/resource.txt", 1);
+	std::fstream resourceEnd(savePath.string() + "/resource.txt");
+	resourceEnd.seekp(0, std::ios::end);
+	resourceEnd << "END";
 
 	metaFile.close();
 	countryEnd.close();
 	cityEnd.close();
 	industryEnd.close();
+	storageEnd.close();
+	mineEnd.close();
+	resourceEnd.close();
 }
