@@ -22,11 +22,6 @@ void Game::updateCamera() {
 	}
 
 	camera.zoom = std::clamp(camera.zoom * powf(1.05f, (float)state.mouseState.scroll), 0.01f, 2.0f);
-
-	if (state.keyboardState[SDL_SCANCODE_C]) {
-		game.camera.pos = game.cities[0].pos;
-		game.camera.zoom = 0.2f;
-	}
 }
 
 void Game::tick() {
@@ -54,6 +49,11 @@ void Game::draw() {
 		if (state.keyboardState[SDL_SCANCODE_ESCAPE]) {
 			mode = PAUSE_MENU;
 			break;
+		}
+
+		if (state.keyboardState[SDL_SCANCODE_C]) {
+			game.camera.pos = game.cities[0].pos;
+			game.camera.zoom = 0.2f;
 		}
 
 		if (state.keyboardState[SDL_SCANCODE_SPACE] && speedChangeTimer >= 6) {
@@ -318,6 +318,30 @@ void Game::drawMinimap() {
 		}
 	}
 
+	for (naturalResource& r : naturalResources) {
+		v2<float> np = project(r.pos, v2<float>{ 0.0f, 0.0f }, state.res / 4, 0.01f);
+		v2<int> sp = { 16 + int(np.x * (float)state.res.y / 4.0f), ((state.res.y * 3) / 4) + int(np.y * (float)state.res.y / 4.0f) - 16 };
+		SDL_Point p = v2ToPoint(sp);
+
+		if (!SDL_PointInRect(&p, &outline)) {
+			continue;
+		}
+
+		drawPoint(sp, { 0, 0, 255, 255 });
+	}
+
+	for (mine& m : mines) {
+		v2<float> np = project(m.pos, v2<float>{ 0.0f, 0.0f }, state.res / 4, 0.01f);
+		v2<int> sp = { 16 + int(np.x * (float)state.res.y / 4.0f), ((state.res.y * 3) / 4) + int(np.y * (float)state.res.y / 4.0f) - 16 };
+		SDL_Point p = v2ToPoint(sp);
+
+		if (!SDL_PointInRect(&p, &outline)) {
+			continue;
+		}
+
+		drawPoint(sp, { 255, 0, 255, 255 });
+	}
+
 	v2<float> cp = project(camera.pos, { 0.0f, 0.0f }, state.res / 4, 0.01f);
 	v2<int> csp = { 16 + int(cp.x * (float)state.res.y / 4.0f),  ((state.res.y * 3) / 4) + int(cp.y * (float)state.res.y / 4.0f) - 16 };
 
@@ -413,8 +437,8 @@ void newGame() {
 	}
 
 	for (int i = 0; i < gameData.rawResources.size(); i++) {
-		for (int j = 0; j < 3; j++) {
-			v2<float> startPos = { randf(game.gen, -25.0f, 25.0f), (randf(game.gen, -25.0f, 25.0f)) };
+		for (int j = 0; j < 5; j++) {
+			v2<float> startPos = { randf(game.gen, -95.0f, 95.0f), (randf(game.gen, -50.0f, 50.0f)) };
 			int count = (int)randf(game.gen, 1.0f, 6.0f);
 			for (int k = 0; k < count; k++) {
 				v2<float> pos = makeVector(startPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 1.0f, 2.0f));
@@ -424,7 +448,6 @@ void newGame() {
 	}
 
 	game.countries[0].color = { 0, 0, 0, 255 };
-	for (int i = 0; i < gameData.mineDatas.size(); i++) { game.mines.push_back(mine(i, 0, makeVector(game.cities[0].pos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 1.0f, 2.0f)))); }
 
 	game.ticks = 0;
 	game.frames = 0;

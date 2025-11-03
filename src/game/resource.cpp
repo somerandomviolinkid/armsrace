@@ -26,7 +26,19 @@ void naturalResource::drawMenu() {
 	int yOffset = 96;
 	drawText(gameData.resourceDatas[type].name, {(state.res.x * 7) / 8, yOffset }, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
 
-	//printf("%d %d\n", type, gameData.rawResources[type]);
-	//v2<int> dim = queryText("Build " + gameData.mineDatas[gameData.mineIndex[gameData.rawResources[type]]].name, 2.0f);
-	//SDL_Rect r = v2ToRect({});
+	int mineIndex = std::distance(gameData.rawResources.begin(), std::find(gameData.rawResources.begin(), gameData.rawResources.end(), type));
+
+	yOffset += 64;
+	v2<int> dim = queryText("Build " + gameData.mineDatas[mineIndex].name, 2.0f);
+	SDL_Rect r = v2ToRect({ ((state.res.x * 7) / 8) - (dim.x / 2) - 8, yOffset - (dim.y / 2) - 4 }, dim + v2<int>{16, 8});
+	drawRect(r, { 0, 0, 0, 255 }, { 128, 128, 128, 255 });
+	drawText("Build " + gameData.mineDatas[mineIndex].name, { (state.res.x * 7) / 8, yOffset }, 2.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+	drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 0 }, { 128, 128, 192, 64 });
+
+	if (mouseInRect(r) && state.mouseState.click) {
+		game.mines.push_back(mine(mineIndex, 0, pos));
+		game.naturalResources.erase(game.naturalResources.begin() + game.selectedResource);
+		game.selectedResource = -1;
+		game.selectedMine = game.mines.size() - 1;
+	}
 }

@@ -373,6 +373,6 @@ void city::tick() {
 			population++;
 		}
 	} else {
-		population += (int)(popGrowth + randf(game.gen, -1.0f, 1.0f));
+		population += (int)(popGrowth * randf(game.gen, -0.2f, 1.2f));
 	}
 }
