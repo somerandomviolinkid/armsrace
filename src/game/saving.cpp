@@ -1,7 +1,6 @@
 #include "game.hpp"
 
 int loadGame(std::string path) {
-	std::cout << path << "\n";
 	std::chrono::high_resolution_clock::time_point loadStart = std::chrono::high_resolution_clock::now();
 
 	std::string line;

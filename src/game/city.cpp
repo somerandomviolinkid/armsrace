@@ -350,6 +350,8 @@ void city::draw(int i) {
 	if (popWeight >= 1.0f) {
 		drawTexture(state.baseTextures[CITY], sp, popWeight, MIDDLE, CENTER);
 		drawText(name, sp + v2<int>{0, (int)(8.0 * popWeight)}, popWeight / 2.0f, game.countries[owner].color, MIDDLE, BOTTOM);
+	} else {
+		drawRect(outline, { 0, 0, 0, 255 }, game.countries[owner].color);
 	}
 
 	if (state.mouseState.click && !game.selectingSomething() && !mouseInRect({ 0, 0, state.res.x, 64 })) {

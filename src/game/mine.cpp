@@ -61,6 +61,8 @@ void mine::draw(int i) {
 
 	if (weight >= 1.0f) {
 		drawTexture(gameData.mineDatas[type].texture, sp, weight, MIDDLE, CENTER);
+	} else {
+		drawRect(outline, { 0, 0, 0, 255 }, { 255, 0, 255, 255 });
 	}
 
 	if (state.mouseState.click && !game.selectingSomething() && !mouseInRect({ 0, 0, state.res.x, 64 })) {
@@ -124,10 +126,41 @@ void mine::drawMenu() {
 		yOffset += 48;
 		drawText("Select City", { (state.res.x * 7) / 8, yOffset }, 2.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
-		int i = 0;
 		yOffset += 24;
+
+		int yQuota = state.res.y - 168 - yOffset;
+		int displayCount = yQuota / 40;
+
+		int cityCount = 0;
+		for (const city& c : game.cities) {
+			if (c.owner == 0) {
+				cityCount++;
+			}
+		}
+
+		//draw scroll bar
+		SDL_Rect r = { state.res.x - 40, yOffset, 32, ((displayCount + 1) * 40) - 8 };
+		if (mouseInRect(r) && (state.mouseState.click || state.mouseState.down)) {
+			game.mineAllocateWorkersMenuScroll = (int)((((float)state.mouseState.pos.y - (float)yOffset) * (float)displayCount) / (float)yQuota);
+		}
+
+		if (mouseInRect(v2ToRect({ (state.res.x * 3) / 4, 64 }, { state.res.x / 4, state.res.y - 64 }))) {
+			game.mineAllocateWorkersMenuScroll = std::clamp(game.mineAllocateWorkersMenuScroll - state.mouseState.scroll, 0, cityCount - displayCount - 1);;
+		}
+
+		drawRect(r, { 0, 0, 0, 255 }, { 160, 160, 160, 255 });
+		drawRect({ state.res.x - 40, yOffset + int((float)r.h * (float)game.mineAllocateWorkersMenuScroll / (float)cityCount), 32, (int)((float)r.h * ((float)displayCount + 1) / (float)cityCount) }, { 0, 0, 0, 255 }, { 96, 96, 96, 255 }, { 128, 128, 192, 64 });
+		drawRect(r, { 0, 0, 0, 255 }, {255, 255, 255, 0});
+
+		int i = game.mineAllocateWorkersMenuScroll;
+		int ownedCityCounter = -1;
 		for (const city& c : game.cities) {
 			if (c.owner != 0) {
+				continue;
+			} 
+
+			ownedCityCounter++;
+			if (ownedCityCounter < game.mineAllocateWorkersMenuScroll || ownedCityCounter > game.mineAllocateWorkersMenuScroll + displayCount) {
 				continue;
 			}
 
@@ -143,9 +176,9 @@ void mine::drawMenu() {
 				fill = { 64, 64, 192, 255 };
 			}
 
-			SDL_Rect checkOutline = v2ToRect({ state.res.x - 40, yOffset }, { 32, 32 });
+			SDL_Rect checkOutline = v2ToRect({ state.res.x - 80, yOffset }, { 32, 32 });
 			drawRect(checkOutline, { 0, 0, 0, 255 }, fill);
-			drawTexture(state.baseTextures[CHECK], { state.res.x - 8, yOffset }, 2.0f, RIGHT, BOTTOM);
+			drawTexture(state.baseTextures[CHECK], { state.res.x - 48, yOffset }, 2.0f, RIGHT, BOTTOM);
 
 			drawRect(checkOutline, { 0, 0, 0, 255 }, { 255, 255, 255, 0 }, { 64, 64, 192, 128 });
 			if (mouseInRect(checkOutline)) {
@@ -158,7 +191,6 @@ void mine::drawMenu() {
 	} else {
 		yOffset += 32;
 	}
-
 
 	SDL_Rect inventoryHeaderRect = v2ToRect({ (state.res.x * 3) / 4 , yOffset }, { state.res.x / 4, 64 });
 	drawRect(inventoryHeaderRect, { 0, 0, 0, 255 }, { 192, 192, 192, 255 }, { 128, 128, 192, 255 });

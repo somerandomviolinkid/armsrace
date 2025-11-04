@@ -122,7 +122,6 @@ void drawPolygon(std::vector<v2<int>>& points, SDL_Color border, SDL_Color fill)
 
 		std::sort(xIntercepts.begin(), xIntercepts.end());
 		for (int i = 0; i < xIntercepts.size() - 1; i += 2) {
-			printf("%d %d\n", xIntercepts[i], xIntercepts[i+1]);
 			drawLine({ xIntercepts[i], y}, {xIntercepts[i + 1], y}, fill);
 		}
 	}

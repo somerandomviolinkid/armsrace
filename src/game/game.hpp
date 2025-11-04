@@ -356,6 +356,7 @@ public:
 
 	bool mineInventoryMenuOpen;
 	bool mineAllocateWorkersMenuOpen;
+	int mineAllocateWorkersMenuScroll;
 	bool mineExportsMenuOpen;
 	int mineExportResourceSelected;
 

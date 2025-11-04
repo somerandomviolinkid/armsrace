@@ -9,6 +9,8 @@ void naturalResource::draw(int i) {
 
 	if (weight >= 1.0f) {
 		drawTexture(gameData.resourceDatas[type].texture, sp, weight, MIDDLE, CENTER);
+	} else {
+		drawRect(outline, { 0, 0, 0, 255 }, { 0, 0, 255, 255 });
 	}
 
 	if (mouseInRect(outline) && state.mouseState.click && !game.selectingSomething()) {

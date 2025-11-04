@@ -117,6 +117,7 @@ void Game::draw() {
 
 				selectedMine = -1;
 				mineExportResourceSelected = -1;
+				mineAllocateWorkersMenuScroll = 0;
 			}
 		}
 
@@ -399,6 +400,7 @@ void resetGameSettings() {
 
 	game.mineInventoryMenuOpen = false;
 	game.mineAllocateWorkersMenuOpen = false;
+	game.mineAllocateWorkersMenuScroll = 0;
 	game.mineExportsMenuOpen = false;
 	game.mineExportResourceSelected = -1;
 
