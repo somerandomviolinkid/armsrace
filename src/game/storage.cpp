@@ -1,42 +1,49 @@
 #include "game.hpp"
 
 void storage::tick() {
-	//handle exports
-	float exportDivide = 1.0f;
-	if (exportMode) {
-		exportDivide = (float)exportDatas.size();
-	}
-
-	for (const exportData& e : exportDatas) {
-		switch (e.targetType) {
-		case 0:
-		{
-			//storage
-			float amountToExport = std::clamp(
-				inventory[e.resourceType],
-				0.0f,
-				(gameData.storageDatas[game.cities[e.targetCity].storages[e.targetIndex].type].maxCapacity -
-					game.cities[e.targetCity].storages[e.targetIndex].totalStored()) / exportDivide
-			);
-
-			game.cities[e.targetCity].storages[e.targetIndex].inventory[e.resourceType] += amountToExport;
-			inventory[e.resourceType] -= amountToExport;
-			break;
+	for (std::pair<const int, float>& pair : gameData.mineDatas[type].outputs) {
+		//handle exports
+		if (exportDatas[pair.first].size() == 0) {
+			continue;
 		}
-		case 1:
-		{
-			//industry
-			float amountToExport = std::clamp(
-				inventory[e.resourceType],
-				0.0f,
-				(gameData.industryDatas[game.cities[e.targetCity].industries[e.targetIndex].type].storage[e.resourceType]
-					- game.cities[e.targetCity].industries[e.targetIndex].inventory[e.resourceType]) / exportDivide
-			);
 
-			game.cities[e.targetCity].industries[e.targetIndex].inventory[e.resourceType] += amountToExport;
-			inventory[e.resourceType] -= amountToExport;
-			break;
+		float exportDivide = 1.0f;
+		if (exportModes[pair.first]) {
+			exportDivide = (float)exportDatas[pair.first].size();
+
 		}
+
+		for (const exportData& e : exportDatas[pair.first]) {
+			switch (e.targetType) {
+			case 0:
+			{
+				//storage
+				float amountToExport = std::clamp(
+					inventory[pair.first],
+					0.0f,
+					(gameData.storageDatas[game.cities[e.targetCity].storages[e.targetIndex].type].maxCapacity -
+						game.cities[e.targetCity].storages[e.targetIndex].totalStored()) / exportDivide
+				);
+
+				game.cities[e.targetCity].storages[e.targetIndex].inventory[pair.first] += amountToExport;
+				inventory[pair.first] -= amountToExport;
+				break;
+			}
+			case 1:
+			{
+				//industry
+				float amountToExport = std::clamp(
+					inventory[pair.first],
+					0.0f,
+					(gameData.industryDatas[game.cities[e.targetCity].industries[e.targetIndex].type].storage[pair.first] -
+						game.cities[e.targetCity].industries[e.targetIndex].inventory[pair.first]) / exportDivide
+				);
+
+				game.cities[e.targetCity].industries[e.targetIndex].inventory[pair.first] += amountToExport;
+				inventory[pair.first] -= amountToExport;
+				break;
+			}
+			}
 		}
 	}
 }
@@ -115,7 +122,7 @@ void storage::drawMenu() {
 		int i = 0;
 
 		yOffset += 40;
-		for (const std::pair<int, float> p : gameData.industryDatas[type].outputs) {
+		for (const std::pair<int, float> p : inventory) {
 			SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, { 64, 64 });
 			drawRect(r, { 0, 0, 0, 255 }, { 255, 255, 255, 255 });
 			drawTexture(gameData.resourceDatas[p.first].texture, { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, 4.0f, LEFT, BOTTOM);
@@ -201,8 +208,8 @@ void storage::drawExportMenu(int i) {
 			}
 
 			SDL_Color fill = { 255, 255, 255, 255 };
-			for (exportData& e : exportDatas) {
-				if (e.targetCity == cityCounter && e.targetIndex == cityStorageCounter && e.targetType == 0 && e.resourceType == i) {
+			for (exportData& e : exportDatas[i]) {
+				if (e.targetType == 0 && e.targetCity == cityCounter && e.targetIndex == cityStorageCounter) {
 					fill = { 64, 64, 192, 255 };
 					break;
 				}
@@ -248,7 +255,7 @@ void storage::drawExportMenu(int i) {
 			industryCounter++;
 			cityIndustryCounter++;
 			bool canExport = false;
-			for (const std::pair<int, float> p : s.inventory) {
+			for (const std::pair<int, float> p : gameData.industryDatas[s.type].inputs) {
 				if (p.first == i) {
 					canExport = true;
 					break;
@@ -260,8 +267,8 @@ void storage::drawExportMenu(int i) {
 			}
 
 			SDL_Color fill = { 255, 255, 255, 255 };
-			for (exportData& e : exportDatas) {
-				if (e.index == industryCounter && e.targetType == 1) {
+			for (exportData& e : exportDatas[i]) {
+				if (e.targetType == 1 && e.targetCity == cityCounter && e.targetIndex == cityIndustryCounter) {
 					fill = { 64, 64, 192, 255 };
 					break;
 				}
@@ -305,18 +312,18 @@ void storage::drawExportMenu(int i) {
 			int isAlreadySelected = -1;
 
 			int eCount = -1;
-			for (exportData& e : exportDatas) {
+			for (exportData& e : exportDatas[i]) {
 				eCount++;
-				if (e.index == targetStorageHoverIndex && e.targetType == 0 && e.resourceType == i) {
+				if (e.targetType == 0 && e.targetCity == targetStorageHover[0] && e.targetIndex == targetStorageHover[1]) {
 					isAlreadySelected = eCount;
 					break;
 				}
 			}
 
 			if (isAlreadySelected == -1) {
-				exportDatas.push_back({ targetStorageHoverIndex, i, targetStorageHover[0], 0, targetStorageHover[1] });
+				exportDatas[i].push_back({ targetStorageHover[0], 0, targetStorageHover[1]});
 			} else {
-				exportDatas.erase(exportDatas.begin() + isAlreadySelected);
+				exportDatas[i].erase(exportDatas[i].begin() + isAlreadySelected);
 			}
 		}
 	}
@@ -344,18 +351,18 @@ void storage::drawExportMenu(int i) {
 			int isAlreadySelected = -1;
 
 			int eCount = -1;
-			for (exportData& e : exportDatas) {
+			for (exportData& e : exportDatas[i]) {
 				eCount++;
-				if (e.index == targetIndustryHoverIndex && e.targetType == 1) {
+				if (e.targetType == 1 && e.targetCity == targetIndustryHover[0] && e.targetIndex == targetIndustryHover[1]) {
 					isAlreadySelected = eCount;
 					break;
 				}
 			}
 
 			if (isAlreadySelected == -1) {
-				exportDatas.push_back({ targetIndustryHoverIndex, targetIndustryHover[0], 1, targetIndustryHover[1] });
+				exportDatas[i].push_back({ targetIndustryHover[0], 1, targetIndustryHover[1]});
 			} else {
-				exportDatas.erase(exportDatas.begin() + isAlreadySelected);
+				exportDatas[i].erase(exportDatas[i].begin() + isAlreadySelected);
 			}
 		}
 	}

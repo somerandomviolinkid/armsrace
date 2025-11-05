@@ -31,6 +31,13 @@ void drawLine(v2<int> a, v2<int> b, SDL_Color c) {
 	SDL_RenderDrawLine(state.renderer, a.x, a.y, b.x, b.y);
 }
 
+void drawThickLine(v2<int> a, v2<int> b, SDL_Color c, int width) {
+	SDL_SetRenderDrawColor(state.renderer, c.r, c.g, c.b, c.a);
+	for (int i = -width / 2; i <= width / 2; i++) {
+		SDL_RenderDrawLine(state.renderer, a.x - i, a.y, b.x - i, b.y);
+	}
+}
+
 void drawRect(SDL_Rect r, SDL_Color border, SDL_Color fill) {
 	SDL_SetRenderDrawColor(state.renderer, fill.r, fill.g, fill.b, fill.a);
 	SDL_RenderFillRect(state.renderer, &r);

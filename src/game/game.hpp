@@ -109,11 +109,17 @@ public:
 
 extern GameData gameData;
 
+// map
+
+struct river {
+	v2<int> a;
+	v2<int> b;
+	float width;
+};
+
 //structs portion
 
 struct exportData {
-	int index;
-	int resourceType;
 	int targetCity;
 	int targetType;
 	int targetIndex;
@@ -125,8 +131,8 @@ struct industry {
 	std::map<int, float> inventory;
 	float resourceEfficiency;
 
-	std::vector<exportData> exportDatas;
-	bool exportMode; //false = concentrate, true = disperse
+	std::map<int, std::vector<exportData>> exportDatas;
+	std::map<int, bool> exportModes; //false = concentrate, true = disperse
 
 	industry(
 		int t
@@ -138,8 +144,12 @@ struct industry {
 			pair.second = 0.0f;
 		}
 
+		for (std::pair<const int, float>& pair : gameData.industryDatas[t].outputs) {
+			exportDatas.insert({ pair.first, {} });
+			exportModes[pair.first] = false;
+		}
+
 		resourceEfficiency = 0.0f;
-		exportMode = false;
 	}
 
 	void tick();
@@ -152,8 +162,8 @@ struct industry {
 struct storage {
 	int type;
 	std::map<int, float> inventory;
-	std::vector<exportData> exportDatas;
-	bool exportMode;
+	std::map<int, std::vector<exportData>> exportDatas;
+	std::map<int, bool> exportModes;
 
 	storage(
 		int t
@@ -161,10 +171,9 @@ struct storage {
 		type = t;
 		for (int &i : gameData.storageDatas[t].resourcesToStore) {
 			inventory.insert({ i, 0.0f });
+			exportDatas.insert({ i, {} });
+			exportModes[i] = false;
 		}
-
-		exportDatas = {};
-		exportMode = false;
 	}
 
 	void tick();
@@ -182,8 +191,8 @@ struct mine {
 	std::map<int, float> inventory;
 	int owner;
 	v2<float> pos;
-	std::vector<exportData> exportDatas;
-	bool exportMode;
+	std::map<int, std::vector<exportData>> exportDatas;
+	std::map<int, bool> exportModes;
 
 	mine(
 		int t,
@@ -198,11 +207,13 @@ struct mine {
 			pair.second = 0.0f;
 		}
 
+		for (std::pair<const int, float>& pair : gameData.mineDatas[t].outputs) {
+			exportDatas.insert({ pair.first, {} });
+			exportModes[pair.first] = false;
+		}
+
 		owner = o;
 		pos = p;
-
-		exportDatas = {};
-		exportMode = false;
 	}
 
 	void tick();

@@ -87,6 +87,8 @@ void drawPoint(v2<int> p, SDL_Color c);
 
 void drawLine(v2<int> a, v2<int> b, SDL_Color c);
 
+void drawThickLine(v2<int> a, v2<int> b, SDL_Color c, int width);
+
 void drawRect(SDL_Rect r, SDL_Color border, SDL_Color fill);
 
 void drawRect(SDL_Rect r, SDL_Color border, SDL_Color fill, SDL_Color hover);

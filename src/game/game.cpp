@@ -124,29 +124,85 @@ void Game::draw() {
 		for (int i = 0; i < cities.size(); i++) {
 			cities[i].draw(i);
 
-			v2<float> np = project(cities[i].pos);
-			v2<int> sp = { int(np.x * (float)state.res.y), int(np.y * (float)state.res.y) };
+			v2<float> cnp = project(cities[i].pos);
+			v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
 
-			SDL_Point cp = v2ToPoint(sp);
-			SDL_Rect cr = v2ToRect({ 0, 0 }, state.res);
-
-			if (!SDL_PointInRect(&cp, &cr)) {
-				continue;
-			}
+			SDL_Point cp = v2ToPoint(csp);
+			SDL_Rect screenRect = v2ToRect({ 0, 0 }, state.res);
 
 			for (industry& ind : cities[i].industries) {
-				for (exportData& e : ind.exportDatas) {
-					v2<float> cnp = project(cities[e.targetCity].pos);
-					v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
+				for (const std::pair<int, float> p : gameData.industryDatas[ind.type].outputs) {
+					for (exportData& e : ind.exportDatas[p.first]) {
+						v2<float> inp = project(cities[e.targetCity].pos);
+						v2<int> isp = { int(inp.x * (float)state.res.y), int(inp.y * (float)state.res.y) };
 
-					SDL_Point ep = v2ToPoint(csp);
-					SDL_Rect er = v2ToRect({ 0, 0 }, state.res);
+						SDL_Point ep = v2ToPoint(isp);
 
-					if (!SDL_PointInRect(&ep, &er)) {
-						continue;
+						if (!SDL_PointInRect(&cp, &screenRect) && !SDL_PointInRect(&ep, &screenRect)) {
+							continue;
+						}
+
+						if (!SDL_PointInRect(&cp, &screenRect) || !SDL_PointInRect(&ep, &screenRect)) {
+							v2<float> intersections[4] = {
+								lineSegIntersection(v2iTov2f(csp), v2iTov2f(isp), v2iTov2f({0, 0 }), v2iTov2f({state.res.x, 0})),
+								lineSegIntersection(v2iTov2f(csp), v2iTov2f(isp), v2iTov2f({0, 0 }), v2iTov2f({0, state.res.y})),
+								lineSegIntersection(v2iTov2f(csp), v2iTov2f(isp), v2iTov2f({state.res.x, 0 }), v2iTov2f({state.res.x, state.res.y})),
+								lineSegIntersection(v2iTov2f(csp), v2iTov2f(isp), v2iTov2f({0, state.res.y }), v2iTov2f({state.res.x, state.res.y}))
+							};
+
+							v2<int> p0 = SDL_PointInRect(&cp, &screenRect) ? csp : isp;
+							v2<int> p1 = { 0, 0 };
+							for (int j = 0; j < 4; j++) {
+								if (!isnan(intersections[j].x)) {
+									p1 = v2fTov2i(intersections[j]);
+									break;
+								}
+							}
+
+							drawLine(p0, p1, { 0, 0, 0, 255 });
+							continue;
+						}
+
+						drawLine(csp, isp, { 0, 0, 0, 255 });
 					}
+				}
+			}
 
-					drawLine(sp, csp, { 0, 0, 0, 255 });
+			for (storage& s : cities[i].storages) {
+				for (const std::pair<int, float> p : s.inventory) {
+					for (exportData& e : s.exportDatas[p.first]) {
+						v2<float> snp = project(cities[e.targetCity].pos);
+						v2<int> ssp = { int(snp.x * (float)state.res.y), int(snp.y * (float)state.res.y) };
+
+						SDL_Point ep = v2ToPoint(ssp);
+
+						if (!SDL_PointInRect(&cp, &screenRect) && !SDL_PointInRect(&ep, &screenRect)) {
+							continue;
+						}
+
+						if (!SDL_PointInRect(&cp, &screenRect) || !SDL_PointInRect(&ep, &screenRect)) {
+							v2<float> intersections[4] = {
+								lineSegIntersection(v2iTov2f(csp), v2iTov2f(ssp), v2iTov2f({0, 0 }), v2iTov2f({state.res.x, 0})),
+								lineSegIntersection(v2iTov2f(csp), v2iTov2f(ssp), v2iTov2f({0, 0 }), v2iTov2f({0, state.res.y})),
+								lineSegIntersection(v2iTov2f(csp), v2iTov2f(ssp), v2iTov2f({state.res.x, 0 }), v2iTov2f({state.res.x, state.res.y})),
+								lineSegIntersection(v2iTov2f(csp), v2iTov2f(ssp), v2iTov2f({0, state.res.y }), v2iTov2f({state.res.x, state.res.y}))
+							};
+
+							v2<int> p0 = SDL_PointInRect(&cp, &screenRect) ? csp : ssp;
+							v2<int> p1 = { 0, 0 };
+							for (int j = 0; j < 4; j++) {
+								if (!isnan(intersections[j].x)) {
+									p1 = v2fTov2i(intersections[j]);
+									break;
+								}
+							}
+
+							drawLine(p0, p1, { 0, 0, 0, 255 });
+							continue;
+						}
+
+						drawLine(csp, ssp, { 0, 0, 0, 255 });
+					}
 				}
 			}
 		}
@@ -159,22 +215,43 @@ void Game::draw() {
 			SDL_Point mp = v2ToPoint(msp);
 			SDL_Rect mr = v2ToRect({ 0, 0 }, state.res);
 
-			if (!SDL_PointInRect(&mp, &mr)) {
-				continue;
-			}
+			SDL_Rect screenRect = v2ToRect({ 0, 0 }, state.res);
 
-			for (exportData& e : mines[i].exportDatas) {
-				v2<float> cnp = project(cities[e.targetCity].pos);
-				v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
+			for (const std::pair<int, float> p : mines[i].inventory) {
+				for (exportData& e : mines[i].exportDatas[p.first]) {
+					v2<float> cnp = project(cities[e.targetCity].pos);
+					v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
 
-				SDL_Point ep = v2ToPoint(csp);
-				SDL_Rect er = v2ToRect({ 0, 0 }, state.res);
+					SDL_Point ep = v2ToPoint(csp);
+					SDL_Rect er = v2ToRect({ 0, 0 }, state.res);
 
-				if (!SDL_PointInRect(&ep, &er)) {
-					continue;
+					if (!SDL_PointInRect(&mp, &screenRect) && !SDL_PointInRect(&ep, &screenRect)) {
+						continue;
+					}
+
+					if (!SDL_PointInRect(&mp, &screenRect) || !SDL_PointInRect(&ep, &screenRect)) {
+						v2<float> intersections[4] = {
+							lineSegIntersection(v2iTov2f(csp), v2iTov2f(msp), v2iTov2f({0, 0 }), v2iTov2f({state.res.x, 0})),
+							lineSegIntersection(v2iTov2f(csp), v2iTov2f(msp), v2iTov2f({0, 0 }), v2iTov2f({0, state.res.y})),
+							lineSegIntersection(v2iTov2f(csp), v2iTov2f(msp), v2iTov2f({state.res.x, 0 }), v2iTov2f({state.res.x, state.res.y})),
+							lineSegIntersection(v2iTov2f(csp), v2iTov2f(msp), v2iTov2f({0, state.res.y }), v2iTov2f({state.res.x, state.res.y}))
+						};
+
+						v2<int> p0 = SDL_PointInRect(&ep, &screenRect) ? csp : msp;
+						v2<int> p1 = { 0, 0 };
+						for (int j = 0; j < 4; j++) {
+							if (!isnan(intersections[j].x)) {
+								p1 = v2fTov2i(intersections[j]);
+								break;
+							}
+						}
+
+						drawLine(p0, p1, { 0, 0, 0, 255 });
+						continue;
+					}
+
+					drawLine(csp, msp, { 0, 0, 0, 255 });
 				}
-
-				drawLine(msp, csp, {0, 0, 0, 255});
 			}
 		}
 
