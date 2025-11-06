@@ -5,7 +5,7 @@ void drawMainMenu() {
 	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
 
 	drawText("Arms Race", { state.res.x / 2 , 144 }, 5.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
-	drawText("Pre-Alpha v11/3.2", { state.res.x / 2 , 216 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+	drawText("Pre-Alpha v11/5.2", { state.res.x / 2 , 216 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
 	int width = queryText(gameData.splashText, 1.0f).x + 32;
 	float scale = std::clamp(((float)state.res.x / 2.0f) / (float)width, 1.0f, 4.0f);

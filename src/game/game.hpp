@@ -117,6 +117,10 @@ struct river {
 	float width;
 };
 
+struct map {
+	std::vector<river> rivers;
+};
+
 //structs portion
 
 struct exportData {
@@ -130,12 +134,14 @@ struct industry {
 	int workers;
 	std::map<int, float> inventory;
 	float resourceEfficiency;
+	int ownerCity;
 
 	std::map<int, std::vector<exportData>> exportDatas;
 	std::map<int, bool> exportModes; //false = concentrate, true = disperse
 
 	industry(
-		int t
+		int t,
+		int o
 	) {
 		type = t;
 		workers = 0;
@@ -150,6 +156,7 @@ struct industry {
 		}
 
 		resourceEfficiency = 0.0f;
+		ownerCity = o;
 	}
 
 	void tick();

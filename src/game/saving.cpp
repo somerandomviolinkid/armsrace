@@ -114,7 +114,7 @@ int loadGame(std::string path) {
 			return -3;
 		}
 
-		game.cities[ownerCity].industries.push_back(industry(type));
+		game.cities[ownerCity].industries.push_back(industry(type, ownerCity));
 		game.cities[ownerCity].industries[game.cities[ownerCity].industries.size() - 1].workers = workers;
 
 		std::getline(industryFile, line);

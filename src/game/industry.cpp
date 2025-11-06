@@ -2,9 +2,9 @@
 
 void industry::tick() {
 	//allocate workers
-	game.cities[game.selectedCity].employed -= workers;
-	workers += std::clamp(game.cities[game.selectedCity].population / 2 - game.cities[game.selectedCity].employed, 0, gameData.industryDatas[type].maxWorkers - workers);
-	game.cities[game.selectedCity].employed += workers;
+	game.cities[ownerCity].employed -= workers;
+	workers += std::clamp(game.cities[ownerCity].population / 2 - game.cities[ownerCity].employed, 0, gameData.industryDatas[type].maxWorkers - workers);
+	game.cities[ownerCity].employed += workers;
 
 	//turn inputs into outputs!
 	float baseEfficiency = (float)workers / (float)gameData.industryDatas[type].maxWorkers;

@@ -253,7 +253,7 @@ void city::drawBuildIndustryMenu() {
 		drawText(n, state.mouseState.pos + v2<int>{xOffset + 4, 20}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
 
 		if (state.mouseState.click) {
-			industries.push_back(industry(hover));
+			industries.push_back(industry(hover, game.selectedCity));
 			buildIndustryMenuOpen = false;
 		}
 	}
