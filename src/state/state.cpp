@@ -79,6 +79,12 @@ void State::handleEvents() {
 	mouseState.click = false;
 	mouseState.scroll = 0;
 
+	if (state.keyboardState[SDL_SCANCODE_M]) {
+		SDL_SetWindowResizable(window, SDL_TRUE);
+		SDL_MaximizeWindow(window);
+		SDL_SetWindowResizable(window, SDL_FALSE);
+	}
+
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {

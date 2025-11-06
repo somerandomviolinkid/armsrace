@@ -4,6 +4,11 @@ SDL_Rect v2ToRect(v2<int> pos, v2<int> dim) {
 	return { pos.x, pos.y, dim.x, dim.y };
 }
 
+//makes rect from top left and bottom right corners
+SDL_Rect v2PosToRect(v2<int> pos0, v2<int> pos1) {
+	return { pos0.x, pos0.y, pos1.x - pos0.x, pos1.y - pos0.y };
+}
+
 v2<int> calculateAlign(v2<int> pos, v2<int> dim, H_ALIGN hAlign, V_ALIGN vAlign) {
 	v2<int> res = { 0,0 };
 

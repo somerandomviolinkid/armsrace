@@ -3,13 +3,25 @@
 void city::drawMenu() {
 	drawRect(v2ToRect({ (state.res.x * 3) / 4, 64 }, { state.res.x / 4, state.res.y - 64}), { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 
-	int yOffset = 92;
+	int yOffset = 96;
 	float scale = name.length() > 18 ? 2.0f : 3.0f;
 	drawText(name, { (state.res.x * 7) / 8, yOffset }, scale, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
-	yOffset += 48;
+	yOffset += 64;
 	drawText("Owner: ", {((state.res.x * 3) / 4) + 16, yOffset }, 2.0f, {0, 0, 0, 255}, LEFT, CENTER);
-	drawText(game.countries[owner].name, { state.res.x - 16, yOffset }, 2.0f, game.countries[owner].color, RIGHT, CENTER);
+
+	std::string ownerString = game.countries[owner].name;
+	v2<int> osdim = queryText(ownerString, 2.0f);
+	SDL_Rect osdimRect = { state.res.x - osdim.x - 24, yOffset - (osdim.y / 2) - 4, osdim.x + 16, osdim.y + 8 };
+	drawRect(osdimRect, { 0, 0, 0, 255 }, {255, 255, 255, 0});
+	drawText(ownerString, { state.res.x - 16, yOffset }, 2.0f, game.countries[owner].color, RIGHT, CENTER);
+	drawRect(osdimRect, { 0, 0, 0, 255 }, { 255, 255, 255, 0 }, { 128, 128, 192, 128 });
+
+	if (mouseInRect(osdimRect) && state.mouseState.click) {
+		game.selectedCountry = owner;
+		game.selectedCity = -1;
+		return;
+	}
 
 	yOffset += 40;
 	drawText("Population: ", { ((state.res.x * 3) / 4) + 16, yOffset }, 2.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
@@ -41,7 +53,7 @@ void city::drawMenu() {
 
 	int industryHover = -1;
 	bool buildIndustryHover = false;
-	if (game.cityIndustryMenuOpen) {
+	if (game.cityIndustryMenuOpen && (industries.size()) || (owner == 0 && game.cityIndustryMenuOpen)) {
 		int i = 0;
 
 		yOffset += 40;

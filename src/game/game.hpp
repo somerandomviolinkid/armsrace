@@ -288,6 +288,8 @@ struct country {
 		money = f;
 		color = c;
 	}
+
+	void drawMenu(int i);
 };
 
 int countryPopulation(int i);
@@ -351,6 +353,8 @@ public:
 
 	bool running;
 	int speedChangeTimer;
+
+	int selectedCountry;
 
 	int selectedCity;
 	int selectedIndustry;

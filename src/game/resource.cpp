@@ -28,7 +28,7 @@ void naturalResource::drawMenu() {
 	int yOffset = 96;
 	drawText(gameData.resourceDatas[type].name, {(state.res.x * 7) / 8, yOffset }, 3.0f, {0, 0, 0, 255}, MIDDLE, CENTER);
 
-	int mineIndex = std::distance(gameData.rawResources.begin(), std::find(gameData.rawResources.begin(), gameData.rawResources.end(), type));
+	int mineIndex = (int)std::distance(gameData.rawResources.begin(), std::find(gameData.rawResources.begin(), gameData.rawResources.end(), type));
 
 	yOffset += 64;
 	v2<int> dim = queryText("Build " + gameData.mineDatas[mineIndex].name, 2.0f);
@@ -41,6 +41,6 @@ void naturalResource::drawMenu() {
 		game.mines.push_back(mine(mineIndex, 0, pos));
 		game.naturalResources.erase(game.naturalResources.begin() + game.selectedResource);
 		game.selectedResource = -1;
-		game.selectedMine = game.mines.size() - 1;
+		game.selectedMine = (int)game.mines.size() - 1;
 	}
 }

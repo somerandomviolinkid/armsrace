@@ -107,6 +107,8 @@ void Game::draw() {
 
 				selectedCity = -1;
 
+				selectedCountry = -1;
+
 				selectedIndustry = -1;
 				industryImportResourceSelected = -1;
 				industryExportResourceSelected = -1;
@@ -293,6 +295,8 @@ void Game::draw() {
 			} else {
 				mines[selectedMine].drawMenu();
 			}
+		} else if (selectedCountry != -1) {
+			countries[selectedCountry].drawMenu(selectedCountry);
 		}
 
 		drawText(std::format("Camera Position: ({:.3f},{:.3f})", camera.pos.x, camera.pos.y), { state.res.x / 2, state.res.y - 44 }, 1.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
@@ -439,7 +443,8 @@ void Game::drawMinimap() {
 		csp - ((v2fTov2i({ (float)state.res.x / (float)state.res.y, 1.0f }) * (int)(1.0f / camera.zoom))),
 		v2fTov2i({ (float)state.res.x / (float)state.res.y, 1.0f }) * (int)(2.0f / camera.zoom)
 	);
-	drawRect(viewport, {64, 64, 64, 128}, {128, 128, 128, 64});
+
+	drawRect(viewport, { 64, 64, 64, 128 }, { 128, 128, 128, 64 });
 }
 
 void Game::generateAlerts() {
@@ -447,7 +452,7 @@ void Game::generateAlerts() {
 }
 
 bool Game::selectingSomething() {
-	return selectedCity != -1 || selectedIndustry != -1 || selectedResource != -1 || selectedMine != -1;
+	return selectedCity != -1 || selectedIndustry != -1 || selectedResource != -1 || selectedMine != -1 || selectedCountry != -1;
 }
 
 Game game;
@@ -455,6 +460,8 @@ Game game;
 void resetGameSettings() {
 	game.camera.pos = game.cities[0].pos;
 	game.camera.zoom = 0.2f;
+
+	game.selectedCountry = -1;
 
 	game.selectedCity = -1;
 	game.selectedIndustry = -1;
@@ -492,7 +499,7 @@ void newGame() {
 	game.mode = NORMAL;
 
 	int cityCounter = 0;
-	for (int i = 0; i < 12; i++) {
+	for (int i = 0; i < 5; i++) {
 		game.countries.push_back(country("Country " + std::to_string(i), 1000000.0f, { (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), (uint8_t)randf(game.gen, 0.0f, 255.0f), 255 }));
 
 		v2<float> capitolPos = { randf(game.gen, -95.0f, 95.0f), randf(game.gen, -50.0f, 50.0f) };
@@ -503,12 +510,19 @@ void newGame() {
 		for (int j = 0; j < 4; j++) {
 			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 3.0f, 4.0f));
 			game.cities.push_back(city("City " + std::to_string(j), pos, i, false));
-			game.cities[cityCounter].population = (int)randf(game.gen, 100000.0f, 250000.0f);
+			game.cities[cityCounter].population = (int)randf(game.gen, 500000.0f, 1000000.0f);
 			cityCounter++;
 		}
 
-		for (int j = 0; j < 15; j++) {
+		for (int j = 0; j < 10; j++) {
 			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 4.0f, 6.0f));
+			game.cities.push_back(city("Village " + std::to_string(j), pos, i, false));
+			game.cities[cityCounter].population = (int)randf(game.gen, 100000.0f, 500000.0f);
+			cityCounter++;
+		}
+
+		for (int j = 0; j < 20; j++) {
+			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 6.0f, 8.0f));
 			game.cities.push_back(city("Village " + std::to_string(j), pos, i, false));
 			game.cities[cityCounter].population = (int)randf(game.gen, 10000.0f, 100000.0f);
 			cityCounter++;

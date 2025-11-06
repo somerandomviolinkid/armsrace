@@ -101,6 +101,8 @@ void drawPolygon(std::vector<v2<int>>& lines, SDL_Color border, SDL_Color fill);
 
 SDL_Rect v2ToRect(v2<int> pos, v2<int> dim);
 
+SDL_Rect v2PosToRect(v2<int> pos0, v2<int> pos1);
+
 enum H_ALIGN {
 	LEFT,
 	MIDDLE,
