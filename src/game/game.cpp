@@ -608,6 +608,7 @@ void resetGameSettings() {
 }
 
 void newGame() {
+	clearGame();
 	std::chrono::high_resolution_clock::time_point loadStart = std::chrono::high_resolution_clock::now();
 	game.mode = NORMAL;
 

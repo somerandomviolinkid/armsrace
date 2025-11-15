@@ -31,7 +31,6 @@ void drawMainMenu() {
 void mainMenuTick() {
 	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 0) }, { 200, 48 })) && state.mouseState.click) {
 		state.mode = CREATE_GAME;
-		newGame();
 		return;
 	}
 
@@ -346,6 +345,20 @@ void drawCreateGameMenu() {
 
 void drawCreateRandomGameMenu() {
 	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
+	drawText("Create Random Game", { state.res.x / 2 , 100 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
+	std::string s = "Create Game";
+	v2<int> dim = queryText(s, 2.0f);
+	SDL_Rect createGameButton = v2ToRect({ (state.res.x - dim.x - 16) / 2, (state.res.y - dim.y - 8) / 2 }, dim + v2<int>{16, 8});
+	drawRect(createGameButton, { 0, 0, 0, 255 }, { 192, 192, 192, 255 }, { 64, 64, 96, 255 });
+	drawText(s, { state.res.x / 2 , state.res.y / 2 }, 2.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
+	if (mouseInRect(createGameButton) && state.mouseState.click) {
+		newGame();
+		state.mode = IN_GAME;
+		game.mode = NORMAL;
+		return;
+	}
 
 	SDL_Rect backMainMenu = v2ToRect({ (state.res.x / 2) - 200, (state.res.y * 7) / 8 - 68 }, { 400, 40 });
 	drawRect(backMainMenu, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
@@ -370,17 +383,28 @@ void drawCreateScenarioGameMenu() {
 	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
 	drawText("Select Scenario", { state.res.x / 2 , 100 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
-	SDL_Rect back = v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 });
-	drawRect(back, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
-	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	SDL_Rect backCreateGame = v2ToRect({ (state.res.x / 2) - 200, (state.res.y * 7) / 8 - 20 }, { 400, 40 });
+	drawRect(backCreateGame, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Create Game Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
 
-	if (mouseInRect(back) && state.mouseState.click) {
+	if (mouseInRect(backCreateGame) && state.mouseState.click) {
+		state.mode = CREATE_GAME;
+		return;
+	}
+
+	SDL_Rect backMainMenu = v2ToRect({ (state.res.x / 2) - 200, (state.res.y * 7) / 8 - 68 }, { 400, 40 });
+	drawRect(backMainMenu, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Main Menu", { state.res.x / 2 , ((state.res.y * 7) / 8) - 48 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	if (mouseInRect(backMainMenu) && state.mouseState.click) {
 		state.mode = MAIN_MENU;
 		return;
 	}
 }
 
 void drawChooseScenarioCountryGameMenu(std::string name) {
+	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
+	drawText("Select Scenario", { state.res.x / 2 , 100 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 	std::vector<std::string> countryNames = {};
 
 	std::ifstream countryFile("assets/scenarios/" + name + "/country.txt");
@@ -395,4 +419,31 @@ void drawChooseScenarioCountryGameMenu(std::string name) {
 	}
 
 	countryFile.close();
+
+	int hover = -1;
+	for (int i = 0; i < countryNames.size(); i++) {
+		
+	}
+
+	if (hover != -1 && state.mouseState.click) {
+	
+	}
+
+	SDL_Rect backCreateGame = v2ToRect({ (state.res.x / 2) - 200, (state.res.y * 7) / 8 - 20 }, { 400, 40 });
+	drawRect(backCreateGame, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Create Game Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	if (mouseInRect(backCreateGame) && state.mouseState.click) {
+		state.mode = CREATE_GAME;
+		return;
+	}
+
+	SDL_Rect backMainMenu = v2ToRect({ (state.res.x / 2) - 200, (state.res.y * 7) / 8 - 68 }, { 400, 40 });
+	drawRect(backMainMenu, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Main Menu", { state.res.x / 2 , ((state.res.y * 7) / 8) - 48 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	if (mouseInRect(backMainMenu) && state.mouseState.click) {
+		state.mode = MAIN_MENU;
+		return;
+	}
 }

@@ -54,6 +54,7 @@ public:
 	tex_t baseTextures[BASE_TEXTURE_MAX];
 
 	bool editingText;
+	int cursorPos;
 	std::string editingString;
 
 	struct {
