@@ -25,6 +25,15 @@ int main(int argc, char** argv) {
 			drawMainMenu();
 			mainMenuTick();
 			break;
+		case CREATE_GAME:
+			drawCreateGameMenu();
+			break;
+		case CREATE_GAME_RANDOM:
+			drawCreateRandomGameMenu();
+			break;
+		case CREATE_GAME_SCENARIO:
+			drawCreateScenarioGameMenu();
+			break;
 		case LOAD_GAME:
 			drawLoadGameMenu();
 			loadGameMenuTick();

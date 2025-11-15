@@ -12,9 +12,9 @@ void city::drawMenu() {
 
 	std::string ownerString = game.countries[owner].name;
 	v2<int> osdim = queryText(ownerString, 2.0f);
-	SDL_Rect osdimRect = { state.res.x - osdim.x - 24, yOffset - (osdim.y / 2) - 4, osdim.x + 16, osdim.y + 8 };
+	SDL_Rect osdimRect = { state.res.x - osdim.x - 32, yOffset - (osdim.y / 2) - 4, osdim.x + 16, osdim.y + 8 };
 	drawRect(osdimRect, { 0, 0, 0, 255 }, {255, 255, 255, 0});
-	drawText(ownerString, { state.res.x - 16, yOffset }, 2.0f, game.countries[owner].color, RIGHT, CENTER);
+	drawText(ownerString, { state.res.x - 24, yOffset }, 2.0f, game.countries[owner].color, RIGHT, CENTER);
 	drawRect(osdimRect, { 0, 0, 0, 255 }, { 255, 255, 255, 0 }, { 128, 128, 192, 128 });
 
 	if (mouseInRect(osdimRect) && state.mouseState.click) {
@@ -68,7 +68,7 @@ void city::drawMenu() {
 			}
 		}
 
-		if (owner == 0) {
+		if (owner == game.playingCountry) {
 			SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, { 64, 64 });
 			drawRect(r, { 0, 0, 0, 255 }, { 64, 64, 64, 255 });
 			drawTexture(state.baseTextures[BUILD], { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, 4.0f, LEFT, BOTTOM);
@@ -120,7 +120,7 @@ void city::drawMenu() {
 			}
 		}
 
-		if (owner == 0) {
+		if (owner == game.playingCountry) {
 			SDL_Rect r = v2ToRect({ ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, { 64, 64 });
 			drawRect(r, { 0, 0, 0, 255 }, { 64, 64, 64, 255 });
 			drawTexture(state.baseTextures[BUILD], { ((state.res.x * 3) / 4) + ((i % 5) * 80) + 16, ((i / 5) * 80) + yOffset }, 4.0f, LEFT, BOTTOM);

@@ -1,0 +1,15 @@
+German Empire
+10.0 1077952767
+
+Austria-Hungary
+10.0 4291870975
+
+Russian Empire
+10.0 1082147071
+
+France
+10.0 1082195967
+
+Italy
+10.0 1623212287
+END

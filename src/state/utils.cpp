@@ -8,6 +8,11 @@ int color2Int(SDL_Color c) {
 	return (c.r << 24) + (c.g << 16) + (c.b << 8) + (c.a << 0);
 }
 
+SDL_Color colorMul(SDL_Color c, float f) {
+	f = std::clamp(f, 0.0f, 1.0f);
+	return { (uint8_t)((float)c.r * f), (uint8_t)((float)c.g * f), (uint8_t)((float)c.b * f), c.a };
+}
+
 SDL_Point v2ToPoint(v2<int> point) {
 	return { point.x, point.y };
 }

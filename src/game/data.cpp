@@ -28,6 +28,8 @@ void GameData::init() {
 
 	resourceFile.close();
 
+	printf("Loaded %d resource datas.\n", (int)resourceDatas.size());
+
 	//load industry data
 	std::ifstream industryFile("assets/data/industry.txt");
 	if (!industryFile.good()) {
@@ -77,6 +79,8 @@ void GameData::init() {
 		}
 	}
 
+	printf("Loaded %d industry datas.\n", (int)industryDatas.size());
+
 	//load storage data
 	std::ifstream storageFile("assets/data/storage.txt");
 	if (!storageFile.good()) {
@@ -108,6 +112,8 @@ void GameData::init() {
 			}
 		}
 	}
+
+	printf("Loaded %d storage datas.\n", (int)storageDatas.size());
 
 	//load mine data
 	std::ifstream mineFile("assets/data/mine.txt");
@@ -150,6 +156,8 @@ void GameData::init() {
 			}
 		}
 	}
+
+	printf("Loaded %d mine datas.\n", (int)mineDatas.size());
 
 	std::vector<std::string> splashes = {};
 	//load splash data

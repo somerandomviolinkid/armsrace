@@ -23,3 +23,23 @@ void drawText(std::string text, v2<int> pos, float scale, SDL_Color color, H_ALI
 		offset.x += (int)(state.fontAtlas[c].dim.x * scale);
 	}
 }
+
+void drawTextEx(std::string text, v2<int> pos, float scale, v2<int> center, float rotation, SDL_Color color, H_ALIGN hAlign, V_ALIGN vAlign) {
+	v2<int> dim = queryText(text, scale);
+	if (rotation > 1.57f) {
+		rotation += 3.14f;
+	}
+
+	dim = { (int)((float)dim.x * cosf(rotation)), (int)((float)dim.y * sinf(rotation)) };
+	pos.y -= abs(dim.y);
+	v2<int> offset = calculateAlign(pos, dim, hAlign, vAlign);
+
+	for (char& c : text) {
+		SDL_SetTextureColorMod(state.fontAtlas[c].texture, color.r, color.g, color.b);
+		SDL_SetTextureAlphaMod(state.fontAtlas[c].texture, color.a);
+
+		drawTexture(state.fontAtlas[c], offset, scale, LEFT, BOTTOM);
+		offset.x += (int)(state.fontAtlas[c].dim.x * scale * cosf(rotation));
+		offset.y -= (int)((state.fontAtlas[c].dim.y * scale * sinf(rotation)) / 2.0f);
+	}
+}

@@ -52,4 +52,19 @@ Titanium Mine
 400
 o 24 3.0
 s 24 20.0
+
+Quarry
+600
+o 36 5.0
+s 36 48.0
+
+Lumber Yard
+500
+o 41 4.5
+s 41 40.0
+
+Clay Mine
+400
+o 43 4.0
+s 43 37.5
 END

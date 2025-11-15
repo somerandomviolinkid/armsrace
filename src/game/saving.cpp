@@ -13,20 +13,26 @@ int loadGame(std::string path) {
 
 	std::getline(metaFile, line);
 	std::string version = line;
-	if (line != "Nov 2 Patch 3") {
+	if (line != "Nov 8 Patch 1") {
 		return -1;
 	}
 
 	int ticks = 0;
 	int running = 0;
 	int selectedSpeed = 0;
+	int playingCountry = 0;
 
 	std::getline(metaFile, line);
-	if (sscanf(line.c_str(), "%d %d %d", &ticks, &running, &selectedSpeed) != 3) {
+	if (sscanf(line.c_str(), "%d %d %d %d", &ticks, &running, &selectedSpeed, &playingCountry) != 4) {
 		return -3;
 	}
 
 	metaFile.close();
+
+	game.ticks = ticks;
+	game.running = (bool)running;
+	game.selectedSpeed = selectedSpeed;
+	game.playingCountry = playingCountry;
 
 	//load country data
 	std::ifstream countryFile(path + "/country.txt");
@@ -94,6 +100,12 @@ int loadGame(std::string path) {
 	}
 
 	cityFile.close();
+
+	for (int i = 1; i < game.cities.size(); i++) {
+		game.cities[i].pos = game.cities[i].pos - game.cities[0].pos;
+	}
+
+	game.cities[0].pos = game.cities[0].pos - game.cities[0].pos;
 
 	//load industry data
 	std::ifstream industryFile(path + "/industry.txt");
@@ -245,7 +257,7 @@ void saveGame() {
 	std::ofstream mineFile(savePath.string() + "/mine.txt");
 	std::ofstream resourceFile(savePath.string() + "/resource.txt");
 
-	metaFile << "Nov 2 Patch 3\n" << game.ticks << " " << game.running << " " << game.selectedSpeed;
+	metaFile << "Nov 8 Patch 1\n" << game.ticks << " " << game.running << " " << game.selectedSpeed << " " << game.playingCountry;
 
 	for (int c = 0; c < game.countries.size(); c++) {
 		countryFile << game.countries[c].name << "\n";

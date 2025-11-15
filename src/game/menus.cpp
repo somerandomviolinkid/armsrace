@@ -30,7 +30,7 @@ void drawMainMenu() {
 
 void mainMenuTick() {
 	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 100, (state.res.y / 2) - 20 + (48 * 0) }, { 200, 48 })) && state.mouseState.click) {
-		state.mode = IN_GAME;
+		state.mode = CREATE_GAME;
 		newGame();
 		return;
 	}
@@ -120,34 +120,38 @@ void drawLoadGameMenu() {
 
 			std::getline(metaFile, line);
 			int ticks = 0;
+			bool goodMetaFile = true;
 			if (sscanf(line.c_str(), "%d", &ticks) != 1) {
 				std::string errorText = "Incompatible meta file";
 				int w = queryText(errorText, 1.0f).x;
 				SDL_Rect textOutline = v2ToRect(state.mouseState.pos + v2<int>{16, 16}, v2<int>{w, 18} + v2<int>{8, 8});
 				drawRect(textOutline, { 0, 0, 0, 255 }, { 32, 32, 32, 192 });
-				return;
+				drawText(errorText, state.mouseState.pos + v2<int>{20, 20}, 1.0f, { 255, 0, 0, 255 }, LEFT, BOTTOM);
+				goodMetaFile = false;
 			}
 
-			std::string suffix = ticks % 24 >= 12 ? "PM" : "AM";
-			int normalizedTime = ticks % 24 >= 12 ? ticks % 24 - 12 : ticks % 24;
-			if (normalizedTime == 0) {
-				normalizedTime = 12;
+			if (goodMetaFile) {
+				std::string suffix = ticks % 24 >= 12 ? "PM" : "AM";
+				int normalizedTime = ticks % 24 >= 12 ? ticks % 24 - 12 : ticks % 24;
+				if (normalizedTime == 0) {
+					normalizedTime = 12;
+				}
+
+				std::string day = std::format("Day {}, {:02}:00 ", ticks / 24, normalizedTime) + suffix;
+				std::vector<int> widths = { queryText(version, 1.0f).x , queryText(day, 1.0f).x };
+				int maxWidth = *std::max_element(widths.begin(), widths.end());
+
+				SDL_Rect textOutline = v2ToRect(state.mouseState.pos + v2<int>{16, 16}, v2<int>{maxWidth, 18} + v2<int>{8, 36});
+				drawRect(textOutline, { 0, 0, 0, 255 }, { 32, 32, 32, 192 });
+				drawText(version, state.mouseState.pos + v2<int>{20, 20}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
+				drawText(day, state.mouseState.pos + v2<int>{20, 44}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
 			}
-
-			std::string day = std::format("Day {}, {:02}:00 ", ticks / 24, normalizedTime) + suffix;
-			std::vector<int> widths = { queryText(version, 1.0f).x , queryText(day, 1.0f).x };
-			int maxWidth = *std::max_element(widths.begin(), widths.end());
-
-			SDL_Rect textOutline = v2ToRect(state.mouseState.pos + v2<int>{16, 16}, v2<int>{maxWidth, 18} + v2<int>{8, 36});
-			drawRect(textOutline, { 0, 0, 0, 255 }, { 32, 32, 32, 192 });
-			drawText(version, state.mouseState.pos + v2<int>{20, 20}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
-			drawText(day, state.mouseState.pos + v2<int>{20, 44}, 1.0f, { 255, 255, 255, 255 }, LEFT, BOTTOM);
 		} else {
 			std::string errorText = "Bad meta file";
 			int w = queryText(errorText, 1.0f).x;
 			SDL_Rect textOutline = v2ToRect(state.mouseState.pos + v2<int>{16, 16}, v2<int>{w, 18} + v2<int>{8, 8});
 			drawRect(textOutline, { 0, 0, 0, 255 }, { 32, 32, 32, 192 });
-			return;
+			drawText(errorText, state.mouseState.pos + v2<int>{20, 20}, 1.0f, {255, 0, 0, 255}, LEFT, BOTTOM);
 		}
 
 
@@ -238,6 +242,7 @@ void pauseMenuTick() {
 
 	if (mouseInRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 })) && state.mouseState.click) {
 		game.mode = NORMAL;
+		game.running = true;
 		return;
 	}
 
@@ -249,10 +254,6 @@ void pauseMenuTick() {
 }
 
 void drawSaveGameMenu() {
-
-}
-
-void saveGameMenuTick() {
 
 }
 
@@ -309,4 +310,89 @@ void drawTutorialMenu() {
 		state.mode = MAIN_MENU;
 		return;
 	}
+}
+
+void drawCreateGameMenu() {
+	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
+	drawText("Create Game", { state.res.x / 2 , 100 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
+	SDL_Rect random = v2ToRect({ (state.res.x / 4) - 100, 220 }, { 200, 96 });
+	drawRect(random, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Random Game", {state.res.x / 4, 244}, 2.0f, {255, 255, 255, 255}, MIDDLE, CENTER);
+
+	SDL_Rect senario = v2ToRect({ (state.res.x * 3 / 4) - 100, 220 }, { 200, 96 });
+	drawRect(senario, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Scenario", { (state.res.x * 3 / 4), 244 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	SDL_Rect back = v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 });
+	drawRect(back, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	if (mouseInRect(random) && state.mouseState.click) {
+		state.mode = CREATE_GAME_RANDOM;
+		return;
+	}
+
+	if (mouseInRect(senario) && state.mouseState.click) {
+		state.mode = CREATE_GAME_SCENARIO;
+		return;
+	}
+
+	if (mouseInRect(back) && state.mouseState.click) {
+		state.mode = MAIN_MENU;
+		return;
+	}
+}
+
+void drawCreateRandomGameMenu() {
+	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
+
+	SDL_Rect backMainMenu = v2ToRect({ (state.res.x / 2) - 200, (state.res.y * 7) / 8 - 68 }, { 400, 40 });
+	drawRect(backMainMenu, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Main Menu", { state.res.x / 2 , ((state.res.y * 7) / 8) - 48 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	if (mouseInRect(backMainMenu) && state.mouseState.click) {
+		state.mode = MAIN_MENU;
+		return;
+	}
+
+	SDL_Rect backCreateGame = v2ToRect({ (state.res.x / 2) - 200, (state.res.y * 7) / 8 - 20 }, { 400, 40 });
+	drawRect(backCreateGame, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Create Game Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	if (mouseInRect(backCreateGame) && state.mouseState.click) {
+		state.mode = CREATE_GAME;
+		return;
+	}
+}
+
+void drawCreateScenarioGameMenu() {
+	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
+	drawText("Select Scenario", { state.res.x / 2 , 100 }, 3.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
+	SDL_Rect back = v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 });
+	drawRect(back, { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+
+	if (mouseInRect(back) && state.mouseState.click) {
+		state.mode = MAIN_MENU;
+		return;
+	}
+}
+
+void drawChooseScenarioCountryGameMenu(std::string name) {
+	std::vector<std::string> countryNames = {};
+
+	std::ifstream countryFile("assets/scenarios/" + name + "/country.txt");
+	std::string line = "";
+	while (std::getline(countryFile, line)) {
+		if (line == "END") {
+			countryFile.close();
+			break;
+		}
+
+		countryNames.push_back(line);
+	}
+
+	countryFile.close();
 }

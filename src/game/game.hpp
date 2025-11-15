@@ -37,6 +37,7 @@ struct industryData {
 	tex_t texture;
 	int maxWorkers;
 	std::map<int, float> inputs, outputs, storage;
+	//constructionData constructionReqs;
 
 	industryData(
 		std::string industryName,
@@ -44,6 +45,8 @@ struct industryData {
 		std::map<int, float> i,
 		std::map<int, float> o,
 		std::map<int, float> s
+		//int m,
+		//std::map<int, float> c
 	) {
 		name = industryName;
 		loadTexture(texture, makePNGFilePath(industryName));
@@ -51,6 +54,7 @@ struct industryData {
 		inputs = i;
 		outputs = o;
 		storage = s;
+		//constructionReqs = { m, c };
 	}
 };
 
@@ -59,16 +63,20 @@ struct storageData {
 	tex_t texture;
 	float maxCapacity;
 	std::vector<int> resourcesToStore;
+	//constructionData constructionReqs;
 
 	storageData(
 		std::string storageName,
 		float f,
 		std::vector<int> i
+		//int m,
+		//std::map<int, float> c
 	) {
 		name = storageName;
 		loadTexture(texture, makePNGFilePath(storageName));
 		maxCapacity = f;
 		resourcesToStore = i;
+		//constructionReqs = { m, c };
 	}
 };
 
@@ -77,18 +85,22 @@ struct mineData {
 	tex_t texture;
 	int maxWorkers;
 	std::map<int, float> outputs, storage;
+	//constructionData constructionReqs;
 
 	mineData(
 		std::string mineName,
 		int w,
 		std::map<int, float> o,
 		std::map<int, float> s
+		//int m,
+		//std::map<int, float> c
 	) {
 		name = mineName;
 		loadTexture(texture, makePNGFilePath(mineName));
 		maxWorkers = w;
 		outputs = o;
 		storage = s;
+		//constructionReqs = { m, c };
 	}
 };
 
@@ -115,6 +127,11 @@ struct river {
 	v2<int> a;
 	v2<int> b;
 	float width;
+};
+
+struct borderData {
+	v2<int> pos;
+	SDL_Color color;
 };
 
 struct map {
@@ -290,6 +307,11 @@ struct country {
 	}
 
 	void drawMenu(int i);
+	v2<float> getCenter(int i);
+	v2<float> getPopulationCenter(int i);
+	v2<float> getWesternMost(int i);
+	v2<float> getEasternMost(int i);
+	float getLength(int i);
 };
 
 int countryPopulation(int i);
@@ -306,7 +328,11 @@ void drawPauseMenu();
 void pauseMenuTick();
 
 void drawSaveGameMenu();
-void saveGameMenuTick();
+
+void drawCreateGameMenu();
+void drawCreateRandomGameMenu();
+void drawCreateScenarioGameMenu();
+void drawChooseScenarioCountryGameMenu(std::string name);
 
 void drawCreditsMenu();
 
@@ -337,6 +363,10 @@ public:
 	std::vector<city> cities;
 	std::vector<mine> mines;
 	std::vector<naturalResource> naturalResources;
+
+	SDL_Texture* mapTexture;
+	uint32_t* mapPixelArray;
+	uint32_t* mapPixelBufferArray;
 	
 	void draw();
 	void tick();
@@ -347,6 +377,8 @@ public:
 	} camera;
 
 	void updateCamera();
+
+	int playingCountry;
 
 	int mode;
 	int selectedSpeed;

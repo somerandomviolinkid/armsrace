@@ -44,3 +44,21 @@ m Mechanical Components
 m Crops
 m Livestock
 m Food
+
+# 30 - 35
+m Gasoline
+m Bitumen
+m Diesel
+m Jet Fuel
+m Rocket Fuel
+
+# 36 - 44
+r Stone
+m Gravel
+m Asphalt
+m Cement
+m Concrete
+r Wood
+m Boards
+r Clay
+m Bricks

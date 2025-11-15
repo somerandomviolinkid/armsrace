@@ -18,6 +18,10 @@ struct tex_t {
 
 enum STATE_MODES {
 	MAIN_MENU,
+	CREATE_GAME,
+	CREATE_GAME_RANDOM,
+	CREATE_GAME_SCENARIO,
+	CREATE_GAME_SCENARIO_SELECT_COUNTRY,
 	LOAD_GAME,
 	SETTINGS,
 	TUTORIAL,
@@ -49,6 +53,9 @@ public:
 	tex_t fontAtlas[256];
 	tex_t baseTextures[BASE_TEXTURE_MAX];
 
+	bool editingText;
+	std::string editingString;
+
 	struct {
 		v2<int> pos;
 		v2<int> motion;
@@ -60,7 +67,8 @@ public:
 		int scroll;
 	} mouseState;
 
-	const uint8_t* keyboardState;
+	const uint8_t* keyboardArray;
+	int keyboardState[SDL_NUM_SCANCODES];
 
 	void init();
 	void quit();
@@ -76,6 +84,8 @@ extern State state;
 
 SDL_Color int2Color(int i);
 int color2Int(SDL_Color c);
+
+SDL_Color colorMul(SDL_Color c, float f);
 
 SDL_Point v2ToPoint(v2<int> point);
 
@@ -126,3 +136,5 @@ void drawTexture(tex_t texture, v2<int> pos, float scale, H_ALIGN hAlign, V_ALIG
 v2<int> queryText(std::string text, float scale);
 
 void drawText(std::string text, v2<int> pos, float scale, SDL_Color color, H_ALIGN hAlign, V_ALIGN vAlign);
+
+void drawTextEx(std::string text, v2<int> pos, float scale, v2<int> center, float rotation, SDL_Color color, H_ALIGN hAlign, V_ALIGN vAlign);

@@ -42,7 +42,8 @@ void State::init() {
 		0
 	};
 
-	keyboardState = SDL_GetKeyboardState(NULL);
+	keyboardArray = SDL_GetKeyboardState(NULL);
+	memset(keyboardState, 0, SDL_NUM_SCANCODES * sizeof(int));
 
 	std::filesystem::path savesPath = "saves";
 	if (!std::filesystem::is_directory(savesPath)) {
@@ -73,6 +74,14 @@ void State::quit() {
 
 void State::handleEvents() {
 	SDL_PumpEvents();
+	for (int i = 0; i < SDL_NUM_SCANCODES; i++) {
+		if (keyboardArray[i]) {
+			keyboardState[i]++;
+		} else {
+			keyboardState[i] = 0;
+		}
+	}
+
 	v2<int> tempMousePos = mouseState.pos;
 	SDL_GetMouseState(&mouseState.pos.x, &mouseState.pos.y);
 	mouseState.motion = mouseState.pos - tempMousePos;

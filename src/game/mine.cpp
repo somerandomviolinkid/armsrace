@@ -139,7 +139,7 @@ void mine::drawMenu() {
 
 		int cityCount = 0;
 		for (const city& c : game.cities) {
-			if (c.owner == 0) {
+			if (c.owner == game.playingCountry) {
 				cityCount++;
 			}
 		}
@@ -161,7 +161,7 @@ void mine::drawMenu() {
 		int i = game.mineAllocateWorkersMenuScroll;
 		int ownedCityCounter = -1;
 		for (const city& c : game.cities) {
-			if (c.owner != 0) {
+			if (c.owner != game.playingCountry) {
 				continue;
 			} 
 
@@ -340,7 +340,7 @@ void mine::drawExportMenu(int i) {
 	for (city& c : game.cities) {
 		cityCounter++;
 
-		if (c.owner != 0) {
+		if (c.owner != game.playingCountry) {
 			//don't export to foreigners (yet)
 			continue;
 		}
@@ -399,7 +399,7 @@ void mine::drawExportMenu(int i) {
 	for (city& c : game.cities) {
 		cityCounter++;
 
-		if (c.owner != 0) {
+		if (c.owner != game.playingCountry) {
 			//don't export to foreigners (yet)
 			continue;
 		}

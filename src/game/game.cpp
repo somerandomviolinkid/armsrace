@@ -48,6 +48,7 @@ void Game::draw() {
 	{
 		if (state.keyboardState[SDL_SCANCODE_ESCAPE]) {
 			mode = PAUSE_MENU;
+			game.running = false;
 			break;
 		}
 
@@ -123,6 +124,79 @@ void Game::draw() {
 			}
 		}
 
+		
+		//draw borders
+		memset(mapPixelArray, 0, (size_t)(4 * state.res.x * state.res.y));
+		std::vector<borderData> posArray = {};
+		for (city& c : cities) {
+			v2<float> cnp = project(c.pos);
+			v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
+
+			SDL_Rect screenRect = { 0, 0, state.res.x, state.res.y };
+			SDL_Point p = v2ToPoint(csp);
+
+			if (SDL_PointInRect(&p, &screenRect)) {
+				posArray.push_back({ csp, colorMul(countries[c.owner].color, 0.75f)});
+			}
+		}
+
+		for (int i = 0; i < std::min(int(5.0f * camera.zoom * float(state.res.y)), state.res.x) + 1; i++) {
+			memset(mapPixelBufferArray, 0, (size_t)(4 * state.res.x * state.res.y));
+			int initialSize = (int)posArray.size();
+			for (int b = 0; b < initialSize; b++) {
+				mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x] = color2Int(posArray[b].color) - 192;
+
+				//propagate east
+				if (posArray[b].pos.x - 1 >= 0 
+					&& (mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x - 1] == 0)
+					&& mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x - 1] == 0
+					) {
+					posArray.push_back({ posArray[b].pos - v2<int>{1, 0}, posArray[b].color});
+					mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x - 1] = (uint32_t)color2Int(posArray[b].color);
+				}
+
+				//propagate west
+				if (posArray[b].pos.x + 1 < state.res.x 
+					&& (mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x + 1] == 0)
+					&& mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x + 1] == 0
+					) {
+					posArray.push_back({ posArray[b].pos + v2<int>{1, 0}, posArray[b].color});
+					mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x + 1] = (uint32_t)color2Int(posArray[b].color);
+				}
+
+				//propagate north
+				if (posArray[b].pos.y - 1 >= 0
+					&& (mapPixelArray[((posArray[b].pos.y - 1) * state.res.x) + posArray[b].pos.x] == 0)
+					&& mapPixelBufferArray[((posArray[b].pos.y - 1) * state.res.x) + posArray[b].pos.x] == 0
+					) {
+					posArray.push_back({ posArray[b].pos - v2<int>{0, 1}, posArray[b].color});
+					mapPixelBufferArray[((posArray[b].pos.y - 1) * state.res.x) + posArray[b].pos.x] = (uint32_t)color2Int(posArray[b].color);
+				}
+
+				//propagate south
+				if (posArray[b].pos.y + 1 < state.res.y 
+					&& (mapPixelArray[((posArray[b].pos.y + 1) * state.res.x) + posArray[b].pos.x] == 0)
+					&& mapPixelBufferArray[((posArray[b].pos.y + 1) * state.res.x) + posArray[b].pos.x] == 0
+					) {
+					posArray.push_back({ posArray[b].pos + v2<int>{0, 1}, posArray[b].color});
+					mapPixelBufferArray[((posArray[b].pos.y + 1) * state.res.x) + posArray[b].pos.x] = (uint32_t)color2Int(posArray[b].color);
+				}
+			}
+
+			posArray.erase(posArray.begin(), posArray.begin() + initialSize);
+		}
+
+		void* px;
+		int pitch;
+		SDL_LockTexture(mapTexture, NULL, &px, &pitch);
+		for (int y = 0; y < state.res.y; y++) {
+			memcpy(&((uint8_t*)px)[y * pitch], &mapPixelArray[y * state.res.x], (size_t)(state.res.x * 4));
+		}
+
+		SDL_UnlockTexture(mapTexture);
+		SDL_RenderCopy(state.renderer, mapTexture, NULL, NULL);
+		
+		
 		for (int i = 0; i < cities.size(); i++) {
 			cities[i].draw(i);
 
@@ -261,6 +335,25 @@ void Game::draw() {
 			naturalResources[i].draw(i);
 		}
 
+		if (camera.zoom < 0.025) {
+			for (int i = 0; i < countries.size(); i++) {
+				v2<float> western = countries[i].getWesternMost(i);
+				v2<float> wnp = project(western);
+				v2<int> wsp = { int(wnp.x * (float)state.res.y), int(wnp.y * (float)state.res.y) };
+
+				v2<float> eastern = countries[i].getEasternMost(i);
+				v2<float> enp = project(eastern);
+				v2<int> esp = { int(enp.x * (float)state.res.y), int(enp.y * (float)state.res.y) };
+
+				v2<float> center = countries[i].getCenter(i);
+				v2<float> cnp = project(center);
+				v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
+
+				float scale = fabsf((float)(esp.x - wsp.x) / (16.0f * game.countries[i].name.length()));
+				drawText(countries[i].name, csp, scale, countries[i].color, MIDDLE, CENTER);
+			}
+		}
+
 		drawTopMenu();
 		drawMinimap();
 
@@ -387,7 +480,7 @@ void Game::drawMinimap() {
 		}
 
 		if (c.capital) {
-			SDL_Rect r = v2ToRect(sp - v2<int>{ 5, 5 }, { 10, 10 });
+			SDL_Rect r = v2ToRect(sp - v2<int>{ 4, 4 }, { 8, 8 });
 			drawRect(r, { 0, 0, 0, 255 }, game.countries[c.owner].color);
 
 			if (mouseInRect(r) && state.mouseState.click) {
@@ -395,6 +488,9 @@ void Game::drawMinimap() {
 				camera.zoom = 0.2f;
 				cameraChanged = true;
 			}
+		} else if (c.population > 1000000) {
+			SDL_Rect r = v2ToRect(sp - v2<int>{ 2, 2 }, { 4, 4 });
+			drawRect(r, { 0, 0, 0, 255 }, game.countries[c.owner].color);
 		} else {
 			drawPoint(sp, { 0, 0, 0, 255 });
 		}
@@ -489,6 +585,23 @@ void resetGameSettings() {
 	game.mineExportResourceSelected = -1;
 
 	game.occludeRects = {};
+	game.mapTexture = SDL_CreateTexture(state.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, state.res.x, state.res.y);
+	SDL_SetTextureBlendMode(game.mapTexture, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(game.mapTexture, 240);
+
+	game.mapPixelArray = (uint32_t*)malloc((size_t)(4 * state.res.x * state.res.y));
+	if (game.mapPixelArray == 0) {
+		printf("Fatal: could not allocate pixel array.");
+		exit(-2);
+	}
+
+	game.mapPixelBufferArray = (uint32_t*)malloc((size_t)(4 * state.res.x * state.res.y));
+	if (game.mapPixelBufferArray == 0) {
+		printf("Fatal: could not allocate pixel buffer array.");
+		exit(-2);
+	}
+
+	memset(game.mapPixelArray, 0, (size_t)(4 * state.res.x * state.res.y));
 
 	game.tickStart = std::chrono::high_resolution_clock::now();
 	game.frameStart = std::chrono::high_resolution_clock::now();
@@ -497,6 +610,8 @@ void resetGameSettings() {
 void newGame() {
 	std::chrono::high_resolution_clock::time_point loadStart = std::chrono::high_resolution_clock::now();
 	game.mode = NORMAL;
+
+	game.playingCountry = 0;
 
 	int cityCounter = 0;
 	for (int i = 0; i < 5; i++) {
@@ -559,4 +674,7 @@ void clearGame() {
 	game.cities.clear();
 	game.mines.clear();
 	game.naturalResources.clear();
+	SDL_DestroyTexture(game.mapTexture);
+	free(game.mapPixelArray);
+	free(game.mapPixelBufferArray);
 }

@@ -141,4 +141,52 @@ i 28 6.0
 o 29 4.0
 s 28 15.0
 s 29 13.0
+
+Stone Processing Plant
+250
+i 36 4.0
+o 37 3.5
+s 36 35.0
+s 37 30.0
+
+Asphalt Plant
+300
+i 31 1.8
+i 37 0.5
+o 38 1.6
+s 31 12.0
+s 37 6.0
+s 38 1.6
+
+Lumber Mill
+150
+i 41 4.0
+o 42 3.0
+s 41 24.0
+s 42 20.0
+
+Brick Factory
+270
+i 43 2.7
+o 44 2.5
+s 43 30.0
+s 44 20.0
+
+Cement Plant
+330
+i 37 1.6
+i 43 1.6
+o 39 3.0
+s 37 18.0
+s 43 18.0
+s 39 3.0
+
+Concrete Plant
+350
+i 37 1.2
+i 39 1.2
+o 40 2.0
+s 37 15.0
+s 39 1.2
+s 40 2.0 
 END

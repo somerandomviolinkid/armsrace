@@ -306,7 +306,7 @@ void industry::drawExportMenu(int i) {
 	for (city& c : game.cities) {
 		cityCounter++;
 
-		if (c.owner != 0) {
+		if (c.owner != game.playingCountry) {
 			//don't export to foreigners (yet)
 			continue;
 		}
@@ -363,7 +363,7 @@ void industry::drawExportMenu(int i) {
 	for (city& c : game.cities) {
 		cityCounter++;
 
-		if (c.owner != 0) {
+		if (c.owner != game.playingCountry) {
 			//don't export to foreigners (yet)
 			continue;
 		}
