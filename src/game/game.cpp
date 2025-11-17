@@ -125,7 +125,8 @@ void Game::draw() {
 		}
 
 		
-		//draw borders
+		//draw borders - todo speed up
+		
 		memset(mapPixelArray, 0, (size_t)(4 * state.res.x * state.res.y));
 		std::vector<borderData> posArray = {};
 		for (city& c : cities) {
@@ -140,8 +141,8 @@ void Game::draw() {
 			}
 		}
 
+		memset(mapPixelBufferArray, 0, (size_t)(4 * state.res.x * state.res.y));
 		for (int i = 0; i < std::min(int(5.0f * camera.zoom * float(state.res.y)), state.res.x) + 1; i++) {
-			memset(mapPixelBufferArray, 0, (size_t)(4 * state.res.x * state.res.y));
 			int initialSize = (int)posArray.size();
 			for (int b = 0; b < initialSize; b++) {
 				mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x] = color2Int(posArray[b].color) - 192;
@@ -195,6 +196,7 @@ void Game::draw() {
 
 		SDL_UnlockTexture(mapTexture);
 		SDL_RenderCopy(state.renderer, mapTexture, NULL, NULL);
+		
 		
 		
 		for (int i = 0; i < cities.size(); i++) {

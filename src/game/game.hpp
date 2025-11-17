@@ -429,6 +429,8 @@ public:
 	long long tickTime;
 	long long frameTime;
 	std::mt19937 gen;
+
+	std::string selectedScenario;
 };
 
 extern Game game;

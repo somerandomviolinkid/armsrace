@@ -50,6 +50,10 @@ void State::init() {
 		std::filesystem::create_directory(savesPath);
 	}
 
+	editingText = false;
+	cursorPos = 0;
+	editingString = "";
+
 	mode = MAIN_MENU;
 	running = true;
 }

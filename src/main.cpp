@@ -34,6 +34,9 @@ int main(int argc, char** argv) {
 		case CREATE_GAME_SCENARIO:
 			drawCreateScenarioGameMenu();
 			break;
+		case CREATE_GAME_SCENARIO_SELECT_COUNTRY:
+			drawChooseScenarioCountryGameMenu(game.selectedScenario);
+			break;
 		case LOAD_GAME:
 			drawLoadGameMenu();
 			loadGameMenuTick();
