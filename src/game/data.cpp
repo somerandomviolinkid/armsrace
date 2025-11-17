@@ -159,8 +159,17 @@ void GameData::init() {
 
 	printf("Loaded %d mine datas.\n", (int)mineDatas.size());
 
+	//load scenario textures
+	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator("assets/scenarios")) {
+		scenarioTextures.insert({ entry.path().string().substr(17), {}});
+		for (const std::filesystem::directory_entry& subentry : std::filesystem::directory_iterator(entry.path().string())) {
+			scenarioTextures[entry.path().string().substr(17)].push_back({});
+			loadTexture(scenarioTextures[entry.path().string().substr(17)][scenarioTextures[entry.path().string().substr(17)].size() - 1], subentry.path().string());
+		}
+	}
+
+	//load splashes
 	std::vector<std::string> splashes = {};
-	//load splash data
 	std::ifstream splashFile("assets/data/splash.txt");
 	if (!splashFile.good()) {
 		state.running = false;
@@ -191,6 +200,12 @@ void GameData::quit() {
 
 	for (mineData& m : mineDatas) {
 		SDL_DestroyTexture(m.texture.texture);
+	}
+
+	for (std::pair<const std::string, std::vector<tex_t>> pair : scenarioTextures) {
+		for (tex_t& t : pair.second) {
+			SDL_DestroyTexture(t.texture);
+		}
 	}
 }
 

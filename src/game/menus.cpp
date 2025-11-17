@@ -223,14 +223,16 @@ void drawCreditsMenu() {
 }
 
 void drawPauseMenu() {
-	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 68 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
-	drawText("Save Game", { state.res.x / 2 , (state.res.y * 7) / 8 - 48 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	SDL_RenderCopy(state.renderer, state.baseTextures[SPLASH].texture, NULL, NULL);
 
-	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
-	drawText("Back to Game", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 68 }, { 300, 40 }), { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Save Game", { state.res.x / 2 , (state.res.y * 7) / 8 - 48 }, 2.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 
-	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 + 28 }, { 300, 40 }), { 255, 255, 255, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
-	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 + 48 }, 2.0f, { 255, 255, 255, 255 }, MIDDLE, CENTER);
+	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 - 20 }, { 300, 40 }), { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Game", { state.res.x / 2 , (state.res.y * 7) / 8 }, 2.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
+
+	drawRect(v2ToRect({ (state.res.x / 2) - 150, (state.res.y * 7) / 8 + 28 }, { 300, 40 }), { 0, 0, 0, 255 }, { 128, 128, 128, 255 }, { 64, 64, 96, 255 });
+	drawText("Back to Main Menu", { state.res.x / 2 , (state.res.y * 7) / 8 + 48 }, 2.0f, { 0, 0, 0, 255 }, MIDDLE, CENTER);
 }
 
 void pauseMenuTick() {
@@ -463,7 +465,7 @@ void drawChooseScenarioCountryGameMenu(std::string name) {
 		}
 
 		countryNames.push_back(line);
-		countryNameLengths.push_back(line.size());
+		countryNameLengths.push_back(queryText(line, 2.0f).x);
 
 		std::getline(countryFile, line);
 		std::getline(countryFile, line);
@@ -477,13 +479,28 @@ void drawChooseScenarioCountryGameMenu(std::string name) {
 	countryFile.close();
 	int maxLength = *std::max_element(countryNameLengths.begin(), countryNameLengths.end());
 
+	//16 pixel pad around each rect
+	int quota = state.res.x / (maxLength + 64);
+	int initOffset = (state.res.x - (quota * (maxLength + 64))) / 2;
+
 	int hover = -1;
 	for (int i = 0; i < countryNames.size(); i++) {
-		
+		SDL_Rect r = v2ToRect({ initOffset + (i * (maxLength + 64)), 150 + ((i / quota) * 100) }, {maxLength + 32, 84});
+		drawRect(r, { 0, 0, 0, 255 }, { 192, 192, 192, 255 }, { 128, 128, 192, 192 });
+		//drawText(countryNames[i], {}, 2.0f, {0, 0, 0, 255});
+		//drawTexture(gameData.scenarioTextures[name][i], {}, 1.0f, MIDDLE, CENTER);
+
+		if (mouseInRect(r)) {
+			hover = i;
+		}
 	}
 
 	if (hover != -1 && state.mouseState.click) {
-	
+		loadGame(name);
+		game.playingCountry = hover;
+		state.mode = IN_GAME;
+		game.mode = NORMAL;
+		return;
 	}
 
 	SDL_Rect backCreateGame = v2ToRect({ (state.res.x / 2) - 200, (state.res.y * 7) / 8 - 20 }, { 400, 40 });

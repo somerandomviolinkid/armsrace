@@ -4,11 +4,26 @@ void init() {
 	state.init();
 	game.gen = std::mt19937((uint32_t)time(0));
 	gameData.init();
+
+	game.mapPixelArray = (uint32_t*)malloc((size_t)(4 * state.res.x * state.res.y));
+	if (game.mapPixelArray == 0) {
+		printf("Fatal: could not allocate pixel array.");
+		exit(-2);
+	}
+
+	game.mapPixelBufferArray = (uint32_t*)malloc((size_t)(4 * state.res.x * state.res.y));
+	if (game.mapPixelBufferArray == 0) {
+		printf("Fatal: could not allocate pixel buffer array.");
+		exit(-2);
+	}
 }
 
 void quit() {
 	gameData.quit();
 	state.quit();
+
+	free(game.mapPixelArray);
+	free(game.mapPixelBufferArray);
 }
 
 int main(int argc, char** argv) {

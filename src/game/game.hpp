@@ -115,6 +115,8 @@ public:
 
 	std::string splashText;
 
+	std::map<std::string, std::vector<tex_t>> scenarioTextures;
+
 	void init();
 	void quit();
 };

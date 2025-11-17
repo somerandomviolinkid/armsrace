@@ -591,18 +591,6 @@ void resetGameSettings() {
 	SDL_SetTextureBlendMode(game.mapTexture, SDL_BLENDMODE_BLEND);
 	SDL_SetTextureAlphaMod(game.mapTexture, 240);
 
-	game.mapPixelArray = (uint32_t*)malloc((size_t)(4 * state.res.x * state.res.y));
-	if (game.mapPixelArray == 0) {
-		printf("Fatal: could not allocate pixel array.");
-		exit(-2);
-	}
-
-	game.mapPixelBufferArray = (uint32_t*)malloc((size_t)(4 * state.res.x * state.res.y));
-	if (game.mapPixelBufferArray == 0) {
-		printf("Fatal: could not allocate pixel buffer array.");
-		exit(-2);
-	}
-
 	memset(game.mapPixelArray, 0, (size_t)(4 * state.res.x * state.res.y));
 
 	game.tickStart = std::chrono::high_resolution_clock::now();
@@ -622,27 +610,34 @@ void newGame() {
 
 		v2<float> capitolPos = { randf(game.gen, -95.0f, 95.0f), randf(game.gen, -50.0f, 50.0f) };
 		game.cities.push_back(city("Capitol", capitolPos, i, true));
-		game.cities[cityCounter].population = 1000000;
+		game.cities[cityCounter].population = 3000000;
 		cityCounter++;
 
 		for (int j = 0; j < 4; j++) {
 			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 3.0f, 4.0f));
 			game.cities.push_back(city("City " + std::to_string(j), pos, i, false));
-			game.cities[cityCounter].population = (int)randf(game.gen, 500000.0f, 1000000.0f);
+			game.cities[cityCounter].population = (int)randf(game.gen, 1000000.0f, 3000000.0f);
 			cityCounter++;
 		}
 
 		for (int j = 0; j < 10; j++) {
 			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 4.0f, 6.0f));
-			game.cities.push_back(city("Village " + std::to_string(j), pos, i, false));
-			game.cities[cityCounter].population = (int)randf(game.gen, 100000.0f, 500000.0f);
+			game.cities.push_back(city("City " + std::to_string(j), pos, i, false));
+			game.cities[cityCounter].population = (int)randf(game.gen, 250000.0f, 1000000.0f);
 			cityCounter++;
 		}
 
 		for (int j = 0; j < 20; j++) {
 			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 6.0f, 8.0f));
-			game.cities.push_back(city("Village " + std::to_string(j), pos, i, false));
-			game.cities[cityCounter].population = (int)randf(game.gen, 10000.0f, 100000.0f);
+			game.cities.push_back(city("City " + std::to_string(j), pos, i, false));
+			game.cities[cityCounter].population = (int)randf(game.gen, 100000.0f, 250000.0f);
+			cityCounter++;
+		}
+
+		for (int j = 0; j < 45; j++) {
+			v2<float> pos = makeVector(capitolPos, randf(game.gen, 0.0f, 6.28f), randf(game.gen, 8.0f, 10.0f));
+			game.cities.push_back(city("City " + std::to_string(j), pos, i, false));
+			game.cities[cityCounter].population = (int)randf(game.gen, 25000.0f, 100000.0f);
 			cityCounter++;
 		}
 	}
@@ -678,6 +673,4 @@ void clearGame() {
 	game.mines.clear();
 	game.naturalResources.clear();
 	SDL_DestroyTexture(game.mapTexture);
-	free(game.mapPixelArray);
-	free(game.mapPixelBufferArray);
 }
