@@ -3,22 +3,31 @@ void Game::updateCamera() {
 	if (state.mouseState.down) {
 		v2<float> mouseMove = { (float)state.mouseState.motion.x / (float)state.res.y, (float)state.mouseState.motion.y / (float)state.res.y };
 		game.camera.pos = game.camera.pos - (mouseMove / camera.zoom);
+		cameraMoved = true;
 	}
 
 	if (state.keyboardState[SDL_SCANCODE_W]) {
 		game.camera.pos.y -= camera.zoom;
+		cameraMoved = true;
 	}
 
 	if (state.keyboardState[SDL_SCANCODE_A]) {
 		game.camera.pos.x -= camera.zoom;
+		cameraMoved = true;
 	}
 
 	if (state.keyboardState[SDL_SCANCODE_S]) {
 		game.camera.pos.y += camera.zoom;
+		cameraMoved = true;
 	}
 
 	if (state.keyboardState[SDL_SCANCODE_D]) {
 		game.camera.pos.x += camera.zoom;
+		cameraMoved = true;
+	}
+
+	if (state.mouseState.scroll != 0) {
+		cameraMoved = true;
 	}
 
 	camera.zoom = std::clamp(camera.zoom * powf(1.05f, (float)state.mouseState.scroll), 0.01f, 2.0f);
@@ -53,8 +62,13 @@ void Game::draw() {
 		}
 
 		if (state.keyboardState[SDL_SCANCODE_C]) {
-			game.camera.pos = game.cities[0].pos;
-			game.camera.zoom = 0.2f;
+			for (city c : cities) {
+				if (c.owner == playingCountry && c.capital) {
+					game.camera.pos = c.pos;
+					game.camera.zoom = 0.1f;
+					break;
+				}
+			}
 		}
 
 		if (state.keyboardState[SDL_SCANCODE_SPACE] && speedChangeTimer >= 6) {
@@ -124,67 +138,70 @@ void Game::draw() {
 			}
 		}
 
-		
+
 		//draw borders - todo speed up
-		
-		memset(mapPixelArray, 0, (size_t)(4 * state.res.x * state.res.y));
-		std::vector<borderData> posArray = {};
-		for (city& c : cities) {
-			v2<float> cnp = project(c.pos);
-			v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
 
-			SDL_Rect screenRect = { 0, 0, state.res.x, state.res.y };
-			SDL_Point p = v2ToPoint(csp);
+		if (cameraMoved) {
+			memset(mapPixelArray, 0, (size_t)(4 * state.res.x * state.res.y));
+			std::vector<borderData> posArray = {};
+			for (city& c : cities) {
+				v2<float> cnp = project(c.pos);
+				v2<int> csp = { int(cnp.x * (float)state.res.y), int(cnp.y * (float)state.res.y) };
 
-			if (SDL_PointInRect(&p, &screenRect)) {
-				posArray.push_back({ csp, colorMul(countries[c.owner].color, 0.75f)});
-			}
-		}
+				SDL_Rect screenRect = { 0, 0, state.res.x, state.res.y };
+				SDL_Point p = v2ToPoint(csp);
 
-		memset(mapPixelBufferArray, 0, (size_t)(4 * state.res.x * state.res.y));
-		for (int i = 0; i < std::min(int(5.0f * camera.zoom * float(state.res.y)), state.res.x) + 1; i++) {
-			int initialSize = (int)posArray.size();
-			for (int b = 0; b < initialSize; b++) {
-				mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x] = color2Int(posArray[b].color) - 192;
-
-				//propagate east
-				if (posArray[b].pos.x - 1 >= 0 
-					&& (mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x - 1] == 0)
-					&& mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x - 1] == 0
-					) {
-					posArray.push_back({ posArray[b].pos - v2<int>{1, 0}, posArray[b].color});
-					mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x - 1] = (uint32_t)color2Int(posArray[b].color);
-				}
-
-				//propagate west
-				if (posArray[b].pos.x + 1 < state.res.x 
-					&& (mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x + 1] == 0)
-					&& mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x + 1] == 0
-					) {
-					posArray.push_back({ posArray[b].pos + v2<int>{1, 0}, posArray[b].color});
-					mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x + 1] = (uint32_t)color2Int(posArray[b].color);
-				}
-
-				//propagate north
-				if (posArray[b].pos.y - 1 >= 0
-					&& (mapPixelArray[((posArray[b].pos.y - 1) * state.res.x) + posArray[b].pos.x] == 0)
-					&& mapPixelBufferArray[((posArray[b].pos.y - 1) * state.res.x) + posArray[b].pos.x] == 0
-					) {
-					posArray.push_back({ posArray[b].pos - v2<int>{0, 1}, posArray[b].color});
-					mapPixelBufferArray[((posArray[b].pos.y - 1) * state.res.x) + posArray[b].pos.x] = (uint32_t)color2Int(posArray[b].color);
-				}
-
-				//propagate south
-				if (posArray[b].pos.y + 1 < state.res.y 
-					&& (mapPixelArray[((posArray[b].pos.y + 1) * state.res.x) + posArray[b].pos.x] == 0)
-					&& mapPixelBufferArray[((posArray[b].pos.y + 1) * state.res.x) + posArray[b].pos.x] == 0
-					) {
-					posArray.push_back({ posArray[b].pos + v2<int>{0, 1}, posArray[b].color});
-					mapPixelBufferArray[((posArray[b].pos.y + 1) * state.res.x) + posArray[b].pos.x] = (uint32_t)color2Int(posArray[b].color);
+				if (SDL_PointInRect(&p, &screenRect)) {
+					posArray.push_back({ csp, colorMul(countries[c.owner].color, 0.75f) });
 				}
 			}
 
-			posArray.erase(posArray.begin(), posArray.begin() + initialSize);
+			memset(mapPixelBufferArray, 0, (size_t)(4 * state.res.x * state.res.y));
+			for (int i = 0; i < std::min(int(5.0f * camera.zoom * float(state.res.y)), state.res.x) + 1; i++) {
+				int initialSize = (int)posArray.size();
+				for (int b = 0; b < initialSize; b++) {
+					mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x] = color2Int(posArray[b].color) - 192;
+
+					//propagate east
+					if (posArray[b].pos.x - 1 >= 0
+						&& (mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x - 1] == 0)
+						&& mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x - 1] == 0
+						) {
+						posArray.push_back({ posArray[b].pos - v2<int>{1, 0}, posArray[b].color });
+						mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x - 1] = (uint32_t)color2Int(posArray[b].color);
+					}
+
+					//propagate west
+					if (posArray[b].pos.x + 1 < state.res.x
+						&& (mapPixelArray[(posArray[b].pos.y * state.res.x) + posArray[b].pos.x + 1] == 0)
+						&& mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x + 1] == 0
+						) {
+						posArray.push_back({ posArray[b].pos + v2<int>{1, 0}, posArray[b].color });
+						mapPixelBufferArray[posArray[b].pos.y * state.res.x + posArray[b].pos.x + 1] = (uint32_t)color2Int(posArray[b].color);
+					}
+
+					//propagate north
+					if (posArray[b].pos.y - 1 >= 0
+						&& (mapPixelArray[((posArray[b].pos.y - 1) * state.res.x) + posArray[b].pos.x] == 0)
+						&& mapPixelBufferArray[((posArray[b].pos.y - 1) * state.res.x) + posArray[b].pos.x] == 0
+						) {
+						posArray.push_back({ posArray[b].pos - v2<int>{0, 1}, posArray[b].color });
+						mapPixelBufferArray[((posArray[b].pos.y - 1) * state.res.x) + posArray[b].pos.x] = (uint32_t)color2Int(posArray[b].color);
+					}
+
+					//propagate south
+					if (posArray[b].pos.y + 1 < state.res.y
+						&& (mapPixelArray[((posArray[b].pos.y + 1) * state.res.x) + posArray[b].pos.x] == 0)
+						&& mapPixelBufferArray[((posArray[b].pos.y + 1) * state.res.x) + posArray[b].pos.x] == 0
+						) {
+						posArray.push_back({ posArray[b].pos + v2<int>{0, 1}, posArray[b].color });
+						mapPixelBufferArray[((posArray[b].pos.y + 1) * state.res.x) + posArray[b].pos.x] = (uint32_t)color2Int(posArray[b].color);
+					}
+				}
+
+				posArray.erase(posArray.begin(), posArray.begin() + initialSize);
+			}
+
 		}
 
 		void* px;
@@ -196,9 +213,9 @@ void Game::draw() {
 
 		SDL_UnlockTexture(mapTexture);
 		SDL_RenderCopy(state.renderer, mapTexture, NULL, NULL);
-		
-		
-		
+
+		cameraMoved = false;
+
 		for (int i = 0; i < cities.size(); i++) {
 			cities[i].draw(i);
 
@@ -424,7 +441,7 @@ void Game::drawTopMenu() {
 
 	std::string d = std::format("Day {}, {:02}:00 ", ticks / 24, normalizedTime) + suffix;
 	int dw = queryText(d, 3.0f).x;
-	
+
 	int xOffset = 8;
 	drawRect(r, { 0, 0, 0, 255 }, { 192, 192, 192, 255 });
 	drawText(d, { xOffset, 32 }, 3.0f, { 0, 0, 0, 255 }, LEFT, CENTER);
@@ -534,7 +551,7 @@ void Game::drawMinimap() {
 	drawLine(csp - v2<int>{0, 4}, csp + v2<int>{0, 4}, { 32, 32, 32, 192 });
 
 	if (mouseInRect(outline) && state.mouseState.click && !cameraChanged) {
-		camera.pos = aproject({ (((float)state.mouseState.pos.x - 16.0f) * 4.0f) / (float)state.res.y, (((float)state.mouseState.pos.y + 16.0f) / ((float)state.res.y / 4.0f)) - 3.0f}, { 0.0f, 0.0f }, state.res / 4, 0.01f);
+		camera.pos = aproject({ (((float)state.mouseState.pos.x - 16.0f) * 4.0f) / (float)state.res.y, (((float)state.mouseState.pos.y + 16.0f) / ((float)state.res.y / 4.0f)) - 3.0f }, { 0.0f, 0.0f }, state.res / 4, 0.01f);
 	}
 
 	SDL_Rect viewport = v2ToRect(
@@ -556,9 +573,15 @@ bool Game::selectingSomething() {
 Game game;
 
 void resetGameSettings() {
-	game.camera.pos = game.cities[0].pos;
-	game.camera.zoom = 0.2f;
+	for (city c : game.cities) {
+		if (c.owner == game.playingCountry && c.capital) {
+			game.camera.pos = c.pos;
+			game.camera.zoom = 0.1f;
+			break;
+		}
+	}
 
+	game.cameraMoved = true; //draw borders first time
 	game.selectedCountry = -1;
 
 	game.selectedCity = -1;
@@ -587,9 +610,6 @@ void resetGameSettings() {
 	game.mineExportResourceSelected = -1;
 
 	game.occludeRects = {};
-	game.mapTexture = SDL_CreateTexture(state.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, state.res.x, state.res.y);
-	SDL_SetTextureBlendMode(game.mapTexture, SDL_BLENDMODE_BLEND);
-	SDL_SetTextureAlphaMod(game.mapTexture, 240);
 
 	memset(game.mapPixelArray, 0, (size_t)(4 * state.res.x * state.res.y));
 
@@ -672,5 +692,4 @@ void clearGame() {
 	game.cities.clear();
 	game.mines.clear();
 	game.naturalResources.clear();
-	SDL_DestroyTexture(game.mapTexture);
 }

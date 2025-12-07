@@ -498,6 +498,14 @@ void drawChooseScenarioCountryGameMenu(std::string name) {
 	if (hover != -1 && state.mouseState.click) {
 		loadGame(name);
 		game.playingCountry = hover;
+		for (city c : game.cities) {
+			if (c.owner == game.playingCountry && c.capital) {
+				game.camera.pos = c.pos;
+				game.camera.zoom = 0.1f;
+				break;
+			}
+		}
+
 		state.mode = IN_GAME;
 		game.mode = NORMAL;
 		return;

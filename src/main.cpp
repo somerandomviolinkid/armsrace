@@ -5,15 +5,19 @@ void init() {
 	game.gen = std::mt19937((uint32_t)time(0));
 	gameData.init();
 
+	game.mapTexture = SDL_CreateTexture(state.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, state.res.x, state.res.y);
+	SDL_SetTextureBlendMode(game.mapTexture, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(game.mapTexture, 240);
+
 	game.mapPixelArray = (uint32_t*)malloc((size_t)(4 * state.res.x * state.res.y));
 	if (game.mapPixelArray == 0) {
-		printf("Fatal: could not allocate pixel array.");
+		printf("Fatal: could not allocate pixel array.\n");
 		exit(-2);
 	}
 
 	game.mapPixelBufferArray = (uint32_t*)malloc((size_t)(4 * state.res.x * state.res.y));
 	if (game.mapPixelBufferArray == 0) {
-		printf("Fatal: could not allocate pixel buffer array.");
+		printf("Fatal: could not allocate pixel buffer array.\n");
 		exit(-2);
 	}
 }
@@ -24,6 +28,8 @@ void quit() {
 
 	free(game.mapPixelArray);
 	free(game.mapPixelBufferArray);
+
+	SDL_DestroyTexture(game.mapTexture);
 }
 
 int main(int argc, char** argv) {

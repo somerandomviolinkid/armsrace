@@ -382,6 +382,8 @@ public:
 
 	int playingCountry;
 
+	bool cameraMoved;
+
 	int mode;
 	int selectedSpeed;
 

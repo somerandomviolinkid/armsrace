@@ -162,9 +162,30 @@ void GameData::init() {
 	//load scenario textures
 	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator("assets/scenarios")) {
 		scenarioTextures.insert({ entry.path().string().substr(17), {}});
-		for (const std::filesystem::directory_entry& subentry : std::filesystem::directory_iterator(entry.path().string())) {
+
+		std::vector<std::string> countryNames = {};
+
+		std::ifstream countryFile(entry.path().string() + "/country.txt");
+		std::string line = "";
+		while (std::getline(countryFile, line)) {
+			if (line == "END") {
+				countryFile.close();
+				break;
+			}
+
+			countryNames.push_back(line);
+			std::getline(countryFile, line);
+			std::getline(countryFile, line);
+
+			if (line == "END") {
+				countryFile.close();
+				break;
+			}
+		}
+
+		for (std::string s : countryNames) {
 			scenarioTextures[entry.path().string().substr(17)].push_back({});
-			loadTexture(scenarioTextures[entry.path().string().substr(17)][scenarioTextures[entry.path().string().substr(17)].size() - 1], subentry.path().string());
+			loadTexture(scenarioTextures[entry.path().string().substr(17)][scenarioTextures[entry.path().string().substr(17)].size() - 1], makePNGFilePath(s));
 		}
 	}
 
